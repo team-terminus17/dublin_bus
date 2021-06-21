@@ -1,0 +1,5 @@
+# Output from django's "collectstatic"
+/static
+
+# Python
+__pycache__

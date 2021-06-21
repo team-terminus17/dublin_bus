@@ -1,0 +1,23 @@
+body {
+    background-color: dodgerblue;
+    font-family: "Trebuchet MS"
+}
+
+.main-content {
+    margin: 2em;
+    background-color: #fff;
+    border: 0.1em solid #777;
+    display: inline-flex;
+}
+
+.main-content-bar {
+    background-color: #ffe852;
+    align-self: stretch;
+    width: 1em;
+}
+
+.title {
+    margin: 2em;
+    color: #777;
+    font-size: 2em;
+}
