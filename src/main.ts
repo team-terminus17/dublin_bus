@@ -5,6 +5,9 @@ import store from './store'
 
 Vue.config.productionTip = false
 
+console.log("Hello from main.ts!")
+fetch("/test").then(response => response.text()).then(data => console.log(data))
+
 new Vue({
   router,
   store,
