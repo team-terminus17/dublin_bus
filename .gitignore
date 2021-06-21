@@ -1,5 +1,14 @@
 # Output from django's "collectstatic"
 /static
 
+# Output from npm build
+/dist
+
 # Python
 __pycache__
+
+# NPM
+node_modules
+
+# Log files
+npm-debug.log*
