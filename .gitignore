@@ -12,3 +12,9 @@ node_modules
 
 # Log files
 npm-debug.log*
+
+# virtual environment
+/venv
+
+# key information
+.env
