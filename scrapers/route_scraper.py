@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import xmltodict
 import pymysql
-import os
+from decouple import config
 
 
 # The route of 53a cannot be got from the api
@@ -51,7 +51,7 @@ def get_stops(route, direction):
     return stop_list
 
 
-conn = pymysql.connect(host=os.getenv('DB_URL'), port=3306, user=os.getenv('DB_USER'), password=os.getenv('DB_PASSWORD'), db="dublinbus")
+conn = pymysql.connect(host=config('DB_URL'), port=3306, user=config('DB_USER'), password=config('DB_PASSWORD'), db="dublinbus")
 cursor = conn.cursor()
 route_list = get_route()
 route_stop_dict = {}

@@ -1,9 +1,10 @@
 import pymysql
 import re
 import os
+from decouple import config
 
 
-conn = pymysql.connect(host=os.getenv('DB_URL'), port=3306, user=os.getenv('DB_USER'), password=os.getenv('DB_PASSWORD'), db="dublinbus")
+conn = pymysql.connect(host=config('DB_URL'), port=3306, user=config('DB_USER'), password=config('DB_PASSWORD'), db="dublinbus")
 cursor = conn.cursor()
 # stops.txt is downloaded from https://www.transportforireland.ie/transitData/PT_Data.html
 f = open('stops.txt', 'r')

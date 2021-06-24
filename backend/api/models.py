@@ -23,3 +23,12 @@ class RouteStops(models.Model):
     class Meta:
         db_table = 'route_stops'
         unique_together = ("routeID", "direction", "stopID")
+
+
+class Weather(models.Model):
+    weather_time = models.IntegerField(primary_key=True)
+    temp = models.FloatField()
+    rain = models.BooleanField()
+
+    class Meta:
+        db_table = 'futureweather'
