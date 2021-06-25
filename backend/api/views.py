@@ -13,5 +13,6 @@ def test_message(request):
 
 
 def test_db(request):
+    """Dummy message to check if the database is integrated successfully"""
     stop = Stops.objects.all();
     return HttpResponse(stop)
