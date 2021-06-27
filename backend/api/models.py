@@ -29,6 +29,7 @@ class Weather(models.Model):
     weather_time = models.IntegerField(primary_key=True)
     temp = models.FloatField()
     rain = models.BooleanField()
+    icon = models.CharField(max_length=6)
 
     class Meta:
         db_table = 'futureweather'
