@@ -58,7 +58,9 @@ def predict_time(request, route, direction, arr_stop, dep_stop, datetime):
         weather = Weather.objects.all().order_by('weather_time')
     weather = weather[0]
     stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
-    return JsonResponse(stop_ret)
+    dummy = dict()
+    dummy['time'] = 1
+    return JsonResponse(dummy)
 
 
 def get_weather(request):
