@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Django Backend" type="Python.DjangoServer" factoryName="Django server">
-    <module name="dublin_bus" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
@@ -10,11 +9,12 @@
       <env name="DB_USER" value="root" />
       <env name="DB_PASSWORD" value="" />
     </envs>
-    <option name="SDK_HOME" value="" />
+    <option name="SDK_HOME" value="E:\dublinbus\dublin_bus\venv\Scripts\python.exe" />
     <option name="WORKING_DIRECTORY" value="" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
+    <module name="" />
     <option name="launchJavascriptDebuger" value="false" />
     <option name="port" value="8000" />
     <option name="host" value="" />

@@ -19,15 +19,5 @@ npm-debug.log*
 # key information
 .env
 
-# PyCharm Configs - Ignore everything except for some
-# runconfigurations.
-#
-# This is an odd way of writing it, but see:
-# https://stackoverflow.com/a/16318111
-#
-.idea/*
-!.idea/runConfigurations/
-.idea/runConfigurations/*
-!/.idea/runConfigurations/Dev_Servers.xml
-!/.idea/runConfigurations/Django_Backend.xml
-!/.idea/runConfigurations/Vue_Serve.xml
+# PyCharm
+.idea
