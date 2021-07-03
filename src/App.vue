@@ -91,7 +91,7 @@
 
 <script>
 /* eslint-disable no-undef */
-import { ref, onMounted } from 'vue'
+// import { ref, mounted } from 'vue'
 import { Loader } from '@googlemaps/js-api-loader'
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDe8NaLRGPhWC8dppk014w_Mt6F_yNfI94'
@@ -100,10 +100,10 @@ export default {
   name: 'App',
   setup() {
       const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
-      const mapDiv = ref(null)
-      onMounted(async () => {
+      const mapDiv = this.$refs.null
+      mounted(async () => {
         await loader.load()
-        new google.maps.Map(mapDiv.value, {
+        new google.maps.Map(this.$refs.mapDiv.value, {
           center: {lat: 53.3673893, lng: -6.2600157},
           zoom: 12
         })
