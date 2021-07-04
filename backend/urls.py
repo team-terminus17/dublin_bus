@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .api.views import index_view, test_message
+from .api.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
     path('test', test_message, name='test'),
+    path('test_db', test_db),
+    path('routes', get_routes, name='routes'),
+    path('stops/<stop>', get_stops, name='stops'),
+    path('predict/<route>/<direction>/<int:arr_stop>/<int:dep_stop>/<int:datetime>', predict_time, name='predict'),
+    path('weather', get_weather, name='weather')
 ]
