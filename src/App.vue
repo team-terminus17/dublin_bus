@@ -1,8 +1,57 @@
 <template>
   <div class="container" style="text-align: center; margin-top: 60px;">
       <div class="row">
-        <div v-html="weather" class="col-sm-12 col-md-6 d-flex justify-content-start">
-        
+        <div class="col-sm-12 col-md-6 d-flex justify-content-start card rounded my-3 shadow-lg back-card overflow-hidden">
+         
+        <!-- Top of card starts here -->
+        <div class="card-top text-center" style="margin-bottom: 15rem">
+          <div class="city-name my-3">
+            <p>{{weather.cityName}}</p>
+            <span>...</span>
+            <p class="">{{weather.country}}</p>
+          </div>
+        </div>
+        <!-- top of card ends here -->
+
+        <!--card middle body, card body used cos I want to just update the innerHTML -->
+        <div class="card-body">
+          <!-- card middle starts here -->
+          <div class="card-mid">
+            <div class="row">
+              <div class="col-12 text-center temp">
+                <span>{{weather.temp}}&deg;C</span>
+                <p class="my-4">{{weather.description}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col d-flex justify-content-between px-5 mx-5">
+                <p>
+                  <!-- <img src="./assets/logo.png" alt="" /> -->
+                  {{weather.lowTemp}}&deg;C
+                </p>
+                <p>
+                  <!-- <img src="./assets/logo.png" alt="" /> -->
+                  {{weather.highTemp}}&deg;C
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- card middle ends here -->
+
+          <!-- card bottom starts here -->
+          <div class="card-bottom px-5 py-4 row">
+            <div class="col text-center">
+              <p>{{weather.feelsLike}}&deg;C</p>
+              <span>Feels like</span>
+            </div>
+            <div class="col text-center">
+              <p>{{weather.humidity}}%</p>
+              <span>Humidity</span>
+            </div>
+          </div>
+
+          <!-- card bottom ends here -->
+        </div>
         </div>
         <div class="col-sm-12 col-md-6 d-flex justify-content-end">
           <button type="button" class="btn btn-light">Light</button>
@@ -119,15 +168,48 @@ export default {
       headingID: 'heading',
       isDisabled: false,
       status: 'success',
-      weather: '<b>Weather Info</b>',
       journeyInfo: '<b>Journey Info</b>',
+
+      weather:{
+        cityName:"Dublin",
+        country:"Ireland",
+        temp: 12,
+        description:"Clouds up in this",
+        lowTemp:"19",
+        highTemp:"27",
+        feelsLike:"20",
+        humidity:"55",
+      },
 
       
     };
-  }
+  },
+  methods: {
+    getWeather: async function () {
+      const key = "078742f65d44394818f07213310b1fca"
+      const baseURL = 'http://api.openweathermap.org/data/2.5/weather?q=Dublin,IE&appid='+ key +'&units=metric'
+
+      const response = await fetch(baseURL)
+      const data = await response.json()
+      console.log(data);
+
+      this.weather.cityName = data.name;
+      this.weather.country = data.sys.country;
+      this.weather.temp = Math.round(data.main.temp);
+      this.weather.description = data.weather[0].description;
+      this.weather.lowTemp = Math.round(data.main.temp_min);
+      this.weather.highTemp = Math.round(data.main.temp_max);
+      this.weather.feelsLike = Math.round(data.main.feels_like);
+      this.weather.humidity = Math.round(data.main.humidity);
+    }
+  },
+
+  beforeMount(){
+    this.getWeather()
+  },
 }
 </script>
 
 <style>
-
+@import "./assets/custom.css";
 </style>
