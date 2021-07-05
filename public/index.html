@@ -14,8 +14,26 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-<!--  <script async defer-->
-<!--      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBe11-bGgdHtN7LFogPKAnUsQ3IjqF-rQg&callback=initMap"-->
-<!--    ></script>-->
+  <script>
+      window.checkAndAttachMapScript = function (callback) {
+   let scriptId = "map-api-script";
+   let mapAlreadyAttached = !!document.getElementById(scriptId);
+
+   if (mapAlreadyAttached) {
+      if (window.google) // Script attached but may not finished loading; so check for 'google' object.
+         callback();
+   }
+   else {
+      window.mapApiInitialized = callback;
+
+      let script = document.createElement('script');
+      script.id = scriptId;
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBe11-bGgdHtN7LFogPKAnUsQ3IjqF-rQg&libraries=places,geometry&callback=mapApiInitialized';
+      document.body.appendChild(script);
+   }
+
+   return mapAlreadyAttached;
+}
+  </script>
   </body>
 </html>

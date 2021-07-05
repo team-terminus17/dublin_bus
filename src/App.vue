@@ -92,7 +92,6 @@
 
 <script>
 /* eslint-disable no-undef */
-import { ref, onMounted } from 'vue'
 import Map from './components/Map'
 export default {
   name: 'App',
@@ -109,8 +108,6 @@ export default {
       status: 'success',
       weather: '<b>Weather Info</b>',
       journeyInfo: '<b>Journey Info</b>',
-
-      
     };
   }
 }
