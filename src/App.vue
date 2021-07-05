@@ -12,9 +12,10 @@
     <div class="row">
       {{greet}} {{name}}
     </div>
-    <div class="row" ref="mapDiv" style="width: 100%; height: 500px">
-    </div>
-    
+<!--    <div class="row" ref="mapDiv" style="width: 100%; height: 500px">-->
+<!--    </div>-->
+    <Map>
+    </Map>
     <div class="row">
         <div v-html="journey" class="d-flex justify-content-start"></div>
     </div>
@@ -92,25 +93,12 @@
 <script>
 /* eslint-disable no-undef */
 import { ref, onMounted } from 'vue'
-import { Loader } from '@googlemaps/js-api-loader'
-
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDe8NaLRGPhWC8dppk014w_Mt6F_yNfI94'
-
+import Map from './components/Map'
 export default {
   name: 'App',
-  setup() {
-      const loader = new Loader({ apiKey: GOOGLE_MAPS_API_KEY})
-      const mapDiv = ref(null)
-      onMounted(async () => {
-        await loader.load()
-        new google.maps.Map(mapDiv.value, {
-          center: {lat: 53.3673893, lng: -6.2600157},
-          zoom: 12
-        })
-      })
-      return { mapDiv }
-    },
-  
+  components: {
+    Map,
+  },
   data() {
     return {
       greet: 'Hello there',

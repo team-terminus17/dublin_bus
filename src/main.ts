@@ -8,11 +8,20 @@ import store from './store'
 // need to be considered as well?
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
+import * as VueGoogleMaps from 'vue2-google-maps';
+import ownKeys = Reflect.ownKeys;
 
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: "",
+    libraries: "places"
+  },
+  installComponents: true
+})
 Vue.config.productionTip = false
 
 console.log("Hello from main.ts!")
-fetch("/test").then(response => response.text()).then(data => console.log(data))
+fetch("test").then(response => response.text()).then(data => console.log(data));
 
 new Vue({
   router,
