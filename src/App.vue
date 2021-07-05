@@ -179,10 +179,11 @@ export default {
       // this.weather.highTemp = Math.round(data.main.temp_max);
       // this.weather.feelsLike = Math.round(data.main.feels_like);
       // this.weather.humidity = Math.round(data.main.humidity);
-      // this.weather.icon = data.icon;
+      this.weather.icon = data.icon;
 
-      const iconURL = './assets/openweathermap-api-icons-master/icons/'+ data.icon +'.png'
-      this.weather.icon = fetch(iconURL)
+      // const iconURL = './assets/openweathermap-api-icons-master/icons/'+ data.icon +'.png'
+      // this.weather.icon = await fetch(iconURL)
+      // console.log(this.weather.icon)
     }
   },
 
