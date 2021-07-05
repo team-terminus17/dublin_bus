@@ -1,6 +1,5 @@
 <template>
   <div>
-<!--:center="{lat: 53.3673893, lng: -6.2600157}"-->
     <div id="map"
     style="width: 100%;height: 500px"
     >
@@ -9,7 +8,6 @@
 </template>
 
 <script>
-// import DirectionsRenderer from "./DirectionsRenderer";
 export default {
   name: "Map",
   data(){
@@ -26,7 +24,10 @@ export default {
         center: {lat: 53.3673893, lng: -6.2600157},
         zoom: 12,
       });
-    }
+    },
+    // showDirection(){
+    //
+    // }
   }
 }
 </script>

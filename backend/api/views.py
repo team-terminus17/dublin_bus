@@ -40,7 +40,7 @@ def get_stops(request, stop):
         route_dict_detail['outbound'] = {}
         for s in stop_list['outbound']:
             route_dict_detail['outbound'][s] = Stops.objects.get(stopID=int(s)).dictify()
-    return JsonResponse(route_dict_detail)
+    return HttpResponse(json.dumps(route_dict_detail, ensure_ascii=False), content_type='application/json')
 
 
 def predict_time(request, route, direction, arr_stop, dep_stop, datetime):
