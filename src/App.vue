@@ -105,8 +105,9 @@
         <button type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
       </div>
       <div class="col-sm-12 col-md-3">
-        <div v-html="journeyInfo" >
-        
+        <p>Journey Info:</p>
+        <div>
+          Time: {{predict.time}}
         </div>
       </div>
     </div>
@@ -157,6 +158,10 @@ export default {
         icon: 10n,
       },
 
+      predict:{
+        time: "test",
+      },
+
       
     };
   },
@@ -169,7 +174,7 @@ export default {
 
       const response = await fetch(weatherURL)
       const data = await response.json()
-      console.log(data);
+      // console.log(data);
 
       // this.weather.cityName = data.name;
       // this.weather.country = data.sys.country;
@@ -184,11 +189,22 @@ export default {
       // const iconURL = './assets/openweathermap-api-icons-master/icons/'+ data.icon +'.png'
       // this.weather.icon = await fetch(iconURL)
       // console.log(this.weather.icon)
+    },
+
+    getPrediction: async function () {
+      const predictionURL = '/predict/1/I/10/12/1624870800'
+
+      const response = await fetch(predictionURL)
+      const data = await response.json()
+      console.log(data);
+
+      this.predict.time = data.time;
     }
   },
 
   beforeMount(){
     this.getWeather()
+    this.getPrediction()
   },
 }
 </script>
