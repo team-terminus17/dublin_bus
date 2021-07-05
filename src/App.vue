@@ -12,8 +12,6 @@
     <div class="row">
       {{greet}} {{name}}
     </div>
-<!--    <div class="row" ref="mapDiv" style="width: 100%; height: 500px">-->
-<!--    </div>-->
     <Map>
     </Map>
     <div class="row">
@@ -92,7 +90,7 @@
 
 <script>
 /* eslint-disable no-undef */
-import Map from './components/Map'
+import Map from "./components/Map";
 export default {
   name: 'App',
   components: {
