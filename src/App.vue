@@ -8,7 +8,7 @@
 
 
 import { Component, Vue } from 'vue-property-decorator';
-import TimePicker from '@/components/TimePicker.vue'; // @ is an alias to /src
+import TimePicker from '@/components/ClockSelect.vue'; // @ is an alias to /src
 
 @Component({
   components: {
