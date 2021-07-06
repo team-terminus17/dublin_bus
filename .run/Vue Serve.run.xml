@@ -6,7 +6,9 @@
       <script value="serve" />
     </scripts>
     <node-interpreter value="project" />
-    <envs />
+    <envs>
+      <env name="MAP_API" value="AIzaSyBe11-bGgdHtN7LFogPKAnUsQ3IjqF-rQg" />
+    </envs>
     <method v="2">
       <option name="LaunchBrowser.Before.Run" url="http://127.0.0.1:8080/" />
     </method>

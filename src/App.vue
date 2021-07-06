@@ -1,48 +1,197 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div class="container" style="text-align: center; margin-top: 60px;">
+      <div class="row">
+        <div class="col-sm-12 col-md-4 d-flex justify-content-start card rounded my-3 shadow-lg back-card overflow-hidden">
+         
+        
+
+        <!--card middle body, card body used cos I want to just update the innerHTML -->
+        <div class="card-body">
+          <!-- card middle starts here -->
+          <div class="card-mid">
+            <div class="row">
+              <div class="col-md-4 text-center temp">
+                <span>{{weather.temp}}&deg;C</span>
+                <p class="my-4">Rain:{{weather.description}}</p>
+              </div>
+              <div class="col-md-4">
+                <span>{{weather.icon}}</span>
+              </div>
+              <div class="col-md-4">
+                <p>{{weather.cityName}}</p>
+                <p class="">{{weather.country}}</p>
+              </div>
+            </div>
+            
+          </div>
+          <!-- card middle ends here -->
+
+        </div>
+        </div>
+        <div class="col-sm-12 col-md-8 d-flex justify-content-end">
+          <button type="button" class="btn btn-light">Light</button>
+          <button type="button" class="btn btn-dark">Dark</button>
+        </div>
+      </div>
+    <div class="row">
+      {{greet}} {{name}}
     </div>
-    <router-view/>
-    <div class="dropdown">
-      <button
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        id="dropdownMenuButton1"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        Check Bootstrap
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li><a class="dropdown-item" href="#">Action</a></li>
-        <li><a class="dropdown-item" href="#">Another action</a></li>
-        <li><a class="dropdown-item" href="#">Something else here</a></li>
-      </ul>
+    <Map>
+    </Map>
+    <div class="row">
+        <div v-html="journey" class="d-flex justify-content-start"></div>
     </div>
-  </div>
+    <div class="row" style="margin-top: 20px;">
+      <div class="col-sm-3 col-md-2" style="margin-top: 30px;">
+        <div class="btn-group">
+          <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Bus Route
+
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">9</a></li>
+            <li><a class="dropdown-item" href="#">46a</a></li>
+            <li><a class="dropdown-item" href="#">145</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Separated link</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-2">
+        <form>
+          <div class="form-group" style="margin-top: 6px;">
+            <label for="originStop" class="d-flex justify-content-start">Origin Stop</label>
+            <input type="origin" class="form-control" id="originStop" placeholder="Enter origin stop">
+          </div>
+          <div class="form-group" style="margin-top: 6px;">
+            <label for="destinationStop" class="d-flex justify-content-start">Destination Stop</label>
+            <input type="destination" class="form-control" id="destinationStop" placeholder="Enter destination stop">
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-4 col-md-3">
+        <div class="btn-group" style="margin-top: 30px;">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Day of the Week
+
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Monday</a></li>
+            <li><a class="dropdown-item" href="#">Tuesday</a></li>
+            <li><a class="dropdown-item" href="#">Wednesday</a></li>
+            <li><a class="dropdown-item" href="#">Thursday</a></li>
+            <li><a class="dropdown-item" href="#">Friday</a></li>
+            <li><a class="dropdown-item" href="#">Saturday</a></li>
+            <li><a class="dropdown-item" href="#">Sunday</a></li>
+          </ul>
+          
+        </div>
+        <div class="btn-group" style="margin-top: 30px;">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Departure time
+
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">9</a></li>
+            <li><a class="dropdown-item" href="#">46a</a></li>
+            <li><a class="dropdown-item" href="#">145</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Separated link</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-2 col-md-2">
+        <button type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+      </div>
+      <div class="col-sm-12 col-md-3">
+        <p>Journey Info:</p>
+        <div>
+          Time: {{predict.time}}
+        </div>
+      </div>
+    </div>
+  </div> 
 </template>
 
+<script>
+/* eslint-disable no-undef */
+import Map from "./components/Map";
+export default {
+  name: 'App',
+  components: {
+    Map,
+  },
+  data() {
+    return {
+      greet: 'Hello there',
+      name: "General Kenobi",
+      journey: '<b>Please input your journey info:</b>',
+      headingID: 'heading',
+      isDisabled: false,
+      status: 'success',
+      journeyInfo: '<b>Journey Info</b>',
+      weather:{
+        cityName:"Dublin",
+        country:"Ireland",
+        temp: 12,
+        description:"Clouds up in this",
+        lowTemp:"19",
+        highTemp:"27",
+        feelsLike:"20",
+        humidity:"55",
+        icon: 10n,
+      },
+
+      predict:{
+        time: "test",
+      },
+
+    };
+  },
+  methods: {
+    getWeather: async function () {
+      // const key = "078742f65d44394818f07213310b1fca"
+      // const baseURL = 'http://api.openweathermap.org/data/2.5/weather?q=Dublin,IE&appid='+ key +'&units=metric'
+      const weatherURL = '/weather'
+      
+
+      const response = await fetch(weatherURL)
+      const data = await response.json()
+      // console.log(data);
+
+      // this.weather.cityName = data.name;
+      // this.weather.country = data.sys.country;
+      this.weather.temp = Math.round(data.temp);
+      this.weather.description = data.rain;
+      // this.weather.lowTemp = Math.round(data.main.temp_min);
+      // this.weather.highTemp = Math.round(data.main.temp_max);
+      // this.weather.feelsLike = Math.round(data.main.feels_like);
+      // this.weather.humidity = Math.round(data.main.humidity);
+      this.weather.icon = data.icon;
+
+      // const iconURL = './assets/openweathermap-api-icons-master/icons/'+ data.icon +'.png'
+      // this.weather.icon = await fetch(iconURL)
+      // console.log(this.weather.icon)
+    },
+
+    getPrediction: async function () {
+      const predictionURL = '/predict/1/I/10/12/1624870800'
+
+      const response = await fetch(predictionURL)
+      const data = await response.json()
+      console.log(data);
+
+      this.predict.time = data.time;
+    }
+  },
+
+  beforeMount(){
+    this.getWeather()
+    this.getPrediction()
+  },
+}
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+@import "./assets/custom.css";
 </style>
