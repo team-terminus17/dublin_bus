@@ -2,10 +2,11 @@
   <div class="input-group" style="width: 14.5em">
     <input
         class="time-input form-control"
-        type="text" maxlength="2" placeholder="HH" value="14"
-        v-model.number="hours"
+        type="text" maxlength="2" placeholder="HH"
+        :value="internalValue.hours"
         @focusin="showClock('hours')"
-        @change="updateClock"
+        @input="updateValue($event.target.value, 'hours')"
+        @focus="$event.target.select()"
     >
     <!--
       (Kieran) The styling below is inline so as to override the bootstrap default.
@@ -19,11 +20,17 @@
     </span>
     <input
         class="time-input form-control"
-        type="text" maxlength="2" placeholder="MM" value="00"
-        v-model.number="minutes"
+        type="text" maxlength="2" placeholder="MM"
+        :value="internalValue.minutes"
         @focusin="showClock('minutes')"
+        @input="updateValue($event.target.value, 'minutes')"
+        @focus="$event.target.select()"
     >
-    <select class="form-select" @focusin="showClock(false)">
+    <select
+        class="form-select"
+        @focusin="showClock(false)"
+        @input="updateValue($event.target.value, 'suffix')"
+    >
       <option selected>AM</option>
       <option>PM</option>
     </select>
@@ -41,9 +48,10 @@
     </button>
     <div ref="dropdown" class="dropdown-menu">
       <clock-select
-          ref="clock" :kind="clockKind"
-          v-model="clockValue"
-          @input="updateFromClock"
+          ref="clock"
+          :kind="clockKind"
+          :value="clockValue"
+          @input="updateValue($event, clockKind)"
           @mouseup.native="nextClock"
       ></clock-select>
     </div>
@@ -57,72 +65,142 @@
 </style>
 
 <script>
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import Vue from "vue"
 import * as bootstrap from "bootstrap"
-import ClockSelect from "@/components/ClockSelect.vue"
+import ClockSelect from "./ClockSelect.vue"
 
-export default Vue.extend({
+export default {
   name: "TimeInput",
-  data: function() {
-    return {
-      hours: 5,
-      minutes: 15,
-      clockKind: "hours",
-      clockValue: 1
-    }
-  },
   components: {
     ClockSelect
   },
-  methods: {
-    showClock(kind) {
-
-      if (kind) {
-        const clock = this.$refs.clock
-        if (!clock)
-          return
-        this.clockKind = kind
-        clock.kind = kind
-        if (kind === "hours")
-          this.clockValue = this.hours
-        else
-          this.clockValue = this.minutes
-        clock.value = this.clockValue
-      }
-
-      const toggle = this.$refs["dropdown-toggle"]
-      if (!toggle)
-        return
-
-      const dropdown = new bootstrap.Dropdown(toggle, {
-        autoClose: false
-      })
-      if (kind)
-        dropdown.show()
-      else
-        dropdown.hide()
-
-    },
-    updateClock() {
-      if (this.clockKind === "hours")
-        this.clockValue = this.hours
-      else
-        this.clockValue = this.minutes
-    },
-    updateFromClock() {
-      if (this.clockKind === "hours")
-        this.hours = this.clockValue
-      else
-        this.minutes = this.clockValue
-    },
-    nextClock() {
-      if (this.clockKind === "hours")
-        this.showClock("minutes")
-      else
-        this.showClock(false)
+  data() {
+    return {
+      clockKind: "hours"
     }
+  },
+  props: ["value"],
+  computed: {
+    internalValue,
+    clockValue
+  },
+  methods: {
+    showClock,
+    nextClock,
+    updateValue
   }
-})
+}
+
+/*
+
+  Computed properties
+
+*/
+
+function internalValue() {
+  // Match HH:MM, or H:MM.
+  // Allow for whitespace to either side, but nothing else.
+  // Capture (HH?) and (MM)
+  const pattern = /^\s*(\d?\d):(\d\d)\s*$/i
+
+  const match = this.value.toString().match(pattern)
+  if (!match)
+    throw `Invalid value found for TimeInput: '${this.value}. Expected a time in HH:MM or H:MM format'`
+
+  const value =  {
+    hours: parseInt(match[1]),
+    minutes: parseInt(match[2]),
+    suffix: "none"
+  }
+
+  if (value.minutes < 0)
+    value.minutes = 0
+  else if (value.minutes > 59)
+    value.minutes = 59
+
+  if (value.hours < 0 || value.hours >= 24)
+    value.hours = 0
+
+  if (value.hours < 12)
+    value.suffix = "AM"
+  else {
+    value.suffix = "PM"
+    value.hours -= 12
+  }
+
+  if (value.hours === 0)
+    value.hours = 12
+
+  return value
+}
+
+function clockValue() {
+  const value = this.internalValue
+  if (this.clockKind === "hours")
+    return value.hours
+  else
+    return value.minutes
+}
+
+/*
+
+  Methods
+
+*/
+
+function showClock(kind) {
+  if (kind) {
+    const clock = this.$refs.clock
+    if (!clock)
+      return
+
+    this.clockKind = kind
+  }
+
+  const toggle = this.$refs["dropdown-toggle"]
+  if (!toggle)
+    return
+
+  const dropdown = new bootstrap.Dropdown(toggle, {
+    autoClose: false
+  })
+  if (kind)
+    dropdown.show()
+  else
+    dropdown.hide()
+}
+
+function nextClock() {
+  if (this.clockKind === "hours")
+    this.showClock("minutes")
+  else
+    this.showClock(false)
+}
+
+function updateValue(value, kind) {
+  let { hours, minutes, suffix } = this.internalValue
+  if (kind === "suffix")
+    suffix = value
+  else if (kind === "hours")
+    hours = value
+  else
+    minutes = value
+
+  if(hours === 12)
+    hours = 0
+
+  if (suffix === "PM")
+    hours += 12
+
+  hours = hours.toString()
+  minutes = minutes.toString().padStart(2, "0")
+  const newValue = hours + ":" + minutes
+
+  // It seems to be bad practice to directly manipulate properties that
+  // the parent has access to - the value given by the parent will take precedence.
+  // The best we can do is kick the event up to the parent for it to deal with, say, with a v-model.
+  this.$emit("input", newValue)
+}
 
 </script>

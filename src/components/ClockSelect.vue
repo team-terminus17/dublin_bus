@@ -1,12 +1,12 @@
 <template>
   <svg
-    id="root" ref="root" height="10em" width="10em"
+    class="root" ref="root" height="10em" width="10em"
     viewBox="0 0 1 1"
     @mousedown="startDrag"
     @mousemove="continueDrag"
     @mouseup="stopDrag"
   >
-    <clipPath id="hand-clip">
+    <clipPath :id="uuid + '-hand-clip'">
       <circle
         :r="numberBoxLength/2"
         :cx="handPosition.x"
@@ -31,9 +31,8 @@
         :y2="handPosition.y"
       ></line>
       <text
-          :id="item.text"
           class="number"
-          v-for="item in numberItems"
+          v-for="item in clockFaceElements"
           :key="item.text"
           :x="item.x"
           :y="item.y"
@@ -50,10 +49,9 @@
         :cy="handPosition.y"
       ></circle>
       <text
-          clip-path="url(#hand-clip)"
-          :id="item.text + ' (active)'"
+          :clip-path="'url(#' + uuid + '-hand-clip)'"
           class="active-number"
-          v-for="item in numberItems"
+          v-for="item in clockFaceElements"
           :key="item.text + ' (active)'"
           :x="item.x"
           :y="item.y"
@@ -69,7 +67,7 @@
 
 <style scoped>
 
-  #root {
+  .root {
     user-select: none;
   }
 
@@ -96,9 +94,8 @@
 
 </style>
 
-<script lang="ts">
-
-import { Vue, Component, Prop } from "vue-property-decorator"
+<script>
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 class TextItem {
   x = 0
@@ -111,155 +108,194 @@ class Vector2 {
   y = 0
 }
 
-@Component
-export default class ClockSelect extends Vue {
-
-  // Data
-
-  numberCount = 12
-  selectionAngle = 0
-
-  dragging = false
-  valueSet = false
-
-  // Properties
-
-  @Prop({
-    type: String,
-    default: "hours"
-  })
-  kind!: "hours" | "minutes" | "seconds"
-
-  // Computer Properties
-
-  get scale(): number {
-    if (this.kind === "hours")
-      return 1
-    else
-      // 12 numbers for 60 minutes or seconds
-      return 5
-  }
-
-  get useZero(): boolean {
-      return this.kind !== "hours"
-  }
-
-  get numberBoxLength(): number {
-    const theta = 2*Math.PI/this.numberCount
-    return Math.sqrt(1 - Math.cos(theta))
-  }
-
-  get radius(): number {
-    return 1 - this.numberBoxLength/2
-  }
-
-  get numberItems(): TextItem[] {
-    const result = []
-
-    const radius = this.radius
-    for (let n = 0; n < this.numberCount; n++) {
-
-      const item = new TextItem()
-
-      let theta = 2*n*Math.PI/this.numberCount
-      theta -= Math.PI/2
-
-      item.x = radius*Math.cos(theta)
-      item.y = radius*Math.sin(theta)
-
-      let itemText = n
-      if (n == 0 && !this.useZero)
-        itemText = this.numberCount
-      item.text = (itemText*this.scale).toString()
-
-      result.push(item)
-
+export default {
+  name: "ClockSelect",
+  data() {
+    return {
+      uuid: null,
+      numberCount: 12,
+      dragging: false,
+      valueSet: false
     }
+  },
+  props: ["kind", "value"],
+  created,
+  computed: {
+    internalKind,
+    internalValue,
+    step,
+    useZero,
+    numberBoxLength,
+    radius,
+    clockFaceElements,
+    handPosition
+  },
+  methods: {
+    startDrag,
+    continueDrag,
+    stopDrag,
+    updateHandPosition
+  }
+}
 
-    return result
+/*
+
+  Unique ID
+  (For the sake of the clip-path attribute)
+
+ */
+
+let uuid = 0
+function created() {
+  this.uuid = uuid.toString()
+  uuid += 1;
+}
+
+/*
+
+  Computed properties
+
+ */
+
+function internalKind() {
+  if (this.kind === "hours" || this.kind === "minutes")
+    return this.kind
+  throw `Clock select kind should be one of 'hours' or 'minutes', found '${this.kind}' instead`
+}
+
+function internalValue() {
+  let result = parseInt(this.value.toString())
+  if (isNaN(result))
+    throw `Invalid value for clock select: '${this.value}'`
+  return result
+}
+
+function step() {
+  if (this.internalKind === "hours")
+    return 1
+  else
+    // 12 numbers for 60 minutes or seconds
+    return 5
+}
+
+function useZero() {
+    return this.internalKind !== "hours"
+}
+
+function numberBoxLength() {
+  const theta = 2*Math.PI/this.numberCount
+  return Math.sqrt(1 - Math.cos(theta))
+}
+
+function radius() {
+  return 1 - this.numberBoxLength/2
+}
+
+function clockFaceElements() {
+  const result = []
+
+  const radius = this.radius
+  for (let n = 0; n < this.numberCount; n++) {
+
+    const item = new TextItem()
+
+    let theta = 2*n*Math.PI/this.numberCount
+    theta -= Math.PI/2
+
+    item.x = radius*Math.cos(theta)
+    item.y = radius*Math.sin(theta)
+
+    let itemText = n
+    if (n === 0 && !this.useZero)
+      itemText = this.numberCount
+    item.text = (itemText*this.step).toString()
+
+    result.push(item)
+
   }
 
-  get handPosition(): Vector2 {
+  return result
+}
 
-    const theta = this.selectionAngle - Math.PI/2
-    const radius = this.radius
+function handPosition() {
 
-    const result = new Vector2()
-    result.x = radius*Math.cos(theta)
-    result.y = radius*Math.sin(theta)
+  const p = this.internalValue / (this.numberCount*this.step)
 
-    return result
+  const theta = 2*Math.PI*p - Math.PI/2
+  const radius = this.radius
 
-  }
+  const result = new Vector2()
+  result.x = radius*Math.cos(theta)
+  result.y = radius*Math.sin(theta)
 
-  get value(): number {
+  return result
 
-    const a = this.selectionAngle
-    const n = 2*Math.PI
+}
 
-    // This is silly, all I want is the angle mod 2pi, divided by 2pi
-    // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder
-    const p = (((a % n) + n) % n)/(2*Math.PI)
+/*
 
-    let result = this.scale*this.numberCount*p
-    result = Math.round(result)
-    if (result === 0 && !this.useZero)
-      result = this.numberCount*this.scale
+  Methods
 
-    return result
+ */
 
-  }
 
-  set value(newValue: number) {
+function startDrag(event) {
+  this.dragging = true
+  this.updateHandPosition(event)
+}
 
-    const maxValue = this.scale*this.numberCount
-    newValue = Math.max(0, Math.min(newValue, maxValue))
-    this.selectionAngle = 2*Math.PI*(newValue/maxValue)
+function stopDrag(event) {
+  this.dragging = false
+  this.updateHandPosition(event)
+}
 
-  }
-
-  // Methods
-
-  startDrag(event: MouseEvent): void {
-    this.dragging = true
+function continueDrag(event) {
+  if (this.dragging)
     this.updateHandPosition(event)
-  }
+}
 
-  stopDrag(event: MouseEvent): void {
-    this.dragging = false
-    this.updateHandPosition(event)
-  }
+function updateHandPosition(event) {
 
-  continueDrag(event: MouseEvent): void {
-    if (this.dragging)
-      this.updateHandPosition(event)
-  }
+  // We can only update if the root is available
 
-  updateHandPosition(event: MouseEvent): void {
+  const root = this.$refs.root
+  if (!root)
+    return
 
-    const root = this.$refs.root as Element
-    if (!root)
-      return
+  // Calculate the hand angle
 
-    let x = event.offsetX / root.clientWidth
-    let y = event.offsetY / root.clientHeight
+  let x = event.offsetX / root.clientWidth
+  let y = event.offsetY / root.clientHeight
 
-    x = 2*x - 1
-    y = 2*y - 1
+  x = 2*x - 1
+  y = 2*y - 1
 
-    let newAngle =  -Math.atan(x/y)
-    if (y >= 0)
-      newAngle += Math.PI
+  let newAngle =  -Math.atan(x/y)
+  if (y >= 0)
+    newAngle += Math.PI
 
-    const step = 2*Math.PI/(this.numberCount*this.scale)
-    newAngle = step*(Math.round(newAngle/step))
+  const step = 2*Math.PI/(this.numberCount*this.step)
+  newAngle = step*(Math.round(newAngle/step))
 
-    if ((!this.valueSet) || newAngle !== this.selectionAngle) {
-      this.selectionAngle = newAngle
-      this.$emit("input", this.value)
-      this.valueSet = true
-    }
+  // From the hand angle, derive the value
 
+  // This is silly, all that is needed is the angle mod 2pi, divided by 2pi
+  // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Remainder
+  const n = 2*Math.PI
+  const p = (((newAngle % n) + n) % n)/(2*Math.PI)
+
+  let newValue = this.step*this.numberCount*p
+  newValue = Math.round(newValue)
+  if (newValue === 0 && !this.useZero)
+    newValue = this.numberCount*this.step
+
+  // If the value has changed, emit an event.
+  // Note that we are not changing any properties here! That's up to the parent element to bind/sync/model.
+
+  if ((!this.valueSet) || newValue !== this.value) {
+    this.$emit("update:value", newValue)
+    this.$emit("input", newValue)
+    this.valueSet = true
   }
 
 }
