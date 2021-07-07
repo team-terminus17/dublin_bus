@@ -1,5 +1,5 @@
 <template>
-  <div class="input-group" style="width: 14.5em">
+  <div class="input-group">
     <input
         class="time-input form-control"
         type="text" maxlength="2" placeholder="HH"
@@ -47,13 +47,13 @@
       >
     </button>
     <div ref="dropdown" class="dropdown-menu">
-      <clock-select
+      <clock
           ref="clock"
           :kind="clockKind"
           :value="clockValue"
           @input="updateValue($event, clockKind)"
           @mouseup.native="nextClock"
-      ></clock-select>
+      ></clock>
     </div>
   </div>
 </template>
@@ -68,12 +68,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 import * as bootstrap from "bootstrap"
-import ClockSelect from "./ClockSelect.vue"
+import Clock from "./TimeInputClock.vue"
 
 export default {
   name: "TimeInput",
   components: {
-    ClockSelect
+    Clock
   },
   data() {
     return {

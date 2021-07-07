@@ -1,7 +1,7 @@
 <template>
   <div id="app" style="padding:2em;text-align: start">
     <h1>{{time}}</h1>
-    <time-picker v-model="time"></time-picker>
+    <time-picker style="width: 14.5em" v-model="time"></time-picker>
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 
 import { Component, Vue } from 'vue-property-decorator'
 import TimePicker from '@/components/TimeInput.vue' // @ is an alias to /src
-import ClockSelect from '@/components/ClockSelect.vue'
+import ClockSelect from '@/components/TimeInputClock.vue'
 
 @Component({
   components: {

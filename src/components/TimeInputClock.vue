@@ -67,26 +67,35 @@
 
 <style scoped>
 
+   /*
+    The clock hand is moved by dragging, so it's best
+    not to select the text with the same movement.
+   */
   .root {
     user-select: none;
   }
 
+  /* The circle background */
   .face {
     fill: #dddddd;
   }
 
+  /* Default color of the numbers 1-12 */
   .number {
     fill: black;
   }
 
+  /* Color of the numbers 1-12, when highlighted */
   .active-number {
     fill: white;
   }
 
+   /* Circle at the end of the clock hand */
   .hand {
     fill: dodgerblue;
   }
 
+  /* Line from the center to the clock hand */
   .hand-line {
     stroke: dodgerblue;
     stroke-width: 0.025;
@@ -143,7 +152,7 @@ export default {
   Unique ID
   (For the sake of the clip-path attribute)
 
- */
+*/
 
 let uuid = 0
 function created() {
@@ -155,7 +164,7 @@ function created() {
 
   Computed properties
 
- */
+*/
 
 function internalKind() {
   if (this.kind === "hours" || this.kind === "minutes")
@@ -238,7 +247,6 @@ function handPosition() {
 
  */
 
-
 function startDrag(event) {
   this.dragging = true
   this.updateHandPosition(event)
@@ -271,6 +279,8 @@ function updateHandPosition(event) {
   y = 2*y - 1
 
   let newAngle =  -Math.atan(x/y)
+  if (isNaN(newAngle))
+    newAngle = 0
   if (y >= 0)
     newAngle += Math.PI
 
