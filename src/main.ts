@@ -7,7 +7,7 @@ import store from './store'
 // to import these or do the other minified files in dist/js and dist/css
 // need to be considered as well?
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.min.js";
+import "bootstrap"
 
 Vue.config.productionTip = false
 

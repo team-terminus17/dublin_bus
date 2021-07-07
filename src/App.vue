@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" style="padding:2em;">
     <time-picker></time-picker>
   </div>
 </template>
@@ -7,8 +7,8 @@
 <script lang="ts">
 
 
-import { Component, Vue } from 'vue-property-decorator';
-import TimePicker from '@/components/ClockSelect.vue'; // @ is an alias to /src
+import { Component, Vue } from 'vue-property-decorator'
+import TimePicker from '@/components/TimeInput.vue' // @ is an alias to /src
 
 @Component({
   components: {

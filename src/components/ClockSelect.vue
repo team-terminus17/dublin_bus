@@ -114,17 +114,23 @@ class Vector2 {
 @Component
 export default class ClockSelect extends Vue {
 
+  // Data
+
   numberCount = 12
   selectionAngle = 0
 
   dragging = false
   valueSet = false
 
+  // Properties
+
   @Prop({
     type: String,
     default: "hours"
   })
   kind!: "hours" | "minutes" | "seconds"
+
+  // Computer Properties
 
   get scale(): number {
     if (this.kind === "hours")
@@ -135,7 +141,7 @@ export default class ClockSelect extends Vue {
   }
 
   get useZero(): boolean {
-    return this.kind !== "hours"
+      return this.kind !== "hours"
   }
 
   get numberBoxLength(): number {
@@ -145,6 +151,32 @@ export default class ClockSelect extends Vue {
 
   get radius(): number {
     return 1 - this.numberBoxLength/2
+  }
+
+  get numberItems(): TextItem[] {
+    const result = []
+
+    const radius = this.radius
+    for (let n = 0; n < this.numberCount; n++) {
+
+      const item = new TextItem()
+
+      let theta = 2*n*Math.PI/this.numberCount
+      theta -= Math.PI/2
+
+      item.x = radius*Math.cos(theta)
+      item.y = radius*Math.sin(theta)
+
+      let itemText = n
+      if (n == 0 && !this.useZero)
+        itemText = this.numberCount
+      item.text = (itemText*this.scale).toString()
+
+      result.push(item)
+
+    }
+
+    return result
   }
 
   get handPosition(): Vector2 {
@@ -175,7 +207,18 @@ export default class ClockSelect extends Vue {
       result = this.numberCount*this.scale
 
     return result
+
   }
+
+  set value(newValue: number) {
+
+    const maxValue = this.scale*this.numberCount
+    newValue = Math.max(0, Math.min(newValue, maxValue))
+    this.selectionAngle = 2*Math.PI*(newValue/maxValue)
+
+  }
+
+  // Methods
 
   startDrag(event: MouseEvent): void {
     this.dragging = true
@@ -213,36 +256,10 @@ export default class ClockSelect extends Vue {
 
     if ((!this.valueSet) || newAngle !== this.selectionAngle) {
       this.selectionAngle = newAngle
-      this.$emit("change", this.value)
+      this.$emit("input", this.value)
       this.valueSet = true
     }
 
-  }
-
-  get numberItems(): TextItem[] {
-    const result = []
-
-    const radius = this.radius
-    for (let n = 0; n < this.numberCount; n++) {
-
-      const item = new TextItem()
-
-      let theta = 2*n*Math.PI/this.numberCount
-      theta -= Math.PI/2
-
-      item.x = radius*Math.cos(theta)
-      item.y = radius*Math.sin(theta)
-
-      let itemText = n
-      if (n == 0 && !this.useZero)
-        itemText = this.numberCount
-      item.text = (itemText*this.scale).toString()
-
-      result.push(item)
-
-    }
-
-    return result
   }
 
 }
