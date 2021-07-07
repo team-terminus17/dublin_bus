@@ -1,7 +1,7 @@
 <template>
   <div id="app" style="padding:2em;text-align: start">
     <h1>{{time}}</h1>
-    <time-picker style="width: 14.5em" v-model="time"></time-picker>
+    <time-picker style="width: 11em" v-model="time"></time-picker>
   </div>
 </template>
 

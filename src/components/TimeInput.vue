@@ -28,6 +28,7 @@
     >
     <select
         class="form-select"
+        style="flex-grow:1.5"
         @focusin="showClock(false)"
         @input="updateValue($event.target.value, 'suffix')"
     >
