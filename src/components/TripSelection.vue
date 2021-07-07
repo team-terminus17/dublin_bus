@@ -58,7 +58,7 @@
         </div>
       </div>
       <div class="col-sm-2 col-md-2">
-        <button type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+        <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
       </div>
   </div>
 </template>
@@ -67,14 +67,27 @@
 
 import Vue from "vue"
 import Component from "vue-class-component"
+import bus from "@/components/bus";
 
-@Component
-export default class TripSelection extends Vue {
-
-  journey = "Please input your journey info:"
-
+// @Component
+// export default class TripSelection extends Vue {
+//   journey = "Please input your journey info:"
+// }
+export default {
+  name: "TripSelection",
+  data(){
+    return{
+      journey :"Please input your journey info:",
+      origin: { lat: 53.2991, lng: -6.2203 },
+      destination: { lat: 53.3014, lng: -6.1776 },
+    }
+  },
+  methods:{
+    handle(){
+      bus.$emit("showDirection",this.origin,this.destination)
+  }
+  }
 }
-
 </script>
 
 <style scoped>
