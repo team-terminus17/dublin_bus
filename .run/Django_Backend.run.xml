@@ -6,9 +6,6 @@
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
       <env name="DJANGO_SETTINGS_MODULE" value="backend.settings.dev" />
-      <env name="DB_URL" value="127.0.0.1" />
-      <env name="DB_USER" value="root" />
-      <env name="DB_PASSWORD" value="" />
     </envs>
     <option name="SDK_HOME" value="" />
     <option name="WORKING_DIRECTORY" value="" />
