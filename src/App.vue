@@ -1,62 +1,52 @@
 <template>
-  <div id="app" style="padding:2em;text-align: start">
-    <div class="time">
-      <h1>{{time}}</h1>
-      <time-picker style="width:11em;" v-model="time"></time-picker>
+  <div class="container" style="text-align: center; margin-top: 60px;">
+      <div class="row">
+         <Weather></Weather>
+      <div class="col-sm-12 col-md-12 d-flex justify-content-end">
+        <button type="button" class="btn btn-light">Light</button>
+        <button type="button" class="btn btn-dark">Dark</button>
+      </div>
     </div>
-    <div class="date">
-      <h1>{{date}}</h1>
-      <date-picker
-          style="width:11em;display:inline-block"
-          v-model="date"
-          start-date="2021-07-08"
-          end-date="2021-07-19"
-      ></date-picker>
+    <Map></Map>
+    <TripSelection></TripSelection>
+    <div class="row" style="margin-top: 20px;">
+      <Prediction></Prediction>
     </div>
-  </div>
+  </div> 
 </template>
 
-<script lang="ts">
-
-import { Component, Vue } from 'vue-property-decorator'
-import TimePicker from '@/components/TimeInput.vue' // @ is an alias to /src
-import Clock from '@/components/TimeInputClock.vue'
-import DatePicker from "@/components/DateInput.vue"
-import Calendar from "@/components/DateInputCalendar.vue"
-
-@Component({
+<script>
+/* eslint-disable no-undef */
+import Map from "./components/Map";
+import TripSelection from "./components/TripSelection"
+import Weather from "./components/Weather"
+import Prediction from "./components/Prediction"
+export default {
+  name: 'App',
   components: {
-    TimePicker,
-    Clock,
-    DatePicker,
-    Calendar
+    Map,
+    TripSelection,
+    Weather,
+    Prediction
   },
-})
-export default class App extends Vue {
-  time = "10:42"
-  date = "2021-07-08"
-}
+  data() {
+    return {
+      greet: 'Hello there',
+      name: "General Kenobi",
+      headingID: 'heading',
+      isDisabled: false,
+      status: 'success',
+      journeyInfo: '<b>Journey Info</b>',
 
+      predict:{
+        time: "test",
+      },
+
+    };
+  },
+}
 </script>
 
-<style lang="scss">
-
-@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-}
-
-h1 {
-  padding: 0.5em;
-}
-
-.time, .date {
-  display: inline-block;
-  padding: 0 2em;
-  text-align: center;
-}
+<style>
 
 </style>
