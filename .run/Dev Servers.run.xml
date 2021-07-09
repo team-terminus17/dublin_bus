@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Dev Servers" type="CompoundRunConfigurationType">
-    <toRun name="Django Backend" type="Python.DjangoServer" />
-    <toRun name="Vue Serve" type="js.build_tools.npm" />
-    <method v="2" />
-  </configuration>
-</component>
