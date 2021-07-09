@@ -4,28 +4,31 @@
         <div v-html="journey" class="d-flex justify-content-start"></div>
     </div>
      <div class="col-sm-3 col-md-2" style="margin-top: 30px;">
-        <div class="btn-group">
-          <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Bus Route
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">9</a></li>
-            <li><a class="dropdown-item" href="#">46a</a></li>
-            <li><a class="dropdown-item" href="#">145</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Separated link</a></li>
-          </ul>
-        </div>
+<!--        <div class="btn-group">-->
+<!--          <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--            Bus Route-->
+<!--          </button>-->
+<!--          <ul class="dropdown-menu">-->
+<!--            <li><a class="dropdown-item" href="#">9</a></li>-->
+<!--            <li><a class="dropdown-item" href="#">46a</a></li>-->
+<!--            <li><a class="dropdown-item" href="#">145</a></li>-->
+<!--            <li><hr class="dropdown-divider"></li>-->
+<!--            <li><a class="dropdown-item" href="#">Separated link</a></li>-->
+<!--          </ul>-->
+<!--        </div>-->
+        <RouteSelection></RouteSelection>
       </div>
       <div class="col-sm-3 col-md-2">
         <form>
           <div class="form-group" style="margin-top: 6px;">
-            <label for="originStop" class="d-flex justify-content-start">Origin Stop</label>
-            <input type="origin" class="form-control" id="originStop" placeholder="Enter origin stop">
+            <label class="d-flex justify-content-start">Origin Stop</label>
+<!--            <input type="origin" class="form-control" id="originStop" placeholder="Enter origin stop">-->
+            <StopSelection></StopSelection>
           </div>
           <div class="form-group" style="margin-top: 6px;">
-            <label for="destinationStop" class="d-flex justify-content-start">Destination Stop</label>
-            <input type="destination" class="form-control" id="destinationStop" placeholder="Enter destination stop">
+            <label class="d-flex justify-content-start">Destination Stop</label>
+            <StopSelection></StopSelection>
+<!--            <input type="destination" class="form-control" id="destinationStop" placeholder="Enter destination stop">-->
           </div>
         </form>
       </div>
@@ -68,6 +71,8 @@
 import Vue from "vue"
 import Component from "vue-class-component"
 import bus from "@/components/bus";
+import RouteSelection from "@/components/RouteSelection";
+import StopSelection from "@/components/StopSelection";
 
 // @Component
 // export default class TripSelection extends Vue {
@@ -75,6 +80,10 @@ import bus from "@/components/bus";
 // }
 export default {
   name: "TripSelection",
+  components:{
+    RouteSelection,
+    StopSelection
+  },
   data(){
     return{
       journey :"Please input your journey info:",
@@ -85,8 +94,9 @@ export default {
   methods:{
     handle(){
       bus.$emit("showDirection",this.origin,this.destination)
-  }
-  }
+  },
+  },
+
 }
 </script>
 
