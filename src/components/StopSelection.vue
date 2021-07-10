@@ -3,19 +3,25 @@
     v-model="stop"
     :items="stops"
     @change="updateStops"
-    @item-clicked="passStop">
+    @item-clicked="passStop"
+    :component-item='template'
+    :get-label='getLabel'
+    :auto-select-one-item="false">
 </v-autocomplete>
 </template>
 
 <script>
 import 'v-autocomplete/dist/v-autocomplete.css'
 import bus from "@/components/bus";
+import StopTemplate from "@/components/StopTemplate";
 export default {
   name: "StopSelection",
   data(){
     return{
       stop:null,
       stops:null,
+      items:null,
+      template: StopTemplate
     };
   },
   methods:{
@@ -28,11 +34,17 @@ export default {
       this.items=Object.values(data.stops);
       this.stops=Object.values(data.stops);
   },
-    passStop: function (val){
-      console.log(val)
+    passStop: function (){
+      console.log(this.stop.id);
     },
     updateStops: function (value){
-      this.stops = this.items.filter(item=>item.includes(value))
+      this.stops = this.items.filter(item=>item.id.includes(value)||item.name.includes(value))
+    },
+    getLabel: function (stop){
+      if(stop){
+        return stop.name;
+      }
+      else return "";
     }
   },
   created() {
