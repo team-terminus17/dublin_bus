@@ -16,18 +16,24 @@
 <!--            <li><a class="dropdown-item" href="#">Separated link</a></li>-->
 <!--          </ul>-->
 <!--        </div>-->
-        <RouteSelection></RouteSelection>
+        <RouteSelection
+            v-on:selectRoute="getRoute"
+        ></RouteSelection>
       </div>
       <div class="col-sm-3 col-md-2">
         <form>
           <div class="form-group" style="margin-top: 6px;">
             <label class="d-flex justify-content-start">Origin Stop</label>
 <!--            <input type="origin" class="form-control" id="originStop" placeholder="Enter origin stop">-->
-            <StopSelection></StopSelection>
+            <StopSelection
+                v-on:stopSelected="getDepStop"
+            ></StopSelection>
           </div>
           <div class="form-group" style="margin-top: 6px;">
             <label class="d-flex justify-content-start">Destination Stop</label>
-            <StopSelection></StopSelection>
+            <StopSelection
+                v-on:stopSelected="getArrStop"
+            ></StopSelection>
 <!--            <input type="destination" class="form-control" id="destinationStop" placeholder="Enter destination stop">-->
           </div>
         </form>
@@ -86,16 +92,53 @@ export default {
   },
   data(){
     return{
+      valid:false,
+      route:null,
+      stop_dep:null,
+      stop_arr:null,
       journey :"Please input your journey info:",
-      origin: { lat: 53.2991, lng: -6.2203 },
-      destination: { lat: 53.3014, lng: -6.1776 },
+      origin: null,
+      destination: null,
     }
   },
   methods:{
-    handle(){
-      bus.$emit("showDirection",this.origin,this.destination)
+    getRoutes:async function(){
+      let url = '/coordinate/'+'/'+this.route+'/'+this.stop_dep+'/'+this.stop_arr;
+      let response = await fetch(url);
+      let data = await response.json();
+      if(data['valid']==2){
+        alert("Origin and destination can't be the same");
+        this.valid=false;
+        return ;
+      }
+      if (data['valid']==1){
+        alert("The selected route is not in the same direction");
+        this.valid=false;
+        return ;
+      }
+      this.valid=true;
+      this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
+      this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
+      bus.$emit("showDirection",this.origin,this.destination);
   },
+    handle() {
+      if (this.stop_arr == null || this.stop_dep == null) {
+        alert("Please fill in the complete route");
+        return;
+      }
+      this.getRoutes();
   },
+    getRoute: function (val){
+      this.route=val;
+    },
+    getDepStop: function (val){
+      this.stop_dep=val;
+    },
+    getArrStop: function (val){
+      this.stop_arr=val;
+  }
+  },
+
 
 }
 </script>

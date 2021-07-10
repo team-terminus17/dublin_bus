@@ -33,6 +33,7 @@ name: "RouteSelection",
       this.routes=data.routes;
   },
     passRoute(value){
+    this.$emit("selectRoute",value)
     bus.$emit("showRoute",value)
     }
   },

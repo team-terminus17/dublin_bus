@@ -14,10 +14,14 @@ export default {
   data(){
     return{
       map:null,
+      directionsRenderer:null,
+      directionsService:null
     }
   },
-  mounted() {
+  created() {
     window.checkAndAttachMapScript(this.initMap);
+  },
+  mounted() {
     bus.$on("showDirection",this.showDirection)
   },
   methods:{
@@ -26,12 +30,11 @@ export default {
         center: {lat: 53.3673893, lng: -6.2600157},
         zoom: 12,
       });
+      this.directionsRenderer = new window.google.maps.DirectionsRenderer();
+      this.directionsService = new window.google.maps.DirectionsService();
+      this.directionsRenderer.setMap(this.map);
     },
     showDirection(){
-      if(window.google){
-        let directionsService = new window.google.maps.DirectionsService();
-      let directionsRenderer = new window.google.maps.DirectionsRenderer();
-      directionsRenderer.setMap(this.map);
       let request = {
       origin: { lat:arguments[0].lat, lng:arguments[0].lng},
       destination: { lat: arguments[1].lat, lng:arguments[1].lng },
@@ -40,14 +43,13 @@ export default {
               modes: ['BUS'], // Specifies that we only want Dublin Bus to be considered
           }
     };
-      directionsService.route(request, function(result, status) {
+      this.directionsService.route(request, (response, status) =>  {
       if (status == 'OK') {
-        directionsRenderer.setDirections(result);
+        this.directionsRenderer.setDirections(response);
       }
     });
       }
 
     }
-  }
 }
 </script>

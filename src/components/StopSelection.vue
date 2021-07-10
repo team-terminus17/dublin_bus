@@ -3,7 +3,7 @@
     v-model="stop"
     :items="stops"
     @change="updateStops"
-    @item-clicked="passStop"
+    @input="passStop"
     :component-item='template'
     :get-label='getLabel'
     :auto-select-one-item="false">
@@ -29,13 +29,16 @@ export default {
       let url = 'stops/'+ val;
       let response = await fetch(url);
       let data = await response.json();
-      console.log(data.stops)
-      console.log(Object.values(data.stops));
       this.items=Object.values(data.stops);
       this.stops=Object.values(data.stops);
   },
-    passStop: function (){
-      console.log(this.stop.id);
+    passStop: function (value){
+      if(value){
+        this.$emit("stopSelected",value.id);
+      }
+      else{
+        this.$emit("stopSelected",null);
+      }
     },
     updateStops: function (value){
       this.stops = this.items.filter(item=>item.id.includes(value)||item.name.includes(value))
