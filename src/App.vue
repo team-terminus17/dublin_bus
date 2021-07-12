@@ -15,6 +15,10 @@
   </div> 
 </template>
 
+<style lang="scss">
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+</style>
+
 <script>
 /* eslint-disable no-undef */
 import Map from "./components/Map";
@@ -46,7 +50,3 @@ export default {
   },
 }
 </script>
-
-<style>
-
-</style>
