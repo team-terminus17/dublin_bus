@@ -12,7 +12,7 @@
     <div class="row" style="margin-top: 20px;">
       <Prediction></Prediction>
     </div>
-  </div> 
+  </div>
 </template>
 
 <style lang="scss">
@@ -31,7 +31,7 @@ export default {
     Map,
     TripSelection,
     Weather,
-    Prediction
+    Prediction,
   },
   data() {
     return {
@@ -50,3 +50,4 @@ export default {
   },
 }
 </script>
+
