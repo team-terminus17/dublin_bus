@@ -25,6 +25,7 @@ urlpatterns = [
     path('test_db', test_db),
     path('routes', get_routes, name='routes'),
     path('stops/<stop>', get_stops, name='stops'),
+    path('coordinate/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
     path('predict/<route>/<direction>/<int:arr_stop>/<int:dep_stop>/<int:datetime>', predict_time, name='predict'),
     path('weather', get_weather, name='weather')
 ]
