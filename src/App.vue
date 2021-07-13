@@ -61,6 +61,7 @@
       border-right: 1px solid #157977;
       text-align: center;
 }
+
 </style>
 
 <script>

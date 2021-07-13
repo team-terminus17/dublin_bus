@@ -1,7 +1,4 @@
 <template>
-<!-- <div class="col-sm-12 col-md-2"  style="margin-top: 24px;"> -->
-  <div class="col-sm-12 col-md-2">
-<!-- <label class="d-flex justify-content-start">Origin Stop</label> -->
 <v-autocomplete
     v-model="stop"
     :items="stops"
@@ -11,7 +8,6 @@
     :get-label='getLabel'
     :auto-select-one-item="false">
 </v-autocomplete>
-</div>
 </template>
 
 <script>

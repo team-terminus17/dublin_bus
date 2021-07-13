@@ -1,6 +1,4 @@
 <template >
-<div class="col-sm-12 col-md-1">
-  <!-- <label class="d-flex justify-content-start">Route Selection</label> -->
 <v-autocomplete 
     v-model="route"
     :items="routes"
@@ -8,7 +6,6 @@
     @item-clicked="passRoute"
   >
   </v-autocomplete>
-</div>
 </template>
 
 <script>

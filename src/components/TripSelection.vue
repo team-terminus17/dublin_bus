@@ -1,44 +1,40 @@
 <template>
   <div class="col-sm-12 col-md-9">
     
-        <div v-html="journey" class="d-flex"></div>
-    
-     <div class="col-md-9 justify-content-space-between" style="margin-top: 30px;">
+    <div v-html="journey" class="d-flex"></div>
+    <div class="row">
+    <div class="col-md-2 justify-content-space-between" style="margin-top: 30px;">
       <label class="d-flex justify-content-start">Route Selection</label>
         <RouteSelection
             v-on:selectRoute="getRoute"
         ></RouteSelection>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group" style="margin-top: 6px;">
+          <label class="d-flex justify-content-start">Origin Stop</label>
+          <StopSelection
+              v-on:stopSelected="getDepStop"
+          ></StopSelection>
+        </div>
+        <div class="form-group" style="margin-top: 20px;">
+          <label class="d-flex justify-content-start">Destination Stop</label>
+          <StopSelection
+              v-on:stopSelected="getArrStop"
+          ></StopSelection>
+        </div>
+    </div>
+    <div class="col-sm-2 col-md-4" style="margin-top: 20px;">
+      <div style="margin-top: 20px;">
+      <DateInput v-model="date"></DateInput>
       </div>
-      <div class="col-md-9">
-          <div class="form-group" style="margin-top: 6px;">
-            <label class="d-flex justify-content-start">Origin Stop</label>
-            <StopSelection
-                v-on:stopSelected="getDepStop"
-            ></StopSelection>
-          </div>
-          <div class="form-group" style="margin-top: 20px;">
-            <label class="d-flex justify-content-start">Destination Stop</label>
-            <StopSelection
-                v-on:stopSelected="getArrStop"
-            ></StopSelection>
-          </div>
+      <div style="margin-top: 20px;">
+      <TimeInput v-model="time"></TimeInput>
       </div>
-      <div class="col-sm-2 col-md-6" style="margin-top: 20px;">
-        <DateInput></DateInput>
-      </div>
-      <div class="col-sm-2 col-md-6" style="margin-top: 20px;">
-        <DateInputCalendar></DateInputCalendar>
-      </div>
-      <!-- <div class="col-sm-2 col-md-6" style="margin-top: 20px;">
-        <TimeInput></TimeInput>
-      </div> -->
-      <!-- <div class="col-sm-2 col-md-6" style="margin-top: 20px;">
-        <TimeInputClock></TimeInputClock>
-      </div> -->
-      <div class="col-sm-2 col-md-6">
-        <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
-      </div>
-      
+    </div>
+    <div class="col-sm-2 col-md-2">
+      <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -50,9 +46,7 @@ import bus from "@/components/bus";
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
 import DateInput from "@/components/DateInput";
-import DateInputCalendar from "@/components/DateInputCalendar";
-// import TimeInput from "@/components/TimeInput";
-// import TimeInputClock from "@/components/TimeInputClock";
+import TimeInput from "@/components/TimeInput";
 
 // @Component
 // export default class TripSelection extends Vue {
@@ -64,9 +58,7 @@ export default {
     RouteSelection,
     StopSelection,
     DateInput,
-    DateInputCalendar,
-    // TimeInput,
-    // TimeInputClock
+    TimeInput,
   },
   data(){
     return{
@@ -77,6 +69,8 @@ export default {
       journey :"Please input your journey info:",
       origin: null,
       destination: null,
+      time: "3:00",
+      date: null, 
     }
   },
   methods:{
