@@ -1,74 +1,40 @@
 <template>
-  <div>
+  <div class="col-sm-12 col-md-9">
+    
+    <div v-html="journey" class="d-flex"></div>
     <div class="row">
-        <div v-html="journey" class="d-flex justify-content-start"></div>
-    </div>
-     <div class="col-sm-3 col-md-2" style="margin-top: 30px;">
-<!--        <div class="btn-group">-->
-<!--          <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--            Bus Route-->
-<!--          </button>-->
-<!--          <ul class="dropdown-menu">-->
-<!--            <li><a class="dropdown-item" href="#">9</a></li>-->
-<!--            <li><a class="dropdown-item" href="#">46a</a></li>-->
-<!--            <li><a class="dropdown-item" href="#">145</a></li>-->
-<!--            <li><hr class="dropdown-divider"></li>-->
-<!--            <li><a class="dropdown-item" href="#">Separated link</a></li>-->
-<!--          </ul>-->
-<!--        </div>-->
+    <div class="col-md-2 justify-content-space-between" style="margin-top: 30px;">
+      <label class="d-flex justify-content-start">Route Selection</label>
         <RouteSelection
             v-on:selectRoute="getRoute"
         ></RouteSelection>
-      </div>
-      <div class="col-sm-3 col-md-2">
-        <form>
-          <div class="form-group" style="margin-top: 6px;">
-            <label class="d-flex justify-content-start">Origin Stop</label>
-<!--            <input type="origin" class="form-control" id="originStop" placeholder="Enter origin stop">-->
-            <StopSelection
-                v-on:stopSelected="getDepStop"
-            ></StopSelection>
-          </div>
-          <div class="form-group" style="margin-top: 6px;">
-            <label class="d-flex justify-content-start">Destination Stop</label>
-            <StopSelection
-                v-on:stopSelected="getArrStop"
-            ></StopSelection>
-<!--            <input type="destination" class="form-control" id="destinationStop" placeholder="Enter destination stop">-->
-          </div>
-        </form>
-      </div>
-      <div class="col-sm-4 col-md-3">
-        <div class="btn-group" style="margin-top: 30px;">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Day of the Week
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Monday</a></li>
-            <li><a class="dropdown-item" href="#">Tuesday</a></li>
-            <li><a class="dropdown-item" href="#">Wednesday</a></li>
-            <li><a class="dropdown-item" href="#">Thursday</a></li>
-            <li><a class="dropdown-item" href="#">Friday</a></li>
-            <li><a class="dropdown-item" href="#">Saturday</a></li>
-            <li><a class="dropdown-item" href="#">Sunday</a></li>
-          </ul>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group" style="margin-top: 6px;">
+          <label class="d-flex justify-content-start">Origin Stop</label>
+          <StopSelection
+              v-on:stopSelected="getDepStop"
+          ></StopSelection>
         </div>
-        <div class="btn-group" style="margin-top: 30px;">
-          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Departure time
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">9</a></li>
-            <li><a class="dropdown-item" href="#">46a</a></li>
-            <li><a class="dropdown-item" href="#">145</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Separated link</a></li>
-          </ul>
+        <div class="form-group" style="margin-top: 20px;">
+          <label class="d-flex justify-content-start">Destination Stop</label>
+          <StopSelection
+              v-on:stopSelected="getArrStop"
+          ></StopSelection>
         </div>
+    </div>
+    <div class="col-sm-2 col-md-4" style="margin-top: 20px;">
+      <div style="margin-top: 20px;">
+      <DateInput v-model="date"></DateInput>
       </div>
-      <div class="col-sm-2 col-md-2">
-        <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+      <div style="margin-top: 20px;">
+      <TimeInput v-model="time"></TimeInput>
       </div>
+    </div>
+    <div class="col-sm-2 col-md-2">
+      <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -79,6 +45,8 @@ import Component from "vue-class-component"
 import bus from "@/components/bus";
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
+import DateInput from "@/components/DateInput";
+import TimeInput from "@/components/TimeInput";
 
 // @Component
 // export default class TripSelection extends Vue {
@@ -88,7 +56,9 @@ export default {
   name: "TripSelection",
   components:{
     RouteSelection,
-    StopSelection
+    StopSelection,
+    DateInput,
+    TimeInput,
   },
   data(){
     return{
@@ -99,6 +69,8 @@ export default {
       journey :"Please input your journey info:",
       origin: null,
       destination: null,
+      time: "3:00",
+      date: null, 
     }
   },
   methods:{
