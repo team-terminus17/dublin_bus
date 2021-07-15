@@ -1,5 +1,6 @@
 <template>
   <div class="container" style="text-align: center; margin-top: 60px;">
+      <PlaceInput/>
       <div class="row">
          <Weather></Weather>
       <div class="col-sm-12 col-md-12 d-flex justify-content-end">
@@ -26,7 +27,7 @@ import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
-
+import PlaceInput from "@/components/PlaceInput";
 export default {
   name: 'App',
   components: {
@@ -34,6 +35,7 @@ export default {
     TripSelection,
     Weather,
     Prediction,
+    PlaceInput
   },
   data() {
     return {

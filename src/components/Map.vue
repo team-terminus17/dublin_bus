@@ -33,6 +33,7 @@ export default {
       this.directionsRenderer = new window.google.maps.DirectionsRenderer();
       this.directionsService = new window.google.maps.DirectionsService();
       this.directionsRenderer.setMap(this.map);
+      bus.$emit("sendGoogle",window.google);
     },
     showDirection(){
       let request = {
