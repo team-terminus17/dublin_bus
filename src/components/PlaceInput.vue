@@ -1,6 +1,6 @@
 <template>
 <div>
-<input id="autocomplete" type="text">
+<input :id="id_name" type="text">
 </div>
 </template>
 
@@ -8,6 +8,11 @@
 import bus from "@/components/bus";
 export default {
 name: "PlaceInput",
+  props:{
+  id_name:{
+    type:String
+  }
+  },
   data(){
   return{
     autocomplete:null,
@@ -18,21 +23,23 @@ name: "PlaceInput",
   methods:{
   initAuto:function (val){
     this.google=val;
-    if(this.google){
-      let bounds=new this.google.maps.LatLngBounds(
+    let bounds=new this.google.maps.LatLngBounds(
         {lat:52.999804, lng:-6.841221},
         {lat:53.693350, lng:-5.914248}
     );
     this.autocomplete=new this.google.maps.places.Autocomplete(
-        document.getElementById('autocomplete'),
+        document.getElementById(this.id_name),
         {
           bounds:bounds,
           fields:['place_id','geometry','name'],
           strictBounds:true
         });
+    this.autocomplete.addListener('place_changed',this.onPlaceChanged);
+  },
+    onPlaceChanged:function (){
+    let place=this.autocomplete.getPlace();
+    this.$emit("sendPlaceID",place.place_id)
     }
-
-  }
   },
   created() {
   bus.$on("sendGoogle",this.initAuto);
