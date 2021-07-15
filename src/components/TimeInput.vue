@@ -41,11 +41,6 @@
         type="button" data-bs-auto-close="outside" data-bs-reference="parent"
         style="display:none"
     >
-      <!-- <img
-          width="1em" height="1em"
-          alt="show time selection"
-          src="../assets/wall-clock.svg"
-      > -->
     </button>
     <div ref="dropdown" class="dropdown-menu">
       <clock
