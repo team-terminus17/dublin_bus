@@ -66,11 +66,11 @@
 </script>
 
 <style scoped>
-/* #main {
+#main {
 position: absolute;
 height: 100%;
 width: 100%;
-} */
+}
 
 .day {
 background: linear-gradient(to bottom left, #d7d3ac, #ffffff);
