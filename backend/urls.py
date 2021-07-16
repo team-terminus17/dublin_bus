@@ -27,5 +27,6 @@ urlpatterns = [
     path('stops/<stop>', get_stops, name='stops'),
     path('coordinate/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
     path('predict/<route>/<direction>/<int:arr_stop>/<int:dep_stop>/<int:datetime>', predict_time, name='predict'),
-    path('weather', get_weather, name='weather')
+    path('weather', get_weather, name='weather'),
+    path('ptpjourney', get_journey_time, name='journey')
 ]

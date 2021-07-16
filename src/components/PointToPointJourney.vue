@@ -14,6 +14,7 @@
 
 <script>
 import PlaceInput from "@/components/PlaceInput";
+import bus from "@/components/bus";
 export default {
   name: "PointToPointJourney",
   components: {
@@ -24,12 +25,12 @@ export default {
       id1:"autocomplete1",
       id2:"autocomplete2",
       start:null,
-      end:null
+      end:null,
     }
   },
   methods: {
     handle: function () {
-      console.log(this.start,this.end)
+      bus.$emit("sendLocation",this.start,this.end)
     },
     getStart: function (val){
       this.start=val

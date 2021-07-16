@@ -3,6 +3,8 @@ from django.views.decorators.cache import never_cache
 from django.http import HttpResponse, JsonResponse
 from .models import *
 import json
+from django.views.decorators.csrf import csrf_exempt
+
 
 # Serve Vue Application
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
@@ -97,3 +99,10 @@ def get_weather(request):
     weather = Weather.objects.all().order_by('weather_time')[0]
     return JsonResponse(weather.dictify())
 
+
+@csrf_exempt
+def get_journey_time(request):
+    if request.method == 'POST':
+        routes = json.loads(request.body.decode())
+        print(routes)
+    return HttpResponse(1)
