@@ -1,5 +1,5 @@
-<template>
-<v-autocomplete
+<template >
+<v-autocomplete 
     v-model="route"
     :items="routes"
     @change="updateItems"
@@ -43,6 +43,6 @@ name: "RouteSelection",
 }
 </script>
 
-<style scoped>
+<style>
 
 </style>

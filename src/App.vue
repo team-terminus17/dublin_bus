@@ -8,8 +8,8 @@
       </div>
     </div>
     <Map></Map>
-    <TripSelection></TripSelection>
     <div class="row" style="margin-top: 20px;">
+      <TripSelection></TripSelection>
       <Prediction></Prediction>
     </div>
   </div>
@@ -17,6 +17,7 @@
 
 <style lang="scss">
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
 </style>
 
 <script>
@@ -25,6 +26,7 @@ import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
+
 export default {
   name: 'App',
   components: {
