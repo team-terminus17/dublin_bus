@@ -13,6 +13,7 @@ name: "PlaceInput",
     type:String
   }
   },
+
   data(){
   return{
     autocomplete:null,
@@ -20,6 +21,7 @@ name: "PlaceInput",
     google:null
   }
   },
+
   methods:{
   initAuto:function (val){
     this.google=val;
@@ -27,6 +29,7 @@ name: "PlaceInput",
         {lat:52.999804, lng:-6.841221},
         {lat:53.693350, lng:-5.914248}
     );
+
     this.autocomplete=new this.google.maps.places.Autocomplete(
         document.getElementById(this.id_name),
         {
@@ -36,11 +39,13 @@ name: "PlaceInput",
         });
     this.autocomplete.addListener('place_changed',this.onPlaceChanged);
   },
+
     onPlaceChanged:function (){
     let place=this.autocomplete.getPlace();
     this.$emit("sendPlaceID",place.place_id)
     }
   },
+
   created() {
   bus.$on("sendGoogle",this.initAuto);
   },

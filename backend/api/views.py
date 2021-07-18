@@ -105,4 +105,6 @@ def get_journey_time(request):
     if request.method == 'POST':
         routes = json.loads(request.body.decode())
         print(routes)
-    return HttpResponse(1)
+    dummy = dict()
+    dummy['time'] = 1
+    return JsonResponse(dummy)
