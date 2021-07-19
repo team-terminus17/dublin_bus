@@ -94,14 +94,13 @@ export default {
             routeList.push(routeDict)
           }
         }
-        console.log(routeList)
         this.getPrediction(routeList)
       if (status == 'OK') {
         this.directionsRenderer.setDirections(response);
       }
     });
     },
-
+//We could probably move this to prediction component(i.e if we click the submit button of different tab it will trigger corresponding function to get the prediction time)
     getPrediction: async function (routeList){
       let url="/ptpjourney"
       let response = await fetch(url,{

@@ -1,6 +1,5 @@
 <template>
   <div class="container" style="text-align: center; margin-top: 60px;">
-      <PointToPointJourney/>
       <div class="row">
          <Weather></Weather>
       <div class="col-sm-12 col-md-12 d-flex justify-content-end">
