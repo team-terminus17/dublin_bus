@@ -73,7 +73,6 @@ export default {
       };
       this.directionsService.route(request, (response, status) =>  {
         let route=response.routes[0].legs[0];
-        console.log(route)
         let walkingTime=0;
         let routeList=[];
         for(let i=0;i<route.steps.length;i++) {

@@ -1,11 +1,12 @@
 <template>
 <div>
   <PlaceInput
-      :id_name="id1"
+      id_name="autocomplete1"
       v-on:sendPlaceID="getStart"
   ></PlaceInput>
+<!--  id_name is set to differentiate between two placeinput components-->
   <PlaceInput
-      :id_name="id2"
+      id_name="autocomplete2"
       v-on:sendPlaceID="getEnd"
   ></PlaceInput>
   <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
@@ -24,8 +25,6 @@ export default {
 
   data(){
     return{
-      id1:"autocomplete1",
-      id2:"autocomplete2",
       start:null,
       end:null,
     }
