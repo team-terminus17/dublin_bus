@@ -34,7 +34,6 @@ export default {
     TripSelection,
     Weather,
     Prediction,
-    PointToPointJourney
   },
   data() {
     return {

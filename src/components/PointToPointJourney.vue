@@ -33,7 +33,12 @@ export default {
 
   methods: {
     handle: function () {
-      bus.$emit("sendLocation",this.start,this.end)//emit to map component
+      if(this.start==null||this.end==null){
+        alert("You need to enter both origin and destination.")
+      }
+      else{
+        bus.$emit("sendLocation",this.start,this.end)//emit to map component
+      }
     },
 
     getStart: function (val){
