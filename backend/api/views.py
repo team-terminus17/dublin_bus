@@ -25,24 +25,16 @@ def get_routes(request):
     """Return json of available bus routes"""
     with open('scrapers/routes.json', 'r') as file:
         return JsonResponse(json.load(file))
+    # route_list = list(Routes.objects.filter(agency_id=2).distinct().values_list('name__name', flat=True))
+    # route_dict = {'routes': route_list}
+    # return JsonResponse(route_dict)
 
 
 def get_stops(request, stop):
     """Return json of available bus stops for a single route"""
-    route_dict = {}
-    with open('scrapers/stops_by_route.json', 'r', encoding='utf-8') as file:
-        route_dict = json.load(file)
-    stop_list = route_dict[stop]
+    stop_list = list(RouteNames.objects.get(name=stop).stops.extra({'id': 'number'}).
+                     values('id', 'name').distinct())
     stop_dict = {'stops': stop_list}
-    # route_dict_detail = {}
-    # if len(stop_list['inbound']) != 0:
-    #     route_dict_detail['inbound'] = {}
-    #     for s in stop_list['inbound']:
-    #         route_dict_detail['inbound'][s] = Stops.objects.get(stopID=int(s)).dictify()
-    # if len(stop_list['outbound']) != 0:
-    #     route_dict_detail['outbound'] = {}
-    #     for s in stop_list['outbound']:
-    #         route_dict_detail['outbound'][s] = Stops.objects.get(stopID=int(s)).dictify()
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')
 
 
@@ -74,14 +66,13 @@ def get_coordinates(request, route, stop_dep, stop_arr):
     return HttpResponse(json.dumps(res, ensure_ascii=False), content_type='application/json')
 
 
-def predict_time(request, route, direction, arr_stop, dep_stop, datetime):
+def predict_time(request, route, direction, dep_stop, arr_stop, datetime):
     """Take a route, two stops indices, a datetime. Return a predicted time taken."""
-    direction_full = 'inbound' if direction == 'I' else 'outbound'
-    with open('scrapers/stops_by_route2.json', 'r') as file:
-        route_dict = json.load(file)
-    dep_stop_seq = RouteStops.objects.get(routeID=route, direction=direction, stopID=dep_stop).sequence
-    arr_stop_seq = RouteStops.objects.get(routeID=route, direction=direction, stopID=arr_stop).sequence
-    stop_list = route_dict['routes'][route][direction_full][dep_stop_seq:arr_stop_seq+1]
+    dep_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop__number=dep_stop).sequence
+    arr_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop__number=arr_stop).sequence
+    stop_list = list(RouteStops.objects.filter(name__name=route, direction=direction,
+                                               sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq)
+                     .values_list('stop__number', flat=True))
     # First we need to find the predicted weather of the time closet to the input datetime.
     # If it exceeds the limit of the prediction, we just get current weather info
     weather = Weather.objects.filter(weather_time__gte=datetime).order_by('weather_time')
