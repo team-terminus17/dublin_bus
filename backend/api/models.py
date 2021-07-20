@@ -120,6 +120,8 @@ class Stops(models.Model):
 
     external_name = models.CharField(max_length=70)
 
+    routes_names = models.ManyToManyField(RouteNames, through="RouteStops", related_name="stops")
+
 
     def dictify(self):
         """Return the model as a dictionary"""
