@@ -1,10 +1,8 @@
 <template>
-  <div>
     <div id="map"
-    style="width: 100%;height: 500px"
+    style="width: 100%; height: 840px;"
     >
     </div>
-  </div>
 </template>
 
 <script>
@@ -32,7 +30,7 @@ export default {
   methods:{
     initMap(){
       this.map= new window.google.maps.Map(document.getElementById("map"),{
-        center: {lat: 53.3673893, lng: -6.2600157},
+        center: {lat: 53.348080, lng: -6.259894},
         zoom: 12,
       });
       this.directionsRenderer = new window.google.maps.DirectionsRenderer();

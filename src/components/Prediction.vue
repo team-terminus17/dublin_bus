@@ -1,5 +1,5 @@
 <template>
-  <div class="col-sm-12 col-md-3">
+  <div class="col-sm-12 col-md-12">
     <p>Journey Info:</p>
     <div>Time: {{ predict.time }}</div>
   </div>

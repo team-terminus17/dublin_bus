@@ -45,4 +45,47 @@ name: "RouteSelection",
 
 <style>
 
+.v-autocomplete .v-autocomplete-input-group .v-autocomplete-input {
+  position: relative;
+  font-size: 1.0em;
+  padding: 5px 15px;
+  box-shadow: none;
+  border: 1px solid #157977;
+  width: 100%;
+  outline: none;
+  background-color: #E89D38;
+  }
+
+.v-autocomplete .v-autocomplete-list{
+  z-index: 1000;
+  width: 100%;
+  height: 200px;
+  overflow-y:auto;
+  overflow-x: hidden;
+  text-align: left;
+  border: none;
+  border-top: none;
+  max-height: 400px;
+  overflow-y: auto;
+  border-bottom: 1px solid #157977;
+}
+
+.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item{
+  cursor: pointer;
+  background-color: #0C1726;
+  padding: 10px;
+  border-bottom: 1px solid #157977;
+  border-left: 1px solid #157977;
+  border-right: 1px solid #157977;
+  text-align: center;
+}
+
+.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item:hover{
+  background-color: #E89D38;
+}
+
+.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item.v-autocomplete-item-active {
+  background-color:#E89D38;
+}
+
 </style>

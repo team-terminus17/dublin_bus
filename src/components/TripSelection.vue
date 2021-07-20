@@ -1,29 +1,30 @@
 <template>
-  <div class="col-sm-12 col-md-9">
+  <div class="col-sm-12 col-md-12">
     
-    <div v-html="journey" class="d-flex"></div>
     <div class="row">
-    <div class="col-md-2 justify-content-space-between" style="margin-top: 30px;">
+    <div v-html="journey" class="d-flex"></div>
+    <!-- <div class="row"> -->
+    <div class="col-md-6 justify-content-space-between" style="margin-top: 20px;">
       <label class="d-flex justify-content-start">Route Selection</label>
         <RouteSelection
             v-on:selectRoute="getRoute"
         ></RouteSelection>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-12">
         <div class="form-group" style="margin-top: 6px;">
           <label class="d-flex justify-content-start">Origin Stop</label>
           <StopSelection
               v-on:stopSelected="getDepStop"
           ></StopSelection>
         </div>
-        <div class="form-group" style="margin-top: 20px;">
+        <div class="form-group" style="margin-top: 10px;">
           <label class="d-flex justify-content-start">Destination Stop</label>
           <StopSelection
               v-on:stopSelected="getArrStop"
           ></StopSelection>
         </div>
     </div>
-    <div class="col-sm-2 col-md-4" style="margin-top: 20px;">
+    <div class="col-sm-2 col-md-12" style="margin-top: 10px;">
       <div style="margin-top: 20px;">
       <DateInput v-model="date"></DateInput>
       </div>
@@ -31,8 +32,8 @@
       <TimeInput v-model="time"></TimeInput>
       </div>
     </div>
-    <div class="col-sm-2 col-md-2">
-      <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+    <div class="col-sm-2 col-md-12">
+      <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 30px;">Submit</button>
     </div>
     </div>
   </div>
@@ -112,39 +113,5 @@ export default {
 </script>
 
 <style scoped>
-
-.v-autocomplete .v-autocomplete-input-group .v-autocomplete-input {
-    position: relative;
-    font-size: 1.0em;
-    padding: 5px 15px;
-    box-shadow: none;
-    border: 1px solid #157977;
-    width: 100%;
-    outline: none;
-    background-color: #eee;
-  }
-
-.v-autocomplete .v-autocomplete-list{
-    z-index: 10000;
-    width: 100%;
-    height: 200px;
-    overflow-y:auto;
-    text-align: left;
-    border: none;
-    border-top: none;
-    max-height: 400px;
-    overflow-y: auto;
-    border-bottom: 1px solid #157977;
-}
-
-.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item{
-      cursor: pointer;
-      background-color: #fff;
-      padding: 10px;
-      border-bottom: 1px solid #157977;
-      border-left: 1px solid #157977;
-      border-right: 1px solid #157977;
-      text-align: center;
-}
 
 </style>
