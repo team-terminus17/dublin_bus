@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from .models import *
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import F
 
 
 # Serve Vue Application
@@ -30,39 +31,29 @@ def get_routes(request):
     # return JsonResponse(route_dict)
 
 
-def get_stops(request, stop):
-    """Return json of available bus stops for a single route"""
-    stop_list = list(RouteNames.objects.get(name=stop).stops.extra({'id': 'number'}).
-                     values('id', 'name').distinct())
+def get_stops(request, stop, direction):
+    """Return json of available bus stops for a single route and direction"""
+    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction).order_by('sequence')
+                     .values(stopID=F('stop__number'), stopName=F('stop__name')))
     stop_dict = {'stops': stop_list}
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')
 
 
-def get_coordinates(request, route, stop_dep, stop_arr):
+def get_coordinates(request, direction, route, stop_dep, stop_arr):
     """First verify if the route is valid, then get the coordinates of the arrival and departure stops"""
     res = dict()
-    res['valid'] = 1
     if stop_dep == stop_arr:
         res['valid'] = 2
         return JsonResponse(res)
-    stop_dep_list = RouteStops.objects.filter(routeID=route, stopID=int(stop_dep))
-    if len(stop_dep_list) == 1:
-        stop_arr_list = RouteStops.objects.filter(routeID=route, stopID=int(stop_arr), direction=stop_dep_list[0].direction)
-        if len(stop_arr_list) == 0 or stop_dep_list[0].sequence > stop_arr_list[0].sequence:
-            return JsonResponse(res)
-    else:
-        stop_dep_I = RouteStops.objects.get(routeID=route, stopID=int(stop_dep), direction='I')
-        stop_dep_O = RouteStops.objects.get(routeID=route, stopID=int(stop_dep), direction='O')
-        stop_arr_list = RouteStops.objects.filter(routeID=route, stopID=stop_arr)
-        if stop_arr_list[0].direction == 'I':
-            if stop_dep_I > stop_arr_list[0].sequence:
-                return JsonResponse(res)
-        else:
-            if stop_dep_O > stop_arr_list[0].sequence:
-                return JsonResponse(res)
+    seq_dep = RouteStops.objects.get(name__name=route, direction=direction, stop__number=stop_dep).sequence
+    seq_arr = RouteStops.objects.get(name__name=route, direction=direction, stop__number=stop_arr).sequence
+    # If the arrival stop is ahead of departure stop, the input route is invalid
+    if seq_dep > seq_arr:
+        res['valid'] = 1
+        return JsonResponse(res)
     res['valid'] = 0
-    res['stop_dep'] = Stops.objects.get(stopID=int(stop_dep)).dictify()
-    res['stop_arr'] = Stops.objects.get(stopID=int(stop_arr)).dictify()
+    res['stop_dep'] = Stops.objects.get(number=stop_dep).dictify()
+    res['stop_arr'] = Stops.objects.get(number=stop_arr).dictify()
     return HttpResponse(json.dumps(res, ensure_ascii=False), content_type='application/json')
 
 
