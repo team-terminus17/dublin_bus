@@ -71,9 +71,10 @@ export default {
   },
   methods:{
     getRoutes:async function(){
-      let url = '/coordinate/'+'/'+this.route+'/'+this.stop_dep+'/'+this.stop_arr;
+      let url = '/coordinate/'+this.route+'/'+this.stop_dep+'/'+this.stop_arr;
       let response = await fetch(url);
       let data = await response.json();
+
       if(data['valid']==2){
         alert("Origin and destination can't be the same");
         this.valid=false;

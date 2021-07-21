@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import debug_toolbar
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from .api.views import *
 
@@ -28,5 +29,6 @@ urlpatterns = [
     path('coordinate/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
     path('predict/<route>/<direction>/<int:arr_stop>/<int:dep_stop>/<int:datetime>', predict_time, name='predict'),
     path('weather', get_weather, name='weather'),
-    path('ptpjourney', get_journey_time, name='journey')
+    path('ptpjourney', get_journey_time, name='journey'),
+    path('stops/all/coordinates', get_all_stop_info, name='all stop info')
 ]

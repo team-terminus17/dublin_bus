@@ -108,3 +108,35 @@ def get_journey_time(request):
     dummy = dict()
     dummy['time'] = 1
     return JsonResponse(dummy)
+
+def get_all_stop_info(request):
+
+    results = dict()
+    entries = RouteStops.objects.select_related("stop", "name").prefetch_related("name__routes").all()
+    print(entries.query)
+
+    for entry in entries:
+
+        stop = entry.stop
+        route_name = entry.name.name
+        direction = entry.direction
+        main = entry.main
+
+        current = results.get(stop.external_id, None)
+        if current is None:
+            current = {
+                "name": stop.name,
+                "number": stop.number,
+                "lat": stop.lat,
+                "lng": stop.lon,
+                "routes": list()
+            }
+            results[stop.external_id] = current
+
+        current["routes"].append({
+            "name": route_name,
+            "direction": direction,
+            "main": main
+        })
+    
+    return JsonResponse(results)
