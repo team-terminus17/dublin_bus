@@ -191,6 +191,7 @@ class RouteStops(models.Model):
 
     id = models.IntegerField(primary_key=True)
     name = models.ForeignKey(RouteNames, on_delete=CASCADE)
+    agency = models.ForeignKey(Agency, on_delete=CASCADE)
 
     direction = models.IntegerField(choices=DIRECTION_CHOICES)
 
