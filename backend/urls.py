@@ -20,6 +20,7 @@ from django.urls import path, include
 from .api.views import *
 
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
     path('test', test_message, name='test'),
