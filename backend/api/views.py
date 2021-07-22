@@ -21,7 +21,7 @@ def get_routes(request):
 
 def get_stops(request, stop, direction):
     """Return json of available bus stops for a single route and direction"""
-    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True).order_by('sequence')
+    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency_id=1).order_by('sequence')
                      .values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
     stop_dict = {'stops': stop_list}
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')

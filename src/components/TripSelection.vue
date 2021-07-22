@@ -1,6 +1,6 @@
 <template>
   <div class="col-sm-12 col-md-9">
-    
+
     <div v-html="journey" class="d-flex"></div>
     <div class="row">
     <div class="col-md-2 justify-content-space-between" style="margin-top: 30px;">
@@ -40,8 +40,6 @@
 
 <script>
 
-import Vue from "vue"
-import Component from "vue-class-component"
 import bus from "@/components/bus";
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
