@@ -24,8 +24,11 @@ DIRECTION_CHOICES = [
 class Weather(models.Model):
     weather_time = models.IntegerField(primary_key=True)
     temp = models.FloatField()
-    rain = models.BooleanField()
+    rain = models.FloatField()
     icon = models.CharField(max_length=6)
+    vis = models.IntegerField(null=True)
+    clamt = models.IntegerField(null=True)
+    wdsp = models.IntegerField(null=True)
 
     class Meta:
         db_table = 'futureweather'
@@ -188,6 +191,7 @@ class RouteStops(models.Model):
 
     id = models.IntegerField(primary_key=True)
     name = models.ForeignKey(RouteNames, on_delete=CASCADE)
+    agency = models.ForeignKey(Agency, on_delete=CASCADE)
 
     direction = models.IntegerField(choices=DIRECTION_CHOICES)
 
