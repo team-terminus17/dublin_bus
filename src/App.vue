@@ -7,11 +7,27 @@
         <button type="button" class="btn btn-dark">Dark</button>
       </div>
     </div>
-    <Map></Map>
-    <stop-renderer :route-filter="'46A'"></stop-renderer>
-    <div class="row" style="margin-top: 20px">
-      <TripSelection></TripSelection>
-      <Prediction></Prediction>
+    <Map
+        v-on:sendGoogle="getGoogle"
+    ></Map>
+    <div>
+      <date-time-input
+          v-on:sendTimestamp="updateTimestamp"
+      ></date-time-input>
+    </div>
+    <point-to-point-journey
+        v-on:googlequerycomplete="showGooglePrediction"
+        :google="google"
+        :map="map"
+        :timestamp="timestamp"
+    ></point-to-point-journey>
+    <div class="row" style="margin-top: 20px;">
+      <TripSelection
+          v-on:tripcomplete="showTripPrediction"
+      ></TripSelection>
+      <Prediction
+          ref="predict"
+      ></Prediction>
     </div>
   </div>
 </template>
@@ -23,34 +39,44 @@
 <script>
 /* eslint-disable no-undef */
 import Map from "./components/Map";
-import TripSelection from "./components/TripSelection";
-import Weather from "./components/Weather";
-import Prediction from "./components/Prediction";
-import StopRenderer from "./components/map-renderers/StopRenderer";
-
+import TripSelection from "./components/TripSelection"
+import Weather from "./components/Weather"
+import Prediction from "./components/Prediction"
+import PointToPointJourney from "@/components/PointToPointJourney";
+import DateTimeInput from "@/components/DateTimeInput";
 export default {
   name: "App",
   components: {
+    PointToPointJourney,
+    DateTimeInput,
     Map,
     TripSelection,
     Weather,
     Prediction,
-    StopRenderer,
   },
   data() {
     return {
-      greet: "Hello there",
-      name: "General Kenobi",
-      headingID: "heading",
-      isDisabled: false,
-      status: "success",
-      journeyInfo: "<b>Journey Info</b>",
-
-      predict: {
-        time: "test",
-      },
+      journeyInfo: '<b>Journey Info</b>',
+      timestamp:null,
+      google:null,
+      map:null
     };
   },
-};
+  methods:{
+    showTripPrediction:function (){
+      this.$refs.predict.getTripPrediction(arguments[0],arguments[1],arguments[2],arguments[3],this.timestamp)
+    },
+    showGooglePrediction:function (val){
+      this.$refs.predict.getGooglePrediction(val);
+    },
+    getGoogle:function (){
+      this.google=arguments[0];
+      this.map=arguments[1];
+    },
+    updateTimestamp:function (val){
+      this.timestamp=val
+    }
+  }
+}
 </script>
 

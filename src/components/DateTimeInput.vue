@@ -14,16 +14,20 @@ import TimeInput from "@/components/TimeInput";
 import DateInput from "@/components/DateInput";
 export default {
 name: "DateTimeInput",
+
   components:{
     TimeInput,
     DateInput
   },
+
   data(){
   return{
     date:null,
-    time:null
+    time:null,
+    timestamp:null
   }
   },
+
   methods : {
   initDateTime: function (){
     function getTwoDigit(num){
@@ -37,15 +41,31 @@ name: "DateTimeInput",
   let MI=getTwoDigit(dt.getMinutes());
   this.date=Y + '-' + MO + '-' + D;
   this.time=H+':'+MI;
-  }
+  },
+
+  updateTimestamp: function (){
+    this.timestamp = Date.parse(this.date+' '+this.time)/1000;
+    }
   },
 
   watch: {
   time(newtime,oldtime){
     if(oldtime!=newtime){
-      console.log(newtime)
+      this.updateTimestamp()
     }
-  }
+  },
+
+  date(newdate,olddate){
+    if(newdate!=olddate){
+      this.updateTimestamp()
+    }
+  },
+
+  timestamp(newval,oldval){
+    if(oldval!=newval){
+      this.$emit("sendTimestamp",this.timestamp)
+    }
+    }
   },
 
   created() {

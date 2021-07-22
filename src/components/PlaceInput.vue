@@ -5,26 +5,19 @@
 </template>
 
 <script>
-import bus from "@/components/bus";
 export default {
 name: "PlaceInput",
-  props:{
-  id_name:{
-    type:String
-  }
-  },
+  props:['id_name','google'],
 
   data(){
   return{
     autocomplete:null,
     element:null,
-    google:null
   }
   },
 
   methods:{
-  initAuto:function (val){
-    this.google=val;
+  initAuto:function (){
     let bounds=new this.google.maps.LatLngBounds(
         {lat:52.999804, lng:-6.841221},
         {lat:53.693350, lng:-5.914248}
@@ -46,9 +39,11 @@ name: "PlaceInput",
     }
   },
 
-  created() {
-  bus.$on("sendGoogle",this.initAuto);
-  },
+  watch:{
+  google(){
+    this.initAuto()
+  }
+  }
 }
 </script>
 

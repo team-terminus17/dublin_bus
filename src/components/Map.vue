@@ -22,7 +22,7 @@ export default {
       });
 
       this.$store.commit("initMap", map);
-
+      this.$emit("sendGoogle",window.google,this.map)
     },
   },
 };

@@ -12,7 +12,6 @@
 
 <script>
 import 'v-autocomplete/dist/v-autocomplete.css'
-import bus from "@/components/bus";
 import StopTemplate from "@/components/StopTemplate";
 export default {
   name: "StopSelection",
@@ -24,14 +23,21 @@ export default {
       template: StopTemplate
     };
   },
+  props:['routeinfo'],
+  watch:{
+    routeinfo(newval,oldval){
+      this.getStops(newval);
+    }
+  },
   methods:{
-    getStops:async function(){
-      let url = 'stops/'+ arguments[0]+ '/'+ arguments[1];
+    getStops:async function(routedir){
+      let url = 'stops/'+ routedir[0]+ '/'+ routedir[1];
       let response = await fetch(url);
       let data = await response.json();
       this.items=data.stops;
       this.stops=data.stops.slice(0,5);
   },
+
     passStop: function (value){
       if(value){
         this.$emit("stopSelected",value.stopID);
@@ -40,9 +46,11 @@ export default {
         this.$emit("stopSelected",null);
       }
     },
+
     updateStops: function (value){
       this.stops = this.items.filter(item=>item.stopName.includes(value)||item.stopNumber.toString().includes(value)).slice(0,5)
     },
+
     getLabel: function (stop){
       if(stop){
         return stop.stopName;
@@ -50,9 +58,6 @@ export default {
       else return "";
     }
   },
-  created() {
-    bus.$on("showRoute",this.getStops)
-  }
 }
 </script>
 

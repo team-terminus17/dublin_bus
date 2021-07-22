@@ -1,6 +1,5 @@
 <template>
   <div class="col-sm-12 col-md-9">
-
     <div v-html="journey" class="d-flex"></div>
     <div class="row">
     <div class="col-md-2 justify-content-space-between" style="margin-top: 30px;">
@@ -14,22 +13,16 @@
           <label class="d-flex justify-content-start">Origin Stop</label>
           <StopSelection
               v-on:stopSelected="getDepStop"
+              :routeinfo="routeinfo"
           ></StopSelection>
         </div>
         <div class="form-group" style="margin-top: 20px;">
           <label class="d-flex justify-content-start">Destination Stop</label>
           <StopSelection
               v-on:stopSelected="getArrStop"
+              :routeinfo="routeinfo"
           ></StopSelection>
         </div>
-    </div>
-    <div class="col-sm-2 col-md-4" style="margin-top: 20px;">
-      <div style="margin-top: 20px;">
-      <DateInput v-model="date"></DateInput>
-      </div>
-      <div style="margin-top: 20px;">
-      <TimeInput v-model="time"></TimeInput>
-      </div>
     </div>
     <div class="col-sm-2 col-md-2">
       <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
@@ -40,19 +33,16 @@
 
 <script>
 
-import bus from "@/components/bus";
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
-import DateInput from "@/components/DateInput";
-import TimeInput from "@/components/TimeInput";
 
 export default {
   name: "TripSelection",
   components:{
     RouteSelection,
     StopSelection,
-    DateInput,
-    TimeInput,
+    // DateInput,
+    // TimeInput,
   },
   data(){
     return{
@@ -65,7 +55,8 @@ export default {
       destination: null,
       time: null,
       date: null,
-      direction: null
+      direction: null,
+      routeinfo: null
     }
   },
   methods:{
@@ -87,10 +78,9 @@ export default {
       this.valid=true;
       this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
       this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
-      let timestamp = Date.parse(this.date+' '+this.time)/1000
-      bus.$emit("showDirection",this.origin,this.destination);
-      bus.$emit("showPrediction",this.route,this.direction,this.stop_dep,this.stop_arr,timestamp)
+      this.$emit("tripcomplete",this.route,this.direction,this.stop_dep,this.stop_arr)
   },
+
     handle() {
       if (this.stop_arr == null || this.stop_dep == null) {
         alert("Please fill in the complete route");
@@ -98,17 +88,22 @@ export default {
       }
       this.getRoutes();
   },
+
     getRoute: function (){
       this.route=arguments[0];
       this.direction=arguments[1];
+      this.routeinfo=arguments;
     },
+
     getDepStop: function (val){
       this.stop_dep=val;
     },
+
     getArrStop: function (val){
       this.stop_arr=val;
   }
   },
+
 beforeMount() {
   function getTwoDigit(num){
     return (num<10?'0':'')+num;

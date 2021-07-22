@@ -14,7 +14,6 @@
 
 <script>
 import 'v-autocomplete/dist/v-autocomplete.css'
-import bus from "@/components/bus";
 export default {
 name: "RouteSelection",
   data(){
@@ -26,6 +25,7 @@ name: "RouteSelection",
     direction_text:'inbound'
   };
   },
+
   methods:{
   updateItems: function (value){
       this.routes=this.items.filter(item=>item.includes(value)).slice(0,5)
@@ -42,7 +42,6 @@ name: "RouteSelection",
     passRoute: function (value){
     this.route = value;
     this.$emit("selectRoute",value, this.direction)
-    bus.$emit("showRoute",value, this.direction)
     },
 
     selectDirection: function () {
@@ -59,6 +58,7 @@ name: "RouteSelection",
     }
     }
   },
+
   created() {
     this.getRoutes();
   }

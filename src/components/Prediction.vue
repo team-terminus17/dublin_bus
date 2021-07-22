@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import bus from "@/components/bus";
 export default {
   data() {
     return {
@@ -17,16 +16,50 @@ export default {
   },
 
   methods: {
-    getPrediction: async function () {
-      const predictionURL = '/predict/'+arguments[0]+'/'+arguments[1]+'/'+arguments[2]+'/'+arguments[3]+'/'+arguments[4]
+    getTripPrediction: async function (route,direction,dep_stop,arr_stop,datetime) {
+      const predictionURL = '/predict/'+route+'/'+direction+'/'+dep_stop+'/'+arr_stop+'/'+datetime
       const response = await fetch(predictionURL);
       const data = await response.json();
       this.predict.time = data.time;
     },
-  },
 
-  beforeMount() {
-    bus.$on("showPrediction",this.getPrediction)
+    getGooglePrediction: function (route){
+        let wholeRouteDict={};
+        for(let i=0;i<route.steps.length;i++) {
+          let routeDict = {}
+          if (route.steps[i].travel_mode == 'WALKING') {
+            wholeRouteDict[i]={'walking':route.steps[i].duration.value}
+            continue
+          } else if (route.steps[i].travel_mode == 'TRANSIT') {
+            let routeID = route.steps[i].transit.line.short_name
+            let departureStop = route.steps[i].transit.departure_stop.name
+            let arrStop = route.steps[i].transit.arrival_stop.name
+            let googleTime = route.steps[i].duration.value
+            routeDict['routeID'] = routeID
+            routeDict['departureStop'] = departureStop
+            routeDict['arrStop'] = arrStop
+            routeDict['googleTime'] = googleTime
+            routeDict['datetime'] = this.timestamp
+            this.replacePrediction(routeDict).then(res=>{
+              wholeRouteDict[i]={'bus':res}
+            })
+          }
+        }
+        console.log(wholeRouteDict)
+    },
+
+    replacePrediction: async function (routeList){
+      let url="/ptpjourney"
+      let response = await fetch(url,{
+            method:'POST',
+            body:JSON.stringify(routeList),
+            headers: new Headers({
+            'Content-Type': 'application/json'
+          })
+          })
+      const data = await response.json();
+      return data.time
+    }
   },
 };
 </script>
