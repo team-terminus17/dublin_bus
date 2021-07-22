@@ -65,13 +65,14 @@ export default {
       journey :"Please input your journey info:",
       origin: null,
       destination: null,
-      time: "3:00",
-      date: null, 
+      time: null,
+      date: null,
+      direction: null
     }
   },
   methods:{
     getRoutes:async function(){
-      let url = '/coordinate/'+this.route+'/'+this.stop_dep+'/'+this.stop_arr;
+      let url = '/coordinate/'+'/'+this.direction+'/'+ this.route+'/'+this.stop_dep+'/'+this.stop_arr;
       let response = await fetch(url);
       let data = await response.json();
 
@@ -88,7 +89,9 @@ export default {
       this.valid=true;
       this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
       this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
+      let timestamp = Date.parse(this.date+' '+this.time)/1000
       bus.$emit("showDirection",this.origin,this.destination);
+      bus.$emit("showPrediction",this.route,this.direction,this.stop_dep,this.stop_arr,timestamp)
   },
     handle() {
       if (this.stop_arr == null || this.stop_dep == null) {
@@ -97,8 +100,9 @@ export default {
       }
       this.getRoutes();
   },
-    getRoute: function (val){
-      this.route=val;
+    getRoute: function (){
+      this.route=arguments[0];
+      this.direction=arguments[1];
     },
     getDepStop: function (val){
       this.stop_dep=val;
@@ -107,8 +111,19 @@ export default {
       this.stop_arr=val;
   }
   },
-
-
+beforeMount() {
+  function getTwoDigit(num){
+    return (num<10?'0':'')+num;
+  }
+  let dt=new Date();
+  let Y=dt.getFullYear();
+  let MO=getTwoDigit(dt.getMonth());
+  let D=getTwoDigit(dt.getDate());
+  let H=getTwoDigit(dt.getHours());
+  let MI=getTwoDigit(dt.getMinutes());
+  this.date=Y + '-' + MO + '-' + D;
+  this.time=H+':'+MI;
+  }
 }
 </script>
 

@@ -23,8 +23,6 @@ urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
-    path('test', test_message, name='test'),
-    path('test_db', test_db),
     path('routes', get_routes, name='routes'),
     path('stops/<stop>/<int:direction>', get_stops, name='stops'),
     path('coordinate/<int:direction>/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),

@@ -11,30 +11,18 @@ from django.db.models import F
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 
-def test_message(request):
-    """Dummy message to check if the backend and frontend can communicate"""
-    return HttpResponse("Hello from the backend!")
-
-
-def test_db(request):
-    """Dummy message to check if the database is integrated successfully"""
-    stops = RouteStops.objects.all()
-    return HttpResponse(stops)
-
-
 def get_routes(request):
     """Return json of available bus routes"""
-    with open('scrapers/routes.json', 'r') as file:
-        return JsonResponse(json.load(file))
-    # route_list = list(Routes.objects.filter(agency_id=2).distinct().values_list('name__name', flat=True))
-    # route_dict = {'routes': route_list}
-    # return JsonResponse(route_dict)
+    route_list = list(Routes.objects.filter(agency_id=1).distinct().values_list('name__name', flat=True))
+    route_dict = {'routes': sorted(route_list)}
+    print(len(route_list))
+    return JsonResponse(route_dict)
 
 
 def get_stops(request, stop, direction):
     """Return json of available bus stops for a single route and direction"""
-    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction).order_by('sequence')
-                     .values(stopID=F('stop__number'), stopName=F('stop__name')))
+    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True).order_by('sequence')
+                     .values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
     stop_dict = {'stops': stop_list}
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')
 
@@ -45,22 +33,22 @@ def get_coordinates(request, direction, route, stop_dep, stop_arr):
     if stop_dep == stop_arr:
         res['valid'] = 2
         return JsonResponse(res)
-    seq_dep = RouteStops.objects.get(name__name=route, direction=direction, stop__number=stop_dep).sequence
-    seq_arr = RouteStops.objects.get(name__name=route, direction=direction, stop__number=stop_arr).sequence
+    seq_dep = RouteStops.objects.get(name__name=route, direction=direction, stop_id=stop_dep).sequence
+    seq_arr = RouteStops.objects.get(name__name=route, direction=direction, stop_id=stop_arr).sequence
     # If the arrival stop is ahead of departure stop, the input route is invalid
     if seq_dep > seq_arr:
         res['valid'] = 1
         return JsonResponse(res)
     res['valid'] = 0
-    res['stop_dep'] = Stops.objects.get(number=stop_dep).dictify()
-    res['stop_arr'] = Stops.objects.get(number=stop_arr).dictify()
+    res['stop_dep'] = Stops.objects.get(id=stop_dep).dictify()
+    res['stop_arr'] = Stops.objects.get(id=stop_arr).dictify()
     return HttpResponse(json.dumps(res, ensure_ascii=False), content_type='application/json')
 
 
 def predict_time(request, route, direction, dep_stop, arr_stop, datetime):
     """Take a route, two stops indices, a datetime. Return a predicted time taken."""
-    dep_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop__number=dep_stop).sequence
-    arr_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop__number=arr_stop).sequence
+    dep_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).sequence
+    arr_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).sequence
     stop_list = list(RouteStops.objects.filter(name__name=route, direction=direction,
                                                sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq)
                      .values_list('stop__number', flat=True))
@@ -73,7 +61,7 @@ def predict_time(request, route, direction, dep_stop, arr_stop, datetime):
     stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
     dummy = dict()
     dummy['time'] = 1
-    return JsonResponse(dummy)
+    return JsonResponse(stop_ret)
 
 
 def get_weather(request):

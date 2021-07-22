@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import bus from "@/components/bus";
 export default {
   data() {
     return {
@@ -17,16 +18,15 @@ export default {
 
   methods: {
     getPrediction: async function () {
-      const predictionURL = "/predict/1/I/10/12/1624870800";
+      const predictionURL = '/predict/'+arguments[0]+'/'+arguments[1]+'/'+arguments[2]+'/'+arguments[3]+'/'+arguments[4]
       const response = await fetch(predictionURL);
       const data = await response.json();
-
       this.predict.time = data.time;
     },
   },
 
   beforeMount() {
-    this.getPrediction();
+    bus.$on("showPrediction",this.getPrediction)
   },
 };
 </script>

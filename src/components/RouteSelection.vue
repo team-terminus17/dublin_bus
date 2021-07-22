@@ -1,11 +1,15 @@
 <template >
+  <div>
 <v-autocomplete 
     v-model="route"
     :items="routes"
     @change="updateItems"
     @item-clicked="passRoute"
+    :auto-select-one-item="false"
   >
   </v-autocomplete>
+    <button  @click="selectDirection" id="direction">{{ this.direction_text }}</button>
+  </div>
 </template>
 
 <script>
@@ -17,24 +21,42 @@ name: "RouteSelection",
   return{
     items:null,
     routes:null,
-    route:null
+    route:null,
+    direction:0,
+    direction_text:'inbound'
   };
   },
   methods:{
-  updateItems(value){
-      this.routes=this.items.filter(item=>item.includes(value))
+  updateItems: function (value){
+      this.routes=this.items.filter(item=>item.includes(value)).slice(0,5)
   },
+
   getRoutes:async function(){
       let url = '/routes';
       let response = await fetch(url);
       let data = await response.json();
-
       this.items=data.routes;
-      this.routes=data.routes;
+      this.routes=data.routes.slice(0,5);
   },
-    passRoute(value){
-    this.$emit("selectRoute",value)
-    bus.$emit("showRoute",value)
+
+    passRoute: function (value){
+    this.route = value;
+    this.$emit("selectRoute",value, this.direction)
+    bus.$emit("showRoute",value, this.direction)
+    },
+
+    selectDirection: function () {
+    if(this.direction === 0){
+      this.direction = 1;
+      this.direction_text = "outbound";
+    }
+    else{
+      this.direction = 0;
+      this.direction_text = "inbound";
+    }
+    if(this.route != null){
+      this.passRoute(this.route);
+    }
     }
   },
   created() {
