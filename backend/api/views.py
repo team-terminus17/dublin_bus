@@ -110,6 +110,15 @@ def get_journey_time(request):
     return JsonResponse(dummy)
 
 def get_stop_info(request, agency="all", route="all"):
+    """
+    Retrieve information on stops. Returns all stops by default,
+    but has optional filters for agency and route.
+
+    The agency filter should be the GTFS ID for the agency - e.g. '978' for Dublin Bus.
+    The route filter should be the short name for the route, with caps - e.g. '46A'.
+
+    Returns stop names, positions, and the routes/agencies they are associated.
+    """
 
     # Retrieve the info in a single query with 3 inner joins and up to two
     # where clauses.

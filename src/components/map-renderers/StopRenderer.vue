@@ -1,14 +1,16 @@
 <template>
-  <!--
-      This component renders to the map and doesn't
-      need any html elements. Is there a better element 
-      to use here / a better way of declaring a component
-      that does not render directly?
-  -->
   <div></div>
 </template>
 
 <script>
+/**
+ * Renders stops on the google map in the Vuex store.
+ *
+ * By default, renders all stops for all agencies, which takes quite some time
+ * to load.
+ *
+ * There are properties which allow filtering by agency, route, and direction.
+ */
 export default {
   name: "StopRenderer",
 
@@ -17,22 +19,36 @@ export default {
       type: Boolean,
       default: true,
     },
-
+    /**
+     * Filter by agency. This should be in the form of a GTFS ID
+     * e.g. '978' for Dublin Bus
+     */
     agencyFilter: {
       type: String,
       default: "all",
     },
-
+    /**
+     * Filter by the short name of a route.
+     * Any letters should be capitalized.
+     * e.g. '46A'
+     */
     routeFilter: {
       type: String,
       default: "all",
     },
-
+    /**
+     * Filter by direction - '0' for outbound, '1' for inbound.
+     * @values 0,1,both
+     */
     directionFilter: {
       type: String,
       default: "both",
     },
-
+    /**
+     * By default, only stops for a representative "main"
+     * path a route takes are shown. Set this to true to
+     * show all stops associated with the route.
+     */
     showVariants: {
       type: Boolean,
       default: false,
@@ -44,7 +60,7 @@ export default {
     agencyFilter: "refreshView",
     routeFilter: "refreshView",
     directionFilter: "refreshView",
-    map: "refreshView"
+    map: "refreshView",
   },
 
   data() {
@@ -57,8 +73,8 @@ export default {
 
   computed: {
     map() {
-      return this.$store.state.map
-    }
+      return this.$store.state.map;
+    },
   },
 
   created() {
@@ -94,10 +110,7 @@ export default {
 
     removeMarkers() {
       for (let marker of this.markers) marker.setMap(null);
-
-      // Is there a way of clearing an array in javascript
-      // that is considered more 'proper'?
-      this.markers.splice(0, this.markers.length);
+      this.markers = [];
     },
 
     refreshMarkers() {
@@ -115,6 +128,7 @@ export default {
             },
             map: this.map,
           });
+          this.markers.push(marker);
         }
       }
     },
