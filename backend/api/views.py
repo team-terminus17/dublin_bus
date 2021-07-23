@@ -15,7 +15,6 @@ def get_routes(request):
     """Return json of available bus routes"""
     route_list = list(Routes.objects.filter(agency_id=1).distinct().values_list('name__name', flat=True))
     route_dict = {'routes': sorted(route_list)}
-    print(len(route_list))
     return JsonResponse(route_dict)
 
 

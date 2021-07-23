@@ -41,8 +41,6 @@ export default {
   components:{
     RouteSelection,
     StopSelection,
-    // DateInput,
-    // TimeInput,
   },
   data(){
     return{

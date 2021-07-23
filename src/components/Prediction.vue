@@ -45,7 +45,6 @@ export default {
             })
           }
         }
-        console.log(wholeRouteDict)
     },
 
     replacePrediction: async function (routeList){

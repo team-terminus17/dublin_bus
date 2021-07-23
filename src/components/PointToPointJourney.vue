@@ -53,7 +53,6 @@ export default {
       }
       else{
         this.renderRoute();
-        // bus.$emit("sendLocation",this.start,this.end)//emit to map component
       }
     },
 

@@ -31,10 +31,6 @@
                 country:"Ireland",
                 temp: 12,
                 description:"Clouds up in this",
-                lowTemp:"19",
-                highTemp:"27",
-                feelsLike:"20",
-                humidity:"55",
                 icon: 10n,
                 },
             }
