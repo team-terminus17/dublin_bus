@@ -18,11 +18,10 @@ export default {
   methods: {
     getPrediction: async function () {
       const predictionURL = "/predict/1/I/10/12/1624870800";
-      //const response = await fetch(predictionURL);
-      //const data = await response.json();
-      //console.log(data);
+      const response = await fetch(predictionURL);
+      const data = await response.json();
 
-      //this.predict.time = data.time;
+      this.predict.time = data.time;
     },
   },
 

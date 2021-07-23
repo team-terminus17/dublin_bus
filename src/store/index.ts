@@ -6,7 +6,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     map: null
-
   },
   mutations: {
     initMap(state, map) {
