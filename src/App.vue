@@ -8,6 +8,7 @@
       </div>
     </div>
     <Map></Map>
+    <stop-renderer></stop-renderer>
     <div class="row" style="margin-top: 20px;">
       <TripSelection></TripSelection>
       <Prediction></Prediction>
@@ -26,6 +27,7 @@ import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
+import StopRenderer from "./components/map-renderers/StopRenderer.vue"
 
 export default {
   name: 'App',
@@ -34,6 +36,7 @@ export default {
     TripSelection,
     Weather,
     Prediction,
+    StopRenderer
   },
   data() {
     return {
