@@ -35,7 +35,7 @@ name: "DateTimeInput",
   }
   let dt=new Date();
   let Y=dt.getFullYear();
-  let MO=getTwoDigit(dt.getMonth());
+  let MO=getTwoDigit(dt.getMonth()+1);
   let D=getTwoDigit(dt.getDate());
   let H=getTwoDigit(dt.getHours());
   let MI=getTwoDigit(dt.getMinutes());
