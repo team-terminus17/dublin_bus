@@ -109,11 +109,22 @@ def get_journey_time(request):
     dummy['time'] = 1
     return JsonResponse(dummy)
 
-def get_all_stop_info(request):
+def get_stop_info(request, agency="all", route="all"):
+
+    # Retrieve the info in a single query with 3 inner joins and up to two
+    # where clauses.
+
+    entries = RouteStops.objects.select_related("stop", "name", "agency").all()
+
+    if agency != "all":
+        entries = entries.filter(agency__external_id=agency)
+
+    if route != "all":
+        entries = entries.filter(name__name=route)
+
+    # Format the results for the frontend.
 
     results = dict()
-    entries = RouteStops.objects.select_related("stop", "name").prefetch_related("name__routes").all()
-    print(entries.query)
 
     for entry in entries:
 
@@ -121,22 +132,24 @@ def get_all_stop_info(request):
         route_name = entry.name.name
         direction = entry.direction
         main = entry.main
+        agency = entry.agency.external_id
 
-        current = results.get(stop.external_id, None)
-        if current is None:
-            current = {
+        current_stop = results.get(stop.external_id, None)
+        if current_stop is None:
+            current_stop = {
                 "name": stop.name,
                 "number": stop.number,
                 "lat": stop.lat,
                 "lng": stop.lon,
                 "routes": list()
             }
-            results[stop.external_id] = current
+            results[stop.external_id] = current_stop
 
-        current["routes"].append({
+        current_stop["routes"].append({
             "name": route_name,
             "direction": direction,
-            "main": main
+            "main": main,
+            "agency": agency
         })
     
     return JsonResponse(results)

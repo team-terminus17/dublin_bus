@@ -26,7 +26,7 @@ import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
-import PointToPointJourney from "@/components/PointToPointJourney";
+
 export default {
   name: 'App',
   components: {

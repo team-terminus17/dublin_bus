@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import bus from "@/components/bus";
+
 export default {
   name: "Map",
 
@@ -19,10 +19,33 @@ export default {
       default: true
     },
 
-    agencyFilter: String,
-    routeFilter: String,
-    directionFilter: String
+    agencyFilter: {
+      type: String,
+      default: "all"
+    },
 
+    routeFilter: {
+      type: String,
+      default: "all"
+    },
+
+    directionFilter: {
+      type: String,
+      default: "both"
+    },
+
+    showVariants: {
+      type: Boolean,
+      default: false
+    }
+
+  },
+
+  watch: {
+    showMarkers: "refreshView", 
+    agencyFilter: "refreshView",
+    routeFilter: "refreshView", 
+    directionFilter: "refreshView"
   },
 
   data(){
@@ -47,37 +70,59 @@ export default {
         zoom: 12,
       });
 
-      this.refreshMarkers()
+      this.refreshView()
     
     },
 
-    fetchData() {
+    fetchData(callback) {
 
-      this.loading = true
+      if (!this.showMarkers)
+        callback({})
 
-      fetch(`/stops/all/coordinates`)
-      .then(response => response.json())
-      .then(data => {
-        
-        this.stopsData = data
-        this.loading = false
-        this.refreshMarkers()
+      else {
 
-      })
+        const url = `/stops/${this.agencyFilter}/${this.routeFilter}/info` 
+
+        fetch(url)
+        .then(response => response.json())
+        .then(callback)
+
+      }
 
     },
 
-    refreshMarkers() {
+    refreshView() {
 
       if (this.loading)
         return
 
-      if (!this.stopsData) {
-        this.fetchData()
-        return
-      }
-
       this.loading = true
+
+      this.fetchData((data) => {
+        this.stopsData = data
+        this.refreshMarkers()
+        this.loading = false
+      })
+
+    },
+
+    isVisible(stop) {
+
+        for (const route of stop.routes) {
+          
+          if ( (this.agencyFilter == "all" || route.agency == this.agencyFilter)
+            && (this.routeFilter == "all" || route.name == this.routeFilter)
+            && (this.directionFilter == "both" || route.direction == this.directionFilter)
+            && (this.showVariants || route.main))
+            return true
+
+        }
+
+        return false
+
+    },
+
+    refreshMarkers() {
 
       for (let marker of this.markers)
         marker.setMap(null)
@@ -89,24 +134,22 @@ export default {
       if (!this.showMarkers)
         return
 
-      console.log("Populating map")
-
       for (const stop of Object.values(this.stopsData)) {
 
-        const test = new window.google.maps.LatLng(53.3473, -6.2625)
+        if (this.isVisible(stop)) {
 
-        const marker = new window.google.maps.Marker({
-          position: {
-            lat: stop.lat,
-            lng: stop.lng
-          },
-          map: this.map,
-          visible: true
-        })
+          const marker = new window.google.maps.Marker({
+            position: {
+              lat: stop.lat,
+              lng: stop.lng
+            },
+            map: this.map
+          })
+
+        }
 
       }
 
-      console.log("Done")
     }
   }
 }
