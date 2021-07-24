@@ -76,6 +76,7 @@ def get_journey_time(request):
                                                  agency_id=1, main=True, direction=direction)
             arr_stop = RouteStops.objects.filter(name__name=route, stop__external_name__contains=routes['arrStop'],
                                                  agency_id=1, main=True, direction=direction)
+
             if dep_stop.count() == 1 and arr_stop.count() == 1:
                 # To confirm the queried result is valid
                 if dep_stop.first().sequence < arr_stop.first().sequence:
@@ -141,8 +142,6 @@ def get_stop_info(request, agency="all", route="all"):
         })
     
     return JsonResponse(results)
-
-
 
 
 def model_predict(route, direction, dep_stop, arr_stop, datetime):

@@ -7,9 +7,7 @@
         <button type="button" class="btn btn-dark">Dark</button>
       </div>
     </div>
-    <Map
-        v-on:sendGoogle="getGoogle"
-    ></Map>
+    <Map></Map>
     <div>
       <date-time-input
           v-on:sendTimestamp="updateTimestamp"
@@ -17,8 +15,6 @@
     </div>
     <point-to-point-journey
         v-on:googlequerycomplete="showGooglePrediction"
-        :google="google"
-        :map="map"
         :timestamp="timestamp"
     ></point-to-point-journey>
     <div class="row" style="margin-top: 20px;">
@@ -46,6 +42,7 @@ import PointToPointJourney from "@/components/PointToPointJourney";
 import DateTimeInput from "@/components/DateTimeInput";
 export default {
   name: "App",
+
   components: {
     PointToPointJourney,
     DateTimeInput,
@@ -54,25 +51,23 @@ export default {
     Weather,
     Prediction,
   },
+
   data() {
     return {
       journeyInfo: '<b>Journey Info</b>',
       timestamp:null,
-      google:null,
-      map:null
     };
   },
+
   methods:{
     showTripPrediction:function (){
       this.$refs.predict.getTripPrediction(arguments[0],arguments[1],arguments[2],arguments[3],this.timestamp)
     },
+
     showGooglePrediction:function (val){
       this.$refs.predict.getGooglePrediction(val, this.timestamp);
     },
-    getGoogle:function (){
-      this.google=arguments[0];
-      this.map=arguments[1];
-    },
+
     updateTimestamp:function (val){
       this.timestamp=val
     }

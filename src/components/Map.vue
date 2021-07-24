@@ -4,7 +4,6 @@
 
 <script>
 import store from "@/store/index";
-import bus from "./bus";
 
 export default {
   name: "Map",
@@ -22,7 +21,6 @@ export default {
       });
 
       this.$store.commit("initMap", map);
-      this.$emit("sendGoogle",window.google,this.map)
     },
   },
 };

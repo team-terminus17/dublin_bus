@@ -7,7 +7,7 @@
 <script>
 export default {
 name: "PlaceInput",
-  props:['id_name','google'],
+  props:['id_name'],
 
   data(){
   return{
@@ -18,12 +18,12 @@ name: "PlaceInput",
 
   methods:{
   initAuto:function (){
-    let bounds=new this.google.maps.LatLngBounds(
+    let bounds=new window.google.maps.LatLngBounds(
         {lat:52.999804, lng:-6.841221},
         {lat:53.693350, lng:-5.914248}
     );
 
-    this.autocomplete=new this.google.maps.places.Autocomplete(
+    this.autocomplete=new window.google.maps.places.Autocomplete(
         document.getElementById(this.id_name),
         {
           bounds:bounds,
@@ -39,8 +39,14 @@ name: "PlaceInput",
     }
   },
 
+  computed: {
+    map() {
+      return this.$store.state.map;
+    },
+  },
+
   watch:{
-  google(){
+  map(){
     this.initAuto()
   }
   }
