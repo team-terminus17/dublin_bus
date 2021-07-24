@@ -67,7 +67,7 @@ export default {
       this.$refs.predict.getTripPrediction(arguments[0],arguments[1],arguments[2],arguments[3],this.timestamp)
     },
     showGooglePrediction:function (val){
-      this.$refs.predict.getGooglePrediction(val);
+      this.$refs.predict.getGooglePrediction(val, this.timestamp);
     },
     getGoogle:function (){
       this.google=arguments[0];

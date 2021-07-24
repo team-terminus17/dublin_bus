@@ -45,22 +45,11 @@ def get_coordinates(request, direction, route, stop_dep, stop_arr):
 
 
 def predict_time(request, route, direction, dep_stop, arr_stop, datetime):
-    """Take a route, two stops indices, a datetime. Return a predicted time taken."""
-    dep_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).sequence
-    arr_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).sequence
-    stop_list = list(RouteStops.objects.filter(name__name=route, direction=direction,
-                                               sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq)
-                     .values_list('stop__number', flat=True))
-    # First we need to find the predicted weather of the time closet to the input datetime.
-    # If it exceeds the limit of the prediction, we just get current weather info
-    weather = Weather.objects.filter(weather_time__gte=datetime).order_by('weather_time')
-    if len(weather) == 0:
-        weather = Weather.objects.all().order_by('weather_time')
-    weather = weather[0]
-    stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
+    """Return the predicted time from model in json format"""
+    time_predict = model_predict(route, direction, dep_stop, arr_stop, datetime)
     dummy = dict()
-    dummy['time'] = 1
-    return JsonResponse(stop_ret)
+    dummy['time'] = time_predict
+    return JsonResponse(dummy)
 
 
 def get_weather(request):
@@ -71,12 +60,33 @@ def get_weather(request):
 
 @csrf_exempt
 def get_journey_time(request):
+    """Retrieve information given by google directions api and returns the predicted time from the model"""
     if request.method == 'POST':
         routes = json.loads(request.body.decode())
-        print(routes)
-    dummy = dict()
-    dummy['time'] = 1
-    return JsonResponse(dummy)
+        route = routes['routeID']
+        time_predict = routes['googleTime']
+        timestamp = routes['datetime']
+        # Direction info is not provided by google so we need to get it ourselves
+
+        for direction in [0, 1]:
+            # For each direction, check if we could find the departure stop and arrival stop given the corresponding
+            # names given by google.
+            dep_stop = RouteStops.objects.filter(name__name=route,
+                                                 stop__external_name__contains=routes['departureStop'],
+                                                 agency_id=1, main=True, direction=direction)
+            arr_stop = RouteStops.objects.filter(name__name=route, stop__external_name__contains=routes['arrStop'],
+                                                 agency_id=1, main=True, direction=direction)
+            if dep_stop.count() == 1 and arr_stop.count() == 1:
+                # To confirm the queried result is valid
+                if dep_stop.first().sequence < arr_stop.first().sequence:
+                    dep_stop_id = dep_stop.first().stop_id
+                    arr_stop_id = arr_stop.first().stop_id
+                    time_predict = model_predict(route, direction, dep_stop_id, arr_stop_id, timestamp)
+                    break
+        # If we could not find a valid id pair for departure stop and arrival stop, return the
+        # predicted time given by google
+    return JsonResponse({'time': time_predict})
+
 
 def get_stop_info(request, agency="all", route="all"):
     """
@@ -131,3 +141,23 @@ def get_stop_info(request, agency="all", route="all"):
         })
     
     return JsonResponse(results)
+
+
+
+
+def model_predict(route, direction, dep_stop, arr_stop, datetime):
+    """Take a route, two stops indices, a datetime. Return a predicted time taken."""
+    dep_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).sequence
+    arr_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).sequence
+    stop_list = list(RouteStops.objects.filter(name__name=route, direction=direction,
+                                               sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq)
+                     .values_list('stop__number', flat=True))
+    # First we need to find the predicted weather of the time closet to the input datetime.
+    # If it exceeds the limit of the prediction, we just get current weather info
+    weather = Weather.objects.filter(weather_time__gte=datetime).order_by('weather_time')
+    if len(weather) == 0:
+        weather = Weather.objects.all().order_by('weather_time')
+    weather = weather[0]
+    stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
+    time_predict = 1
+    return time_predict

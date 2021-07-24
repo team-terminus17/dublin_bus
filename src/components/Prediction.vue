@@ -23,7 +23,7 @@ export default {
       this.predict.time = data.time;
     },
 
-    getGooglePrediction: function (route){
+    getGooglePrediction: function (route, timestamp){
         let wholeRouteDict={};
         for(let i=0;i<route.steps.length;i++) {
           let routeDict = {}
@@ -31,6 +31,10 @@ export default {
             wholeRouteDict[i]={'walking':route.steps[i].duration.value}
             continue
           } else if (route.steps[i].travel_mode == 'TRANSIT') {
+            if(route.steps[i].transit.line.agencies[0].name!="Dublin Bus"){
+              wholeRouteDict[i]={'bus':route.steps[i].duration.value}
+              continue
+            }
             let routeID = route.steps[i].transit.line.short_name
             let departureStop = route.steps[i].transit.departure_stop.name
             let arrStop = route.steps[i].transit.arrival_stop.name
@@ -39,7 +43,7 @@ export default {
             routeDict['departureStop'] = departureStop
             routeDict['arrStop'] = arrStop
             routeDict['googleTime'] = googleTime
-            routeDict['datetime'] = this.timestamp
+            routeDict['datetime'] = timestamp
             this.replacePrediction(routeDict).then(res=>{
               wholeRouteDict[i]={'bus':res}
             })

@@ -45,7 +45,8 @@ name: "RouteSelection",
     },
 
     selectDirection: function () {
-    if(this.direction === 0){
+    if(this.direction === 1){
+      //1 for inbound, 0 for outbound
       this.direction = 1;
       this.direction_text = "outbound";
     }
