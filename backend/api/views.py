@@ -108,3 +108,57 @@ def get_journey_time(request):
     dummy = dict()
     dummy['time'] = 1
     return JsonResponse(dummy)
+
+def get_stop_info(request, agency="all", route="all"):
+    """
+    Retrieve information on stops. Returns all stops by default,
+    but has optional filters for agency and route.
+
+    The agency filter should be the GTFS ID for the agency - e.g. '978' for Dublin Bus.
+    The route filter should be the short name for the route, with caps - e.g. '46A'.
+
+    Returns stop names, positions, and the routes/agencies they are associated.
+    """
+
+    # Retrieve the info in a single query with 3 inner joins and up to two
+    # where clauses.
+
+    entries = RouteStops.objects.select_related("stop", "name", "agency").all()
+
+    if agency != "all":
+        entries = entries.filter(agency__external_id=agency)
+
+    if route != "all":
+        entries = entries.filter(name__name=route)
+
+    # Format the results for the frontend.
+
+    results = dict()
+
+    for entry in entries:
+
+        stop = entry.stop
+        route_name = entry.name.name
+        direction = entry.direction
+        main = entry.main
+        agency = entry.agency.external_id
+
+        current_stop = results.get(stop.external_id, None)
+        if current_stop is None:
+            current_stop = {
+                "name": stop.name,
+                "number": stop.number,
+                "lat": stop.lat,
+                "lng": stop.lon,
+                "routes": list()
+            }
+            results[stop.external_id] = current_stop
+
+        current_stop["routes"].append({
+            "name": route_name,
+            "direction": direction,
+            "main": main,
+            "agency": agency
+        })
+    
+    return JsonResponse(results)

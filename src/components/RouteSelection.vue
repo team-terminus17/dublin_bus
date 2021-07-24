@@ -28,7 +28,7 @@ name: "RouteSelection",
       let url = '/routes';
       let response = await fetch(url);
       let data = await response.json();
-      console.log(data.routes)
+
       this.items=data.routes;
       this.routes=data.routes;
   },

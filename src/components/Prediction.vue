@@ -20,7 +20,6 @@ export default {
       const predictionURL = "/predict/1/I/10/12/1624870800";
       const response = await fetch(predictionURL);
       const data = await response.json();
-      console.log(data);
 
       this.predict.time = data.time;
     },
