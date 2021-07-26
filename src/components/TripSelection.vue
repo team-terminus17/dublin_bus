@@ -24,6 +24,9 @@
           ></StopSelection>
         </div>
     </div>
+      <trip-renderer
+          ref="renderer"
+      ></trip-renderer>
     <div class="col-sm-2 col-md-2">
       <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
     </div>
@@ -35,10 +38,12 @@
 
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
+import TripRenderer from "@/components/map-renderers/TripRenderer";
 
 export default {
   name: "TripSelection",
   components:{
+    TripRenderer,
     RouteSelection,
     StopSelection,
   },
@@ -85,6 +90,7 @@ export default {
         return;
       }
       this.getRoutes();
+      this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
   },
 
     getRoute: function (){
