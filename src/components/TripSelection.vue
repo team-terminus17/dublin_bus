@@ -56,8 +56,6 @@ export default {
       journey :"Please input your journey info:",
       origin: null,
       destination: null,
-      time: null,
-      date: null,
       direction: null,
       routeinfo: null
     }
@@ -108,19 +106,6 @@ export default {
   }
   },
 
-beforeMount() {
-  function getTwoDigit(num){
-    return (num<10?'0':'')+num;
-  }
-  let dt=new Date();
-  let Y=dt.getFullYear();
-  let MO=getTwoDigit(dt.getMonth());
-  let D=getTwoDigit(dt.getDate());
-  let H=getTwoDigit(dt.getHours());
-  let MI=getTwoDigit(dt.getMinutes());
-  this.date=Y + '-' + MO + '-' + D;
-  this.time=H+':'+MI;
-  }
 }
 </script>
 
