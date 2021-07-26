@@ -119,6 +119,10 @@ export default {
       if (!this.map) return;
       if (!this.showMarkers) return;
 
+      const icon = {
+        url: require("@/assets/circle-10.png"),
+        scaledSize: new window.google.maps.Size(10,10)
+      }
       for (const stop of Object.values(this.stopsData)) {
         if (this.isVisible(stop)) {
           const marker = new window.google.maps.Marker({
@@ -126,7 +130,8 @@ export default {
               lat: stop.lat,
               lng: stop.lng,
             },
-            map: this.map,
+            icon: icon,
+            map: this.map
           });
           this.markers.push(marker);
         }
