@@ -148,7 +148,6 @@ def get_shape(request, route, direction, dep_stop, arr_stop):
     """Take a route, two stops indices, return the array of shape corrdinates of the trip defined by the input"""
     dep_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).shape_id
     arr_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).shape_id
-    dep_stop_entry = 100
     coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry)
                             .values('lat', lng=F('lon')))
     coordinates_dict = {'coordinates': coordinates_list}
