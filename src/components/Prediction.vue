@@ -1,5 +1,5 @@
 <template>
-  <div class="col-sm-12 col-md-12">
+  <div class="col-sm-12 col-md-12 pred">
     <p>Journey Info:</p>
     <div>Time: {{ predict.time }}</div>
   </div>
@@ -32,5 +32,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.pred {
+  margin-bottom: 20px;
+  border-top: 1px solid #fefefe;
+}
+
 </style>

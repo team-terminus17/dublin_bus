@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid" style="text-align: center; margin-top: 5px;">
-      <div class="row">
-      <div class="col-sm-10 col-md-10 d-flex justify-content-end" style="margin-top: 40px; margin-bottom: 40px;">
+    <div class="row">
+      <div class="col-sm-6 col-md-10 d-flex justify-content-end" style="margin-top: 40px; margin-bottom: 40px; z-index: 1;">
         <button type="button" class="btn btn-light">Light</button>
         <button type="button" class="btn btn-dark">Dark</button>
       </div>
@@ -10,7 +10,7 @@
     <div class="row">
       <div id="input" class="col-md-2">
         <TripSelection></TripSelection>
-        <!-- <Prediction></Prediction> -->
+        <Prediction></Prediction>
       </div>
       <div class="col-md-12">
         <Map></Map>
@@ -24,11 +24,12 @@
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
 #input {
-  margin-left: 60px;
-  margin-top: 60px;
-  margin-bottom: -510px;
+  position: absolute;
+  margin-left: 40px;
+  margin-top: -30px;
+  margin-bottom: -10px;
   z-index: 1;
-  background-color: #0C1726;
+  background-color: #4a80f5;
   color: #F1ECED;
   border-radius: 8px;
 }
@@ -52,7 +53,7 @@ export default {
     Map,
     TripSelection,
     Weather,
-    // Prediction,
+    Prediction,
   },
   data() {
     return {
