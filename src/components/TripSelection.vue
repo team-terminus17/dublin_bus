@@ -62,7 +62,7 @@ export default {
   },
   methods:{
     getRoutes:async function(){
-      let url = '/coordinate/'+'/'+this.direction+'/'+ this.route+'/'+this.stop_dep+'/'+this.stop_arr;
+      let url = `/coordinate/${this.direction}/${this.route}/${this.stop_dep}/${this.stop_arr}`;
       let response = await fetch(url);
       let data = await response.json();
 

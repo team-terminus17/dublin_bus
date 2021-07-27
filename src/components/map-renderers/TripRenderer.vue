@@ -37,7 +37,6 @@ export default {
       this.clearView();
 
       if (this.map) {
-        console.log(this.busPathCoordinates)
         this.busPath = new window.google.maps.Polyline({
           strokeColor: '#FFB266',
           strokeOpacity: 0.5,
@@ -65,8 +64,8 @@ export default {
       fetch(`/shape/${route}/${direction}/${stop_dep}/${stop_arr}`)
           .then(response => response.json())
           .then(data => {
-            this.busPathCoordinates=data.coordinates
-            this.updateView()
+            this.busPathCoordinates=data.coordinates;
+            this.updateView();
     })
     }
   },

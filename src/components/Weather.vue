@@ -49,7 +49,7 @@
         },
 
         beforeMount(){
-        this.getWeather()
+        this.getWeather();
         },
 
         

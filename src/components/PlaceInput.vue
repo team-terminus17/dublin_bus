@@ -35,7 +35,7 @@ name: "PlaceInput",
 
     onPlaceChanged:function (){
     let place=this.autocomplete.getPlace();
-    this.$emit("sendPlaceID",place.place_id)
+    this.$emit("sendPlaceID",place.place_id);
     }
   },
 
@@ -47,7 +47,7 @@ name: "PlaceInput",
 
   watch:{
   map(){
-    this.initAuto()
+    this.initAuto();
   }
   }
 }

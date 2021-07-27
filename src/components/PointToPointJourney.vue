@@ -3,13 +3,11 @@
   <PlaceInput
       id_name="autocomplete1"
       v-on:sendPlaceID="getStart"
-      :google="google"
   ></PlaceInput>
 <!--  id_name is set to differentiate between two placeinput components-->
   <PlaceInput
       id_name="autocomplete2"
       v-on:sendPlaceID="getEnd"
-      :google="google"
   ></PlaceInput>
   <PointToPointRenderer
       v-on:directionsvalidified="showGooglePrediction"
@@ -30,7 +28,7 @@ export default {
     PlaceInput
   },
 
-  props:['google','map','timestamp'],
+  props:['timestamp'],
 
   data(){
     return{
@@ -42,7 +40,7 @@ export default {
   methods: {
     handle: function () {
       if(this.start==null||this.end==null){
-        alert("You need to enter both origin and destination.")
+        alert("You need to enter both origin and destination.");
       }
       else{
         this.renderRoute();
@@ -50,19 +48,19 @@ export default {
     },
 
     getStart: function (val){
-      this.start=val
+      this.start=val;
     },
 
     getEnd: function (val){
-      this.end=val
+      this.end=val;
     },
 
     renderRoute:function (){
-      this.$refs.renderer.getGoogleTime(this.start,this.end,this.timestamp)
+      this.$refs.renderer.getGoogleTime(this.start,this.end,this.timestamp);
     },
 
     showGooglePrediction: function (val){
-      this.$emit("googlequerycomplete",val)
+      this.$emit("googlequerycomplete",val);
     }
   }
 }

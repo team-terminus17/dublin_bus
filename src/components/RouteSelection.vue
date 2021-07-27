@@ -28,7 +28,7 @@ name: "RouteSelection",
 
   methods:{
   updateItems: function (value){
-      this.routes=this.items.filter(item=>item.includes(value)).slice(0,5)
+      this.routes=this.items.filter(item=>item.includes(value)).slice(0,5);
   },
 
   getRoutes:async function(){
@@ -41,7 +41,7 @@ name: "RouteSelection",
 
     passRoute: function (value){
     this.route = value;
-    this.$emit("selectRoute",value, this.direction)
+    this.$emit("selectRoute",value, this.direction);
     },
 
     selectDirection: function () {

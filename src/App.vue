@@ -61,7 +61,7 @@ export default {
 
   methods:{
     showTripPrediction:function (){
-      this.$refs.predict.getTripPrediction(arguments[0],arguments[1],arguments[2],arguments[3],this.timestamp)
+      this.$refs.predict.getTripPrediction(arguments[0],arguments[1],arguments[2],arguments[3],this.timestamp);
     },
 
     showGooglePrediction:function (val){
@@ -69,7 +69,7 @@ export default {
     },
 
     updateTimestamp:function (val){
-      this.timestamp=val
+      this.timestamp=val;
     }
   }
 }
