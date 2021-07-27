@@ -13,15 +13,15 @@ index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
 def get_routes(request):
     """Return json of available bus routes"""
-    route_list = list(Routes.objects.filter(agency_id=1).distinct().values_list('name__name', flat=True))
+    route_list = list(Routes.objects.filter(agency__external_id="978").distinct().values_list('name__name', flat=True))
     route_dict = {'routes': sorted(route_list)}
     return JsonResponse(route_dict)
 
 
 def get_stops(request, stop, direction):
     """Return json of available bus stops for a single route and direction"""
-    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency_id=1).order_by('sequence')
-                     .values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
+    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency__external_id="978")
+                     .order_by('sequence').values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
     stop_dict = {'stops': stop_list}
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')
 
@@ -73,9 +73,9 @@ def get_journey_time(request):
             # names given by google.
             dep_stop = RouteStops.objects.filter(name__name=route,
                                                  stop__external_name__contains=routes['departureStop'],
-                                                 agency_id=1, main=True, direction=direction)
+                                                 agency__external_id="978", main=True, direction=direction)
             arr_stop = RouteStops.objects.filter(name__name=route, stop__external_name__contains=routes['arrStop'],
-                                                 agency_id=1, main=True, direction=direction)
+                                                 agency__external_id="978", main=True, direction=direction)
 
             if dep_stop.count() == 1 and arr_stop.count() == 1:
                 # To confirm the queried result is valid
