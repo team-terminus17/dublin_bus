@@ -21,7 +21,7 @@ name: "RouteSelection",
     items:null,
     routes:null,
     route:null,
-    direction:0,
+    direction:1,
     direction_text:'inbound'
   };
   },
@@ -47,11 +47,11 @@ name: "RouteSelection",
     selectDirection: function () {
     if(this.direction === 1){
       //1 for inbound, 0 for outbound
-      this.direction = 1;
+      this.direction = 0;
       this.direction_text = "outbound";
     }
     else{
-      this.direction = 0;
+      this.direction = 1;
       this.direction_text = "inbound";
     }
     if(this.route != null){
