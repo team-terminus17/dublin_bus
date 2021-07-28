@@ -15,7 +15,7 @@ export default {
     return {
       directionsService: null,
       directionsRenderer: null,
-      directions: null,
+      directions: {routes: []},
     };
   },
 
@@ -51,7 +51,7 @@ export default {
 
     clearView() {
       if (this.directionsRenderer)
-        this.directionsRenderer.setDirections(null);
+        this.directionsRenderer.setDirections({routes: []});
       //Although it is functioning, I don't know why the console in chrome devtools would give me an error
       //"InvalidValueError: setDirections: not an Object"
     },
@@ -78,7 +78,7 @@ export default {
       if (status == 'OK') {
         this.directions=response;
         let route=response.routes[0].legs[0];
-        this.$emit("directionsvalidified",route)
+        this.$emit("directionsValidated",route)
       }
       else{
         this.directions=null;

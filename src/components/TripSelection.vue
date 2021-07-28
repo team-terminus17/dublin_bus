@@ -79,7 +79,7 @@ export default {
       this.valid=true;
       this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
       this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
-      this.$emit("tripcomplete",this.route,this.direction,this.stop_dep,this.stop_arr)
+      this.$emit("tripComplete",this.route,this.direction,this.stop_dep,this.stop_arr)
   },
 
     handle() {
