@@ -5,32 +5,25 @@
 </template>
 
 <script>
-import bus from "@/components/bus";
 export default {
 name: "PlaceInput",
-  props:{
-  id_name:{
-    type:String
-  }
-  },
+  props:['id_name'],
 
   data(){
   return{
     autocomplete:null,
     element:null,
-    google:null
   }
   },
 
   methods:{
-  initAuto:function (val){
-    this.google=val;
-    let bounds=new this.google.maps.LatLngBounds(
+  initAuto:function (){
+    let bounds=new window.google.maps.LatLngBounds(
         {lat:52.999804, lng:-6.841221},
         {lat:53.693350, lng:-5.914248}
     );
 
-    this.autocomplete=new this.google.maps.places.Autocomplete(
+    this.autocomplete=new window.google.maps.places.Autocomplete(
         document.getElementById(this.id_name),
         {
           bounds:bounds,
@@ -42,13 +35,21 @@ name: "PlaceInput",
 
     onPlaceChanged:function (){
     let place=this.autocomplete.getPlace();
-    this.$emit("sendPlaceID",place.place_id)
+    this.$emit("sendPlaceID",place.place_id);
     }
   },
 
-  created() {
-  bus.$on("sendGoogle",this.initAuto);
+  computed: {
+    map() {
+      return this.$store.state.map;
+    },
   },
+
+  watch:{
+  map(){
+    this.initAuto();
+  }
+  }
 }
 </script>
 

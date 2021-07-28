@@ -23,13 +23,12 @@ urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
-    path('test', test_message, name='test'),
-    path('test_db', test_db),
     path('routes', get_routes, name='routes'),
-    path('stops/<stop>', get_stops, name='stops'),
-    path('coordinate/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
-    path('predict/<route>/<direction>/<int:arr_stop>/<int:dep_stop>/<int:datetime>', predict_time, name='predict'),
+    path('stops/<stop>/<int:direction>', get_stops, name='stops'),
+    path('coordinate/<int:direction>/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
+    path('predict/<route>/<int:direction>/<int:dep_stop>/<int:arr_stop>/<int:datetime>', predict_time, name='predict'),
     path('weather', get_weather, name='weather'),
     path('ptpjourney', get_journey_time, name='journey'),
-    path('stops/<agency>/<route>/info', get_stop_info, name='stop info')
+    path('stops/<agency>/<route>/info', get_stop_info, name='stop info'),
+    path('shape/<route>/<int:direction>/<int:dep_stop>/<int:arr_stop>', get_shape, name='shape')
 ]

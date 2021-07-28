@@ -4,7 +4,6 @@
 
 <script>
 import store from "@/store/index";
-import bus from "./bus";
 
 export default {
   name: "Map",
@@ -22,10 +21,8 @@ export default {
       });
 
       this.$store.commit("initMap", map);
-
-      // This could be replaced now that Vuex is being used
-      bus.$emit("sendGoogle", window.google);
     },
   },
 };
+
 </script>

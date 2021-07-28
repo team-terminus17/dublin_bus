@@ -199,3 +199,5 @@ class RouteStops(models.Model):
 
     main = models.BooleanField()
     sequence = models.IntegerField(null=True)
+
+    shape = models.ForeignKey(Shapes, on_delete=CASCADE, null=True)

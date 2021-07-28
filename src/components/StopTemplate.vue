@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b>#{{item.id}}</b>
-    <span>{{ item.name }}</span>
+    <b v-if="this.item.stopNumber>0">#{{item.stopNumber}}</b>
+    <span>{{ item.stopName }}</span>
   </div>
 
 </template>
