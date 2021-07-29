@@ -124,7 +124,7 @@ export default {
         scaledSize: new window.google.maps.Size(10,10)
       }
 
-      for (const stop of Object.values(this.stopsData)) {
+      for (const stop of this.stopsData) {
         if (this.isVisible(stop)) {
           const marker = new window.google.maps.Marker({
             position: {

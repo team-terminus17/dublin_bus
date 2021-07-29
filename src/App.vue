@@ -17,6 +17,8 @@
         v-on:googleQueryComplete="showGooglePrediction"
         :timestamp="timestamp"
     ></point-to-point-journey>
+    <stop-renderer route-filter="46A"></stop-renderer>
+    <bus-renderer route="46A"></bus-renderer>
     <div class="row" style="margin-top: 20px;">
       <TripSelection
           v-on:tripComplete="showTripPrediction"
@@ -40,6 +42,8 @@ import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
 import PointToPointJourney from "@/components/PointToPointJourney";
 import DateTimeInput from "@/components/DateTimeInput";
+import StopRenderer from "@/components/map-renderers/StopRenderer.vue";
+import BusRenderer from './components/map-renderers/BusRenderer.vue';
 export default {
   name: "App",
 
@@ -50,6 +54,8 @@ export default {
     TripSelection,
     Weather,
     Prediction,
+    StopRenderer,
+    BusRenderer
   },
 
   data() {
