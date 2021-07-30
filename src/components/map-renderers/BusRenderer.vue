@@ -2,6 +2,12 @@
   <div></div>
 </template>
 
+<style>
+/* Do not scope this! This is for google. */
+.gm-style-iw button {display: none !important}
+.gm-style-iw {text-align:center;}
+</style>
+
 <script>
 /**
  * Renders buses for a specific agency/route as little popups above
@@ -32,14 +38,22 @@ export default {
      * Filter by direction - '0' for outbound, '1' for inbound.
      * @values 0,1,both
      */
-    directionFilter: {
+    direction: {
       type: String,
       default: "both",
     },
+    /**
+     * If true, show the icons in line with the stops
+     * as opposed to in an info window. Defaults to false.
+     */
+    inline: {
+      type: Boolean,
+      default: false,
+    }
   },
   watch: {
     route: "refreshView",
-    directionFilter: "refreshView",
+    direction: "refreshView",
     map: "refreshView",
   },
   data() {
@@ -59,7 +73,7 @@ export default {
   },
   created() {
     this.refreshView();
-    this.timerID = window.setInterval(() => this.refreshView(false), 15 * 1000);
+    this.timerID = window.setInterval(() => this.refreshView(false), 1000 * 1000);
   },
   beforeDestroy() {
     this.clearView();
@@ -93,19 +107,31 @@ export default {
     clearView() {
       for (let marker of this.markers) marker.setMap(null);
       this.markers = [];
+      for (let popup of this.popups) popup.setMap(null);
+      this.popups = [];
     },
     drawIcons() {
       if (!this.map) return;
       if (!this.stopLookup) return;
       if (!this.tripData) return;
 
-      const icon = {
-        url: require("@/assets/bus.png"),
-        scaledSize: new window.google.maps.Size(30, 30),
-      };
-
       for (const trip of this.tripData) {
+
+        if (this.direction != "both" && this.direction != trip.direction)
+          continue
+
         const stop = this.stopLookup.get(trip.currentStop);
+        const nextStop = this.stopLookup.get(trip.nextStop);
+
+        const deltaX = nextStop.lng - stop.lng;
+        let direction = "r"
+        if (deltaX < 0)
+          direction = "l"
+
+        const icon = {
+          url: require(`@/assets/bus-${direction}.png`),
+          scaledSize: new window.google.maps.Size(30, 15),
+        };
 
         const marker = new window.google.maps.Marker({
           position: {
@@ -114,9 +140,26 @@ export default {
           },
           icon: icon,
           map: this.map,
+          visible: this.inline
         });
 
-        this.markers.push(marker);
+        this.markers.push(marker); 
+
+        if (!this.inline) {
+          const style = `style="width:30px;height:15px;"`
+          const popup = new window.google.maps.InfoWindow({
+            content: `<img ${style} src="${require(`@/assets/bus-${direction}.png`)}" />`,
+            disableAutoPan: true
+          })
+
+          popup.open({
+            anchor: marker,
+            map: this.map,
+            shouldFocus: false
+          })
+
+          this.popups.push(popup);
+        }
       }
     },
   },

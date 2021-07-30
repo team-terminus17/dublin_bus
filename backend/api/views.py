@@ -126,6 +126,7 @@ def get_stop_info(request, agency="all", route="all"):
         direction = entry.direction
         main = entry.main
         agency = entry.agency.external_id
+        sequence = entry.sequence
 
         current_stop = results.get(stop.id, None)
         if current_stop is None:
@@ -144,7 +145,8 @@ def get_stop_info(request, agency="all", route="all"):
             "name": route_name,
             "direction": direction,
             "main": main,
-            "agency": agency
+            "agency": agency,
+            "sequence": sequence
         })
 
     # Sending lists as opposed to objects is actually insecure, hence
@@ -154,6 +156,16 @@ def get_stop_info(request, agency="all", route="all"):
 
 
 def get_bus_positions(request, agency, route):
+    """
+    Retrieve information on active trips for a given route.
+
+    The agency should be the GTFS ID - 978 for Dublin bus for example.
+    The route should be a short name in capitals - 46A for example.
+
+    Returns a json array. Each object contains the trip id, start stop, end
+    stop, and departure/arrival times for the segment the trip is currently
+    on.
+    """
 
     # Retrieve all trip stops for this route in two queries.
     # First, determine active services
@@ -172,12 +184,14 @@ def get_bus_positions(request, agency, route):
 
     trip_ids = trips.values_list("id", flat=True)
     trip_stops = StopTimes.objects.filter(trip_id__in=trip_ids)
-    trip_stops = trip_stops.select_related("trip").only("trip__external_id",
-        "trip_id", "stop_sequence", "stop_id", "arrival_time", "departure_time")
+    trip_stops = trip_stops.select_related("trip").only("trip__external_id", 
+        "trip_id", "stop_sequence", "trip__direction",
+        "stop_id", "arrival_time", "departure_time")
 
     # Collect all results, allow lookup by trip_id and sequence number
 
     trip_times = dict()
+    trip_directions = dict()
 
     for entry in trip_stops:
         trip = trip_times.setdefault(entry.trip_id, dict())
@@ -185,8 +199,9 @@ def get_bus_positions(request, agency, route):
             "ID": entry.stop_id, 
             "gtfsID": entry.trip.external_id,
             "arrivalTime": entry.arrival_time,
-            "departureTime": entry.departure_time
+            "departureTime": entry.departure_time,
         }
+        trip_directions[entry.trip_id] = entry.trip.direction
 
     # Collect realtime adjustments to the schedule
 
@@ -238,12 +253,20 @@ def get_bus_positions(request, agency, route):
             "currentStop":  current_stop["ID"],
             "nextStop": next_stop["ID"],
             "departureTime": current_stop["departureTime"],
-            "arrivalTime": next_stop["arrivalTime"]
+            "arrivalTime": next_stop["arrivalTime"],
+            "direction": trip_directions[trip_id]
         })
 
     return JsonResponse(data, safe=False)
 
 def get_active_services():
+    """
+    Returns a QuerySet which selects the IDs of services
+    that are active today. It is used to filter the trips table down to
+    those relevant to today.
+    """
+    # At some point this will need to work on a day that is not today?
+    # That's easy enough to change when the need arises though.
 
     weekdays = ["monday", "tuesday", "wednesday", 
         "thursday", "friday", "saturday", "sunday"]

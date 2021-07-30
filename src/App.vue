@@ -18,7 +18,7 @@
         :timestamp="timestamp"
     ></point-to-point-journey>
     <stop-renderer route-filter="46A"></stop-renderer>
-    <bus-renderer route="46A"></bus-renderer>
+    <bus-renderer route="46A" direction="0" inline></bus-renderer>
     <div class="row" style="margin-top: 20px;">
       <TripSelection
           v-on:tripComplete="showTripPrediction"
