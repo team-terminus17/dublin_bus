@@ -30,6 +30,6 @@ urlpatterns = [
     path('weather', get_weather, name='weather'),
     path('ptpjourney', get_journey_time, name='journey'),
     path('stops/<agency>/<route>/info', get_stop_info, name='stop info'),
-    path('shape/<route>/<int:direction>/<int:dep_stop>/<int:arr_stop>', get_shape, name='shape'),
-    path('trips/<agency>/<route>/current', get_bus_positions, name="trips")
+    path('trips/<agency>/<route>/current', get_bus_positions, name="trips"),
+    path('shape/<route>/<int:direction>/<int:dep_stop>/<int:arr_stop>', get_shape, name='shape')
 ]

@@ -43,7 +43,7 @@ name: "DateTimeInput",
   this.time=H+':'+MI;
   },
 
-  updateTimestamp: function (){
+  changeTimestamp: function (){
     this.timestamp = Date.parse(this.date+' '+this.time)/1000;
     }
   },
@@ -51,13 +51,12 @@ name: "DateTimeInput",
   watch: {
   time(newtime,oldtime){
     if(oldtime!=newtime){
-      this.updateTimestamp()
-    }
+      this.changeTimestamp()    }
   },
 
   date(newdate,olddate){
     if(newdate!=olddate){
-      this.updateTimestamp()
+      this.changeTimestamp()
     }
   },
 

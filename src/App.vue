@@ -13,15 +13,15 @@
           v-on:sendTimestamp="updateTimestamp"
       ></date-time-input>
     </div>
-    <point-to-point-journey
-        v-on:googlequerycomplete="showGooglePrediction"
-        :timestamp="timestamp"
-    ></point-to-point-journey>
     <stop-renderer route-filter="46A"></stop-renderer>
     <bus-renderer route="46A" direction="0" inline></bus-renderer>
+    <point-to-point-journey
+        v-on:googleQueryComplete="showGooglePrediction"
+        :timestamp="timestamp"
+    ></point-to-point-journey>
     <div class="row" style="margin-top: 20px;">
       <TripSelection
-          v-on:tripcomplete="showTripPrediction"
+          v-on:tripComplete="showTripPrediction"
       ></TripSelection>
       <Prediction
           ref="predict"
@@ -44,6 +44,7 @@ import PointToPointJourney from "@/components/PointToPointJourney";
 import DateTimeInput from "@/components/DateTimeInput";
 import StopRenderer from "@/components/map-renderers/StopRenderer.vue";
 import BusRenderer from './components/map-renderers/BusRenderer.vue';
+
 export default {
   name: "App",
 
@@ -66,12 +67,12 @@ export default {
   },
 
   methods:{
-    showTripPrediction:function (){
-      this.$refs.predict.getTripPrediction(arguments[0],arguments[1],arguments[2],arguments[3],this.timestamp);
+    showTripPrediction:function (route, direction, stop_dep, stop_arr){
+      this.$refs.predict.getTripPrediction(route, direction, stop_dep, stop_arr,this.timestamp);
     },
 
-    showGooglePrediction:function (val){
-      this.$refs.predict.getGooglePrediction(val, this.timestamp);
+    showGooglePrediction:function (route){
+      this.$refs.predict.getGooglePrediction(route, this.timestamp);
     },
 
     updateTimestamp:function (val){

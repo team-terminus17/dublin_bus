@@ -10,7 +10,7 @@
       v-on:sendPlaceID="getEnd"
   ></PlaceInput>
   <PointToPointRenderer
-      v-on:directionsvalidified="showGooglePrediction"
+      v-on:directionsValidated="showGooglePrediction"
       ref="renderer"
   ></PointToPointRenderer>
   <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
@@ -58,9 +58,8 @@ export default {
     renderRoute:function (){
       this.$refs.renderer.getGoogleTime(this.start,this.end,this.timestamp);
     },
-
-    showGooglePrediction: function (val){
-      this.$emit("googlequerycomplete",val);
+    showGooglePrediction: function (route){
+      this.$emit("googleQueryComplete",route);
     }
   }
 }

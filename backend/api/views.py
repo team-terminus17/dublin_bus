@@ -10,7 +10,6 @@ import json
 from .models import *
 from . import gtfs_r
 
-
 # Serve Vue Application
 index_view = never_cache(TemplateView.as_view(template_name='index.html'))
 
@@ -148,7 +147,7 @@ def get_stop_info(request, agency="all", route="all"):
             "agency": agency,
             "sequence": sequence
         })
-
+    
     # Sending lists as opposed to objects is actually insecure, hence
     # django's requirement that safe=False be passed.
     # This is not sensitive data though, so that is fine.
