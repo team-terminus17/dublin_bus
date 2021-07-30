@@ -79,7 +79,7 @@ export default {
     this.refreshView();
     this.timerID = window.setInterval(
       () => this.refreshView(false),
-      1000 * 1000
+      15 * 1000  // 15 seconds
     );
   },
   beforeDestroy() {
