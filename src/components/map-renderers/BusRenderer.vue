@@ -4,8 +4,12 @@
 
 <style>
 /* Do not scope this! This is for google. */
-.gm-style-iw button {display: none !important}
-.gm-style-iw {text-align:center;}
+.gm-style-iw button {
+  display: none !important;
+}
+.gm-style-iw {
+  text-align: center;
+}
 </style>
 
 <script>
@@ -49,7 +53,7 @@ export default {
     inline: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   watch: {
     route: "refreshView",
@@ -73,20 +77,23 @@ export default {
   },
   created() {
     this.refreshView();
-    this.timerID = window.setInterval(() => this.refreshView(false), 1000 * 1000);
+    this.timerID = window.setInterval(
+      () => this.refreshView(false),
+      15 * 1000 // seconds
+    );
   },
   beforeDestroy() {
     this.clearView();
     if (this.timerID) window.clearInterval(this.timerID);
   },
   methods: {
-    refreshView(transition=true) {
+    refreshView(transition = true) {
       if (this.loading) return;
       this.loading = true;
       if (transition) this.clearView();
 
       this.fetchData().then(() => {
-        if (!transition) this.clearView()
+        if (!transition) this.clearView();
         this.drawIcons();
         this.loading = false;
       });
@@ -116,17 +123,15 @@ export default {
       if (!this.tripData) return;
 
       for (const trip of this.tripData) {
-
         if (this.direction != "both" && this.direction != trip.direction)
-          continue
+          continue;
 
         const stop = this.stopLookup.get(trip.currentStop);
         const nextStop = this.stopLookup.get(trip.nextStop);
 
         const deltaX = nextStop.lng - stop.lng;
-        let direction = "r"
-        if (deltaX < 0)
-          direction = "l"
+        let direction = "r";
+        if (deltaX < 0) direction = "l";
 
         const icon = {
           url: require(`@/assets/bus-${direction}.png`),
@@ -140,23 +145,23 @@ export default {
           },
           icon: icon,
           map: this.map,
-          visible: this.inline
+          visible: this.inline,
         });
 
-        this.markers.push(marker); 
+        this.markers.push(marker);
 
         if (!this.inline) {
-          const style = `style="width:30px;height:15px;"`
+          const style = `style="width:30px;height:15px;"`;
           const popup = new window.google.maps.InfoWindow({
             content: `<img ${style} src="${require(`@/assets/bus-${direction}.png`)}" />`,
-            disableAutoPan: true
-          })
+            disableAutoPan: true,
+          });
 
           popup.open({
             anchor: marker,
             map: this.map,
-            shouldFocus: false
-          })
+            shouldFocus: false,
+          });
 
           this.popups.push(popup);
         }
