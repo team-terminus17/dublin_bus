@@ -1,38 +1,56 @@
 <template>
   <div class="col-sm-12 col-md-3">
     <p>Journey Info:</p>
-    <div>Time: {{ predict.time }}</div>
+    <li v-for="(item,index) in wholeRouteDict" v-bind:key="index">
+      {{item.mode}} - {{item.time}} -{{item.instruction}}
+      <Notification
+          v-if="item.mode=='bus'&&item.trackable==true"
+          :stop_dep="item.stop_dep"
+          :stop_arr="item.stop_arr"
+      ></Notification>
+    </li>
   </div>
 </template>
 
 <script>
+import Notification from "@/components/Notification";
 export default {
+  components: {Notification},
   data() {
     return {
       predict: {
         time: "test",
       },
+      wholeRouteDict: {},
     };
   },
 
   methods: {
+    refreshView: function (){
+      this.wholeRouteDict={};
+      this.$forceUpdate();
+    },
+
     getTripPrediction: async function (route,direction,dep_stop,arr_stop,datetime) {
+      this.refreshView();
       const predictionURL = `/predict/${route}/${direction}/${dep_stop}/${arr_stop}/${datetime}`
       const response = await fetch(predictionURL);
       const data = await response.json();
-      this.predict.time = data.time;
+      this.wholeRouteDict[0]={'mode':'bus','time':data.time, 'instruction':'Take bus'+route,
+      'trackable':true, 'stop_dep':dep_stop, 'stop_arr':arr_stop};
+      this.$forceUpdate();
     },
 
-    getGooglePrediction: function (route, timestamp){
-        let wholeRouteDict={};
+    getGooglePrediction: async function (route, timestamp){
+      this.refreshView();
         for(let i=0;i<route.steps.length;i++) {
           let routeDict = {};
           if (route.steps[i].travel_mode == 'WALKING') {
-            wholeRouteDict[i]={'walking':route.steps[i].duration.value};
+            this.wholeRouteDict[i]={'mode':'walking','time':route.steps[i].duration.value,'instruction':route.steps[i].instructions};
             continue;
           } else if (route.steps[i].travel_mode == 'TRANSIT') {
             if(route.steps[i].transit.line.agencies[0].name!="Dublin Bus"){
-              wholeRouteDict[i]={'bus':route.steps[i].duration.value};
+              this.wholeRouteDict[i]={'mode':'bus','time':route.steps[i].duration.value,'instruction':route.steps[i].instructions};
               continue;
             }
             let routeID = route.steps[i].transit.line.short_name;
@@ -44,11 +62,13 @@ export default {
             routeDict['arrStop'] = arrStop;
             routeDict['googleTime'] = googleTime;
             routeDict['datetime'] = timestamp;
-            this.replacePrediction(routeDict).then(res=>{
-              wholeRouteDict[i]={'bus':res};
+            await this.replacePrediction(routeDict).then(res=>{
+              this.wholeRouteDict[i]={'mode':'bus','time':res.time,'instruction':route.steps[i].instructions,
+              'trackable':res.trackable, 'stop_dep':res.stop_dep, 'stop_arr':res.stop_arr};
             })
           }
         }
+        this.$forceUpdate();
     },
 
     replacePrediction: async function (routeList){
@@ -61,7 +81,7 @@ export default {
           })
           })
       const data = await response.json();
-      return data.time;
+      return data;
     }
   },
 };

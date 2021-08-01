@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
@@ -9,6 +9,9 @@ import json
 
 from .models import *
 from . import gtfs_r
+
+import os
+from django.conf import settings
 
 
 # Serve Vue Application
@@ -24,8 +27,9 @@ def get_routes(request):
 
 def get_stops(request, stop, direction):
     """Return json of available bus stops for a single route and direction"""
-    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency__external_id="978")
-                     .order_by('sequence').values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
+    stop_list = list(
+        RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency__external_id="978")
+        .order_by('sequence').values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
     stop_dict = {'stops': stop_list}
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')
 
@@ -70,6 +74,11 @@ def get_journey_time(request):
         route = routes['routeID']
         time_predict = routes['googleTime']
         timestamp = routes['datetime']
+
+        # If we could not find a valid arrival and departure stop pair in our database, we cannot track this journey
+        trackable = False
+        dep_stop_id = 0
+        arr_stop_id = 0
         # Direction info is not provided by google so we need to get it ourselves
 
         for direction in [0, 1]:
@@ -84,13 +93,20 @@ def get_journey_time(request):
             if dep_stop.count() == 1 and arr_stop.count() == 1:
                 # To confirm the queried result is valid
                 if dep_stop.first().sequence < arr_stop.first().sequence:
+                    trackable = True
                     dep_stop_id = dep_stop.first().stop_id
                     arr_stop_id = arr_stop.first().stop_id
                     time_predict = model_predict(route, direction, dep_stop_id, arr_stop_id, timestamp)
                     break
         # If we could not find a valid id pair for departure stop and arrival stop, return the
         # predicted time given by google
-    return JsonResponse({'time': time_predict})
+    return JsonResponse({'time': time_predict, 'trackable': trackable, 'stop_dep': dep_stop_id, 'stop_arr': arr_stop_id})
+
+
+def get_stop_coordinates(request, stop):
+    """Return the coordinates of a stop given the id of it"""
+    coordinates = list(Stops.objects.filter(id=stop).values('lat', 'lon'))
+    return JsonResponse(coordinates, safe=False)
 
 
 def get_stop_info(request, agency="all", route="all"):
@@ -259,6 +275,7 @@ def get_bus_positions(request, agency, route):
 
     return JsonResponse(data, safe=False)
 
+
 def get_active_services():
     """
     Returns a QuerySet which selects the IDs of services
@@ -321,3 +338,18 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime):
     stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
     time_predict = 1
     return time_predict
+
+
+def serve_worker_view(request, worker_name):
+    """Serve the requested service worker from the appropriate location in the static files."""
+    if worker_name == 'manifest':
+        worker_path = os.path.join(settings.BASE_DIR, 'dist', f"{worker_name}.json")
+    elif worker_name == 'robots':
+        worker_path = os.path.join(settings.BASE_DIR, 'dist', f"{worker_name}.txt")
+    else:
+        worker_path = os.path.join(settings.BASE_DIR, 'dist', f"{worker_name}.js")
+    try:
+        with open(worker_path, 'r') as worker_file:
+            return HttpResponse(worker_file, content_type='application/javascript')
+    except IOError:
+        return HttpResponseNotFound('serviceWorkers not found!')

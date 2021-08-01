@@ -145,7 +145,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 STATIC_URL = '/static/'
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'dist', 'static')
 STATICFILES_DIRS = []
 
