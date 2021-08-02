@@ -7,6 +7,8 @@
           v-if="item.mode=='bus'&&item.trackable==true"
           :stop_dep="item.stop_dep"
           :stop_arr="item.stop_arr"
+          :direction="item.direction"
+          :route="item.route"
       ></Notification>
     </li>
   </div>
@@ -37,7 +39,7 @@ export default {
       const response = await fetch(predictionURL);
       const data = await response.json();
       this.wholeRouteDict[0]={'mode':'bus','time':data.time, 'instruction':'Take bus'+route,
-      'trackable':true, 'stop_dep':dep_stop, 'stop_arr':arr_stop};
+      'trackable':true, 'stop_dep':dep_stop, 'stop_arr':arr_stop, 'direction':direction, 'route':route};
       this.$forceUpdate();
     },
 
@@ -45,14 +47,18 @@ export default {
       this.refreshView();
         for(let i=0;i<route.steps.length;i++) {
           let routeDict = {};
+
           if (route.steps[i].travel_mode == 'WALKING') {
             this.wholeRouteDict[i]={'mode':'walking','time':route.steps[i].duration.value,'instruction':route.steps[i].instructions};
             continue;
+
           } else if (route.steps[i].travel_mode == 'TRANSIT') {
+
             if(route.steps[i].transit.line.agencies[0].name!="Dublin Bus"){
               this.wholeRouteDict[i]={'mode':'bus','time':route.steps[i].duration.value,'instruction':route.steps[i].instructions};
               continue;
             }
+
             let routeID = route.steps[i].transit.line.short_name;
             let departureStop = route.steps[i].transit.departure_stop.name;
             let arrStop = route.steps[i].transit.arrival_stop.name;
@@ -64,7 +70,8 @@ export default {
             routeDict['datetime'] = timestamp;
             await this.replacePrediction(routeDict).then(res=>{
               this.wholeRouteDict[i]={'mode':'bus','time':res.time,'instruction':route.steps[i].instructions,
-              'trackable':res.trackable, 'stop_dep':res.stop_dep, 'stop_arr':res.stop_arr};
+              'trackable':res.trackable, 'stop_dep':res.stop_dep, 'stop_arr':res.stop_arr, 'direction':res.direction,
+              'route':routeID};
             })
           }
         }
