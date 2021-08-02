@@ -1,10 +1,14 @@
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
-from django.http import HttpResponse, JsonResponse
-from .models import *
-import json
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
+
+from datetime import datetime
+import json
+
+from .models import *
+from . import gtfs_r
 
 
 # Serve Vue Application
@@ -122,26 +126,173 @@ def get_stop_info(request, agency="all", route="all"):
         direction = entry.direction
         main = entry.main
         agency = entry.agency.external_id
+        sequence = entry.sequence
 
-        current_stop = results.get(stop.external_id, None)
+        current_stop = results.get(stop.id, None)
         if current_stop is None:
             current_stop = {
+                "ID": stop.id,
+                "gtfsID": stop.external_id,
                 "name": stop.name,
                 "number": stop.number,
                 "lat": stop.lat,
                 "lng": stop.lon,
                 "routes": list()
             }
-            results[stop.external_id] = current_stop
+            results[stop.id] = current_stop
 
         current_stop["routes"].append({
             "name": route_name,
             "direction": direction,
             "main": main,
-            "agency": agency
+            "agency": agency,
+            "sequence": sequence
         })
-    
-    return JsonResponse(results)
+
+    # Sending lists as opposed to objects is actually insecure, hence
+    # django's requirement that safe=False be passed.
+    # This is not sensitive data though, so that is fine.
+    return JsonResponse(list(results.values()), safe=False)
+
+
+def get_bus_positions(request, agency, route):
+    """
+    Retrieve information on active trips for a given route.
+
+    The agency should be the GTFS ID - 978 for Dublin bus for example.
+    The route should be a short name in capitals - 46A for example.
+
+    Returns a json array. Each object contains the trip id, start stop, end
+    stop, and departure/arrival times for the segment the trip is currently
+    on.
+    """
+
+    # Retrieve all trip stops for this route in two queries.
+    # First, determine active services
+
+    services = get_active_services()
+
+    # Define a subquery for trips for the given services, route and agency
+
+    trips = Trips.objects.select_related("route", 
+        "route__agency", "route__name")
+    trips = trips.filter(service_id__in=services, 
+        route__agency__external_id=agency, route__name__name=route)
+
+    # Collect stoptime entries whose trip id is in the result of
+    # the above subquery. (Django does the subquery and this in one go.)
+
+    trip_ids = trips.values_list("id", flat=True)
+    trip_stops = StopTimes.objects.filter(trip_id__in=trip_ids)
+    trip_stops = trip_stops.select_related("trip").only("trip__external_id", 
+        "trip_id", "stop_sequence", "trip__direction",
+        "stop_id", "arrival_time", "departure_time")
+
+    # Collect all results, allow lookup by trip_id and sequence number
+
+    trip_times = dict()
+    trip_directions = dict()
+
+    for entry in trip_stops:
+        trip = trip_times.setdefault(entry.trip_id, dict())
+        trip[entry.stop_sequence] = {
+            "ID": entry.stop_id, 
+            "gtfsID": entry.trip.external_id,
+            "arrivalTime": entry.arrival_time,
+            "departureTime": entry.departure_time,
+        }
+        trip_directions[entry.trip_id] = entry.trip.direction
+
+    # Collect realtime adjustments to the schedule
+
+    realtime_lookup = gtfs_r.get_realtime_data()
+
+    for trip in trip_times.values():
+        for seq, stop in trip.items():
+            update = realtime_lookup.get((stop["gtfsID"], seq), None)
+            if update is not None:
+                arr, dep = update
+                stop["arrivalTime"] += arr
+                stop["departureTime"] += dep
+
+    # The sequence numbers aren't perfect, they can jump sometimes.
+    # Fix that here by storing them as a list
+
+    trip_times_v2 = dict()
+
+    for trip_id, trip in trip_times.items():
+        stop_sequence = list()
+        for seq in sorted(trip.keys()):
+            stop_sequence.append(trip[seq])
+        trip_times_v2[trip_id] = stop_sequence
+
+    # Extract the next and current stops for each trip.
+    # Format the result for the frontend.
+
+    current_time = datetime.now().time()
+    data = list()
+
+    for trip_id, trip in trip_times_v2.items():
+
+        next_stop_index = None
+        for i, stop in enumerate(trip):
+            if stop["arrivalTime"] >= current_time:
+                next_stop_index = i
+                break
+
+        # None means the trip is over, 0 means the trip
+        # has yet to start.
+        if next_stop_index is None or next_stop_index == 0:
+            continue
+
+        current_stop = trip[next_stop_index - 1]
+        next_stop = trip[next_stop_index]
+
+        data.append({
+            "trip": trip_id,
+            "currentStop":  current_stop["ID"],
+            "nextStop": next_stop["ID"],
+            "departureTime": current_stop["departureTime"],
+            "arrivalTime": next_stop["arrivalTime"],
+            "direction": trip_directions[trip_id]
+        })
+
+    return JsonResponse(data, safe=False)
+
+def get_active_services():
+    """
+    Returns a QuerySet which selects the IDs of services
+    that are active today. It is used to filter the trips table down to
+    those relevant to today.
+    """
+    # At some point this will need to work on a day that is not today?
+    # That's easy enough to change when the need arises though.
+
+    weekdays = ["monday", "tuesday", "wednesday", 
+        "thursday", "friday", "saturday", "sunday"]
+
+    date = datetime.now()
+    weekday = weekdays[date.weekday()]
+
+    # It's unfortunate to have raw SQL here,
+    # but I don't think the Django ORM feature supports anything like the
+    # multiple left join below.
+
+    services = Services.objects.raw(
+        "SELECT api_services.id FROM api_services"
+        # Optionally include an exception corresponding to today.
+        " LEFT JOIN api_serviceexceptions"
+            " ON api_services.id = api_serviceexceptions.service_id"
+            " AND api_serviceexceptions.date = %s"
+        " WHERE start_date <= %s" 
+            " AND end_date >= %s"
+            f" AND {weekday} = 1"
+            # The service is active if the optional exception is null.
+            " AND api_serviceexceptions.id IS NULL",
+        [date, date, date]
+    )
+
+    return services
 
 
 def get_shape(request, route, direction, dep_stop, arr_stop):
