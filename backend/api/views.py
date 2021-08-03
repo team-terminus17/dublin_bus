@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
-from django.db.models import F
+from django.db.models import F, Subquery
 
 from datetime import datetime
 import json
@@ -258,6 +258,51 @@ def get_bus_positions(request, agency, route):
         })
 
     return JsonResponse(data, safe=False)
+
+
+def get_stop_trips(request, stop):
+
+    active_services = get_active_services()
+    active_trips = Trips.objects\
+        .filter(service_id__in=active_services)\
+        .values_list("id", flat=True)
+
+    # There are about 30,000 trips that are active at any given time. 
+    # Ideally this would be used as a subquery, though I'm not sure how to
+    # get Django to do so. The speedup would only be aout 150ms though
+    # so it's not a major concern.
+
+    stoptimes = StopTimes.objects.select_related("trip")\
+        .filter(trip_id__in=Subquery(active_trips), stop_id=stop)\
+        .select_related("trip__route__name")\
+        .order_by("arrival_time")
+
+    realtime_lookup = gtfs_r.get_realtime_data()
+
+    trips = list()
+
+    for entry in stoptimes:
+        
+        arrival_time = entry.arrival_time
+        
+        update = realtime_lookup.get((entry.trip_id, entry.stop_sequence), None)
+        if update is not None:
+            arrival_delay = update[0]
+            arrival_time += arrival_delay
+
+        if arrival_time < datetime.now().time():
+            continue
+
+        trips.append({
+            "tripID": entry.trip_id,
+            "arrivalTime": arrival_time,
+            "routeName": entry.trip.route.name.name,
+            "tripHeadsign": entry.trip.headsign
+        })
+
+    return JsonResponse(trips, safe=False)
+
+
 
 def get_active_services():
     """

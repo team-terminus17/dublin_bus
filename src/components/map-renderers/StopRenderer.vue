@@ -134,6 +134,11 @@ export default {
             icon: icon,
             map: this.map
           });
+
+          marker.addListener("click", () => {
+            this.$emit("stop-clicked", stop.ID);
+          });
+          
           this.markers.push(marker);
         }
       }
