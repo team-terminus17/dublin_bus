@@ -193,7 +193,7 @@ def get_bus_time(request, route, stop, direction):
     # there is possibility that we cannot find a valid trip that contains the stop which user
     # selects. Valid_stop is to tag whether this stop is trackable
     valid_stop = False
-    closet_seq = 10000
+    closet_seq = -1
     closet_trip = 0
     waiting_time = 0
 
@@ -221,11 +221,11 @@ def get_bus_time(request, route, stop, direction):
             target_stop_schedule_time = datetime.strptime(str(target_stop.departure_time), '%H:%M:%S')
             cur_time = datetime.strptime(str(datetime.now().time()), '%H:%M:%S.%f')
             delay = cur_stop_actual_time - cur_stop_schedule_time
-            waiting_time = target_stop_schedule_time - cur_time + delay
+            waiting_time = round((target_stop_schedule_time - cur_time + delay).seconds/60)
 
     if not valid_stop:
         waiting_time = 100000
-        for trip in data['unstarted']:
+        for trip in data['future']:
             target_stop = StopTimes.objects.filter(trip_id=trip['trip'], stop_id=stop).first()
 
             if target_stop is None:
@@ -260,7 +260,7 @@ def get_trip_info(agency, route, direction=2):
         Each object in first array contains the trip id, start stop, end
         stop, and departure/arrival times for the segment the trip is currently
         on.
-        Each object in the second array contains the information of unstarted trips
+        Each object in the second array contains the information of future trips
         including trip_id and arrival times.
     """
     # Retrieve all trip stops for this route in two queries.
@@ -329,7 +329,7 @@ def get_trip_info(agency, route, direction=2):
 
     current_time = datetime.now().time()
     data = list()
-    unstarted_trips = list()
+    future_trips = list()
 
     for trip_id, trip in trip_times_v2.items():
 
@@ -345,7 +345,7 @@ def get_trip_info(agency, route, direction=2):
             continue
 
         if next_stop_index == 0:
-            unstarted_trips.append({
+            future_trips.append({
                 "trip": trip_id,
                 "departureTime": trip[0]["arrivalTime"]
             })
@@ -365,7 +365,7 @@ def get_trip_info(agency, route, direction=2):
 
     res = dict()
     res["valid"] = data
-    res["unstarted"] = unstarted_trips
+    res["future"] = future_trips
 
     return res
 

@@ -9,6 +9,9 @@
 </template>
 
 <script>
+const NOT_TRACKING = 0;
+const TRACKING_DEPARTURE =1;
+const TRACKING_ARRIVAL =2;
 export default {
   name: "notification",
 
@@ -18,7 +21,7 @@ export default {
     return{
       button_text : "track",
       time_text : null,
-      status : 0,//0 for not tracking, 1 for tracking departure stop, 2 for tracking arrival stop
+      status : NOT_TRACKING,//0 for not tracking, 1 for tracking departure stop, 2 for tracking arrival stop
       timerID : null,
       lat: null,
       lon: null,
@@ -30,7 +33,7 @@ export default {
 
   methods:{
     startTracking: function (){
-      if(this.status===0){
+      if(this.status===NOT_TRACKING){
         //We only allow tracking one bus journey at a time
         if(this.$store.state.trackingStatus===true){
           alert("You are tracking another bus journey at the moment.\n" +
@@ -38,18 +41,18 @@ export default {
         }
 
         else{
-          this.status=1;
-          this.button_text="Already on";
+          this.status=TRACKING_DEPARTURE;
+          this.button_text="Notify me when my stop is coming up";
           this.$store.commit("changeTrackingStatus",true);
           this.timerID = window.setInterval(this.trackDepStop,30*1000);
           this.trackDepStop();
         }
       }
       //Start tracking the arrival stop
-      else if(this.status===1){
+      else if(this.status===TRACKING_DEPARTURE){
         this.button_text="Already off";
         this.time_text="";
-        this.status=2;
+        this.status=TRACKING_ARRIVAL;
         window.clearInterval(this.timerID);
         this.timerID = window.setInterval(this.trackArrStop,30*1000);//Refresh every half minute
       }
@@ -115,15 +118,17 @@ export default {
     },
 
     cancelTracking: function (){
+      if (this.timerID) window.clearInterval(this.timerID);
       this.time_text = ""
       this.depNotificationRecord = new Set();
-      if (this.timerID) window.clearInterval(this.timerID);
-      this.status=0;
+      this.status=NOT_TRACKING;
       this.$store.commit("changeTrackingStatus",false);
       this.button_text="track";
     },
 
     getDistance:function (lat1, lon1, lat2, lon2) {
+      //link to the code source:
+      //https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
       const p = 0.017453292519943295;    // Math.PI / 180
       const c = Math.cos;
 
