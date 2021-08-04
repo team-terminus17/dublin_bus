@@ -8,7 +8,7 @@ import store from './store'
 // need to be considered as well?
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
-
+import './registerServiceWorker'
 import ownKeys = Reflect.ownKeys;
 import Autocomplete from 'v-autocomplete'
 
