@@ -1,6 +1,8 @@
 <template>
   <div class="col-sm-12 col-md-12 pred">
     <p>Journey Info:</p>
+    <div v-if="loading" class="loader-template"></div>
+    <div v-else>
     <li v-for="(item,index) in wholeRouteDict" v-bind:key="index">
       {{item.mode}} - {{item.time}} -{{item.instruction}}
       <Notification
@@ -11,6 +13,7 @@
           :route="item.route"
       ></Notification>
     </li>
+    </div>
   </div>
 </template>
 
@@ -24,6 +27,7 @@ export default {
         time: "test",
       },
       wholeRouteDict: {},
+      loading: false,
     };
   },
 
@@ -35,17 +39,20 @@ export default {
 
     getTripPrediction: async function (route,direction,dep_stop,arr_stop,datetime) {
       this.refreshView();
+      this.loading=true
       const predictionURL = `/predict/${route}/${direction}/${dep_stop}/${arr_stop}/${datetime}`
       const response = await fetch(predictionURL);
       const data = await response.json();
       this.wholeRouteDict[0]={'mode':'bus','time':data.time, 'instruction':'Take bus'+route,
       'trackable':true, 'stop_dep':dep_stop, 'stop_arr':arr_stop, 'direction':direction, 'route':route};
+      this.loading=false;
       this.$forceUpdate();
     },
 
     getGooglePrediction: async function (route, timestamp){
       this.refreshView();
-        for(let i=0;i<route.steps.length;i++) {
+      this.loading = true
+       for(let i=0;i<route.steps.length;i++) {
           let routeDict = {};
 
           if (route.steps[i].travel_mode == 'WALKING') {
@@ -75,6 +82,7 @@ export default {
             })
           }
         }
+       this.loading=false
         this.$forceUpdate();
     },
 
