@@ -261,6 +261,15 @@ def get_bus_positions(request, agency, route):
 
 
 def get_stop_trips(request, stop):
+    """
+    Retrieve information on trips incoming to a given stop.
+
+    The stop should be the internal database ID, as returned by "get_stop_info".
+
+    Returns a json array. Each object contains the trip id, estimated arrival
+    time, route name, and bus headsign. The objects are sorted by arrival time,
+    ascending.
+    """
 
     active_services = get_active_services()
     active_trips = Trips.objects\

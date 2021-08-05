@@ -54,8 +54,17 @@ button {
 </style>
 
 <script>
+/**
+ * Displays a list of trips arriving to a specific stop.
+ */
 export default {
   name: "StopTrips.vue",
+  /**
+  * The stop to display trips for. 
+  *
+  * This should be an internal stop ID, such as that as returned by the 
+  * /stop/<agency>/<route>/info endpoint and used by the stop renderer.
+  */
   props: ["stopId"],
   watch: {
     stopId() {
