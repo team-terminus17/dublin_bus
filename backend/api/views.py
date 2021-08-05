@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseNotFound
 from django.views.generic import TemplateView
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
@@ -9,6 +9,9 @@ import json
 
 from .models import *
 from . import gtfs_r
+
+import os
+from django.conf import settings
 
 
 # Serve Vue Application
@@ -24,8 +27,9 @@ def get_routes(request):
 
 def get_stops(request, stop, direction):
     """Return json of available bus stops for a single route and direction"""
-    stop_list = list(RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency__external_id="978")
-                     .order_by('sequence').values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
+    stop_list = list(
+        RouteStops.objects.filter(name__name=stop, direction=direction, main=True, agency__external_id="978")
+        .order_by('sequence').values(stopID=F('stop_id'), stopNumber=F('stop__number'), stopName=F('stop__name')))
     stop_dict = {'stops': stop_list}
     return HttpResponse(json.dumps(stop_dict, ensure_ascii=False), content_type='application/json')
 
@@ -70,6 +74,12 @@ def get_journey_time(request):
         route = routes['routeID']
         time_predict = routes['googleTime']
         timestamp = routes['datetime']
+
+        # If we could not find a valid arrival and departure stop pair in our database, we cannot track this journey
+        trackable = False
+        dep_stop_id = 0
+        arr_stop_id = 0
+        trip_direction = 0
         # Direction info is not provided by google so we need to get it ourselves
 
         for direction in [0, 1]:
@@ -84,13 +94,22 @@ def get_journey_time(request):
             if dep_stop.count() == 1 and arr_stop.count() == 1:
                 # To confirm the queried result is valid
                 if dep_stop.first().sequence < arr_stop.first().sequence:
+                    trackable = True
                     dep_stop_id = dep_stop.first().stop_id
                     arr_stop_id = arr_stop.first().stop_id
                     time_predict = model_predict(route, direction, dep_stop_id, arr_stop_id, timestamp)
+                    trip_direction = direction
                     break
         # If we could not find a valid id pair for departure stop and arrival stop, return the
         # predicted time given by google
-    return JsonResponse({'time': time_predict})
+    return JsonResponse({'time': time_predict, 'trackable': trackable, 'stop_dep': dep_stop_id, 'stop_arr': arr_stop_id,
+                         'direction': trip_direction})
+
+
+def get_stop_coordinates(request, stop):
+    """Return the coordinates of a stop given the id of it"""
+    coordinates = list(Stops.objects.filter(id=stop).values('lat', 'lon'))
+    return JsonResponse(coordinates, safe=False)
 
 
 def get_stop_info(request, agency="all", route="all"):
@@ -157,16 +176,93 @@ def get_stop_info(request, agency="all", route="all"):
 
 def get_bus_positions(request, agency, route):
     """
-    Retrieve information on active trips for a given route.
-
-    The agency should be the GTFS ID - 978 for Dublin bus for example.
-    The route should be a short name in capitals - 46A for example.
-
-    Returns a json array. Each object contains the trip id, start stop, end
+    Return the array containing the trip id, start stop, end
     stop, and departure/arrival times for the segment the trip is currently
-    on.
+    on in json format
     """
 
+    data = get_trip_info(agency, route)["valid"]
+
+    return JsonResponse(data, safe=False)
+
+
+def get_bus_time(request, route, stop, direction):
+    """Return the information of the shortest waiting time in minutes and the corresponding trip id"""
+    data = get_trip_info(978, route, direction)
+    # Given that the stops we provide in trip selection tab is from one fixed shape,
+    # there is possibility that we cannot find a valid trip that contains the stop which user
+    # selects. Valid_stop is to tag whether this stop is trackable
+    valid_stop = False
+    closet_seq = -1
+    closet_trip = 0
+    waiting_time = 0
+
+    for trip in data['valid']:
+        target_stop = StopTimes.objects.filter(trip_id=trip['trip'], stop_id=stop).first()
+
+        if target_stop is None:
+            continue
+        target_seq = target_stop.stop_sequence
+
+        cur_stop = StopTimes.objects.get(trip_id=trip['trip'], stop_id=trip['currentStop'])
+        cur_seq = cur_stop.stop_sequence
+        if cur_seq >= target_seq:
+            # This means the bus for this trip has already passed the target stop
+            continue
+
+        valid_stop = True
+        if cur_seq > closet_seq:
+            closet_seq = cur_seq
+            closet_trip = trip['trip']
+            # Operands '+' and '-' are not supported for datetime.time object, so we need to transform it
+            # to datetime.datetime object
+            cur_stop_actual_time = datetime.strptime(str(trip['departureTime']), '%H:%M:%S')
+            cur_stop_schedule_time = datetime.strptime(str(cur_stop.departure_time), '%H:%M:%S')
+            target_stop_schedule_time = datetime.strptime(str(target_stop.departure_time), '%H:%M:%S')
+            cur_time = datetime.strptime(str(datetime.now().time()), '%H:%M:%S.%f')
+            delay = cur_stop_actual_time - cur_stop_schedule_time
+            waiting_time = round((target_stop_schedule_time - cur_time + delay).seconds/60)
+
+    if not valid_stop:
+        waiting_time = 100000
+        for trip in data['future']:
+            target_stop = StopTimes.objects.filter(trip_id=trip['trip'], stop_id=stop).first()
+
+            if target_stop is None:
+                continue
+
+            valid_stop = True
+            cur_time = datetime.strptime(str(datetime.now().time()), '%H:%M:%S.%f')
+            target_stop_schedule_time = datetime.strptime(str(target_stop.departure_time), '%H:%M:%S')
+            trip_waiting_time = round((target_stop_schedule_time - cur_time).seconds/60)
+
+            if trip_waiting_time < waiting_time:
+                waiting_time = trip_waiting_time
+                closet_trip = trip['trip']
+
+    res = dict()
+    res['trackable'] = valid_stop
+    res['trip'] = closet_trip
+    res['time'] = waiting_time
+
+    return JsonResponse(res, safe=False)
+
+
+def get_trip_info(agency, route, direction=2):
+    """
+        Retrieve information on active trips for a given route and given direction.
+
+        The agency should be the GTFS ID - 978 for Dublin bus for example.
+        The route should be a short name in capitals - 46A for example.
+        The direction should be 0 for outbound, 1 for inbound and 2(default) for both.
+
+        Returns a dict containing two arrays.
+        Each object in first array contains the trip id, start stop, end
+        stop, and departure/arrival times for the segment the trip is currently
+        on.
+        Each object in the second array contains the information of future trips
+        including trip_id and arrival times.
+    """
     # Retrieve all trip stops for this route in two queries.
     # First, determine active services
 
@@ -174,19 +270,21 @@ def get_bus_positions(request, agency, route):
 
     # Define a subquery for trips for the given services, route and agency
 
-    trips = Trips.objects.select_related("route", 
-        "route__agency", "route__name")
-    trips = trips.filter(service_id__in=services, 
-        route__agency__external_id=agency, route__name__name=route)
+    trips = Trips.objects.select_related("route",
+                                         "route__agency", "route__name")
+    trips = trips.filter(service_id__in=services,
+                         route__agency__external_id=agency, route__name__name=route)
+    if direction != 2:
+        trips = trips.filter(direction=direction)
 
     # Collect stoptime entries whose trip id is in the result of
     # the above subquery. (Django does the subquery and this in one go.)
 
     trip_ids = trips.values_list("id", flat=True)
     trip_stops = StopTimes.objects.filter(trip_id__in=trip_ids)
-    trip_stops = trip_stops.select_related("trip").only("trip__external_id", 
-        "trip_id", "stop_sequence", "trip__direction",
-        "stop_id", "arrival_time", "departure_time")
+    trip_stops = trip_stops.select_related("trip").only("trip__external_id",
+                                                        "trip_id", "stop_sequence", "trip__direction",
+                                                        "stop_id", "arrival_time", "departure_time")
 
     # Collect all results, allow lookup by trip_id and sequence number
 
@@ -196,7 +294,7 @@ def get_bus_positions(request, agency, route):
     for entry in trip_stops:
         trip = trip_times.setdefault(entry.trip_id, dict())
         trip[entry.stop_sequence] = {
-            "ID": entry.stop_id, 
+            "ID": entry.stop_id,
             "gtfsID": entry.trip.external_id,
             "arrivalTime": entry.arrival_time,
             "departureTime": entry.departure_time,
@@ -231,6 +329,7 @@ def get_bus_positions(request, agency, route):
 
     current_time = datetime.now().time()
     data = list()
+    future_trips = list()
 
     for trip_id, trip in trip_times_v2.items():
 
@@ -242,7 +341,14 @@ def get_bus_positions(request, agency, route):
 
         # None means the trip is over, 0 means the trip
         # has yet to start.
-        if next_stop_index is None or next_stop_index == 0:
+        if next_stop_index is None:
+            continue
+
+        if next_stop_index == 0:
+            future_trips.append({
+                "trip": trip_id,
+                "departureTime": trip[0]["arrivalTime"]
+            })
             continue
 
         current_stop = trip[next_stop_index - 1]
@@ -250,14 +356,19 @@ def get_bus_positions(request, agency, route):
 
         data.append({
             "trip": trip_id,
-            "currentStop":  current_stop["ID"],
+            "currentStop": current_stop["ID"],
             "nextStop": next_stop["ID"],
             "departureTime": current_stop["departureTime"],
             "arrivalTime": next_stop["arrivalTime"],
             "direction": trip_directions[trip_id]
         })
 
-    return JsonResponse(data, safe=False)
+    res = dict()
+    res["valid"] = data
+    res["future"] = future_trips
+
+    return res
+
 
 
 def get_stop_trips(request, stop):
@@ -375,3 +486,18 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime):
     stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
     time_predict = 1
     return time_predict
+
+
+def serve_worker_view(request, worker_name):
+    """Serve the requested service worker from the appropriate location in the static files."""
+    if worker_name == 'manifest':
+        worker_path = os.path.join(settings.BASE_DIR, 'dist', f"{worker_name}.json")
+    elif worker_name == 'robots':
+        worker_path = os.path.join(settings.BASE_DIR, 'dist', f"{worker_name}.txt")
+    else:
+        worker_path = os.path.join(settings.BASE_DIR, 'dist', f"{worker_name}.js")
+    try:
+        with open(worker_path, 'r') as worker_file:
+            return HttpResponse(worker_file, content_type='application/javascript')
+    except IOError:
+        return HttpResponseNotFound('serviceWorkers not found!')
