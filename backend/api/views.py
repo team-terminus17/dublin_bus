@@ -4,11 +4,12 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, Subquery
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 from .models import *
 from . import gtfs_r
+from .utils import add_time
 
 import os
 from django.conf import settings
@@ -309,9 +310,12 @@ def get_trip_info(agency, route, direction=2):
         for seq, stop in trip.items():
             update = realtime_lookup.get((stop["gtfsID"], seq), None)
             if update is not None:
-                arr, dep = update
-                stop["arrivalTime"] += arr
-                stop["departureTime"] += dep
+                arr = timedelta(seconds=update[0])
+                stop["arrivalTime"] = add_time(stop["arrivalTime"], arr)
+
+                dep = timedelta(seconds=update[1])
+                stop["departureTime"] = add_time(stop["departureTime"], dep)
+
 
     # The sequence numbers aren't perfect, they can jump sometimes.
     # Fix that here by storing them as a list
@@ -407,8 +411,8 @@ def get_stop_trips(request, stop):
         
         update = realtime_lookup.get((entry.trip_id, entry.stop_sequence), None)
         if update is not None:
-            arrival_delay = update[0]
-            arrival_time += arrival_delay
+            arrival_delay = timedelta(seconds=update[0])
+            arrival_time = add_time(arrival_time, arrival_delay)
 
         if arrival_time < datetime.now().time():
             continue
