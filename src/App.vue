@@ -135,7 +135,7 @@ import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
-import PointToPointJourney from "@/components/PointToPointJourney";
+
 import DateTimeInput from "@/components/DateTimeInput";
 import StopRenderer from "@/components/map-renderers/StopRenderer.vue";
 import BusRenderer from './components/map-renderers/BusRenderer.vue';
@@ -145,15 +145,13 @@ export default {
   name: "App",
 
   components: {
-    PointToPointJourney,
-    DateTimeInput,
     Map,
     TripSelection,
     Weather,
     Prediction,
-    StopRenderer,
-    BusRenderer,
-    StopTrips
+    // StopRenderer,
+    // BusRenderer,
+    // StopTrips
   },
 
   data() {
