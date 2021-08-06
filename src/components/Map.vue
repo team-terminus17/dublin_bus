@@ -1,7 +1,5 @@
 <template>
-    <div id="map"
-    style="width: 100%; height: 960px; margin-top: -120px;"
-    >
+    <div id="map">
     </div>
 </template>
 
@@ -114,3 +112,29 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+#map {
+  width: 100%;
+  height: 900px;
+  border-radius: 10px;
+  margin-top: 0px;
+}
+
+@media only screen and (max-width: 992px) {
+  #map {
+  margin-top: 0px;
+  height: 950px;
+  }
+
+}
+
+@media only screen and (max-width: 600px) {
+  #map {
+    /* margin-top: -120px; */
+    height: 550px;
+  }
+}
+
+</style>

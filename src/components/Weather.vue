@@ -1,27 +1,17 @@
 <template>
     <div
       class="
-        col-xs-2
         col-sm-2
-        col-md-1
-        
-        
+        col-md-3
+        col-lg-3
         overflow-hidden
       "
       id="weather"
     >
-      <div class="card-body">
-        <div class="card-mid">
-          <div class="row">
-            <div class="col-sm-6 col-md-4 temp">
-              <span>{{ weather.temp }}&deg;C</span>
-              <!-- <p class="my-4">Rain: {{ weather.description }}</p> -->
-            </div>
-            <div class="col-sm-6 col-md-8">
-              <span v-html="weather.icon"></span>
-            </div>
-          </div>
-        </div>
+      <div class="card-body temp">
+        <span id="back">{{ weather.temp }}&deg;C</span>
+        <!-- <p class="my-4">Rain: {{ weather.description }}</p> -->
+        <span id="back" v-html="weather.icon"></span>
       </div>
     </div>
 </template>
@@ -61,6 +51,9 @@ export default {
 
 #weather {
   z-index: 1;
+  position: absolute;
+  margin-left: 75%;
+  margin-top: -35px;
 }
 
 /* .back-card {
@@ -71,18 +64,39 @@ text-shadow: 2px 2px 2px #707070;
 } */
 
 .temp {
-font-weight: 100;
-font-size: 1.5em;
-letter-spacing: -1px;
-white-space: nowrap;
-margin-top: 30%;
+  font-weight: 100;
+  font-size: 1.5em;
+  letter-spacing: -1px;
+  white-space: nowrap;
+  margin-bottom: -40px;
+  color: white;
 }
 
-.card-body {
-  margin-bottom: -30px;
-}
+/* #back {
+  background-color: #6e99f5;
+  border-radius: 8px;
+  
+} */
 
 .card-mid {
 line-height: 0.1;
+}
+
+@media only screen and (max-width: 992px) {
+
+
+}
+
+@media only screen and (max-width: 600px) {
+  
+  #weather {
+    margin-left: 0%;
+    
+  }
+
+  .temp {
+    width: 50%;
+  }
+
 }
 </style>

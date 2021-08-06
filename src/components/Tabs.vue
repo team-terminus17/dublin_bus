@@ -47,6 +47,9 @@ export default {
     margin: 0 10px;
     margin-top: 10px;
     font-size: 1.2em;
+    background-color: #bbd7f2;
+    border-radius: 8px;
+    
   }
 
   .tabs-content {
@@ -60,17 +63,20 @@ export default {
     
     li {
       margin-right: 40px;
+      // border-right: 2px solid #fefefe;
     }
 
     .nav-item {
       cursor: pointer;
+      color: black;
 
       &:hover {
-        color: #bbdaa4;
+        color: #678c4c;
       }
 
       &.is-active {
-        color: #bbdaa4;
+        background-color: #bbdaa4;
+        border-radius: 8px;
       }
     }
   }

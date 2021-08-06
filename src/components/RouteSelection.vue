@@ -53,7 +53,8 @@ name: "RouteSelection",
   border: 1px solid #157977;
   width: 100%;
   outline: none;
-  background-color: 	#a7cdf2;
+  background-color: 	#bbd7f2;
+  border-radius: 8px;
   }
 
 .v-autocomplete .v-autocomplete-list{
@@ -68,11 +69,13 @@ name: "RouteSelection",
   max-height: 400px;
   overflow-y: auto;
   border-bottom: 1px solid #157977;
+  border-radius: 8px;
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item{
   cursor: pointer;
-  background-color: #9bbff4;
+  color: black;
+  background-color: #bbdaa4;
   padding: 10px;
   border-bottom: 1px solid #157977;
   border-left: 1px solid #157977;
@@ -81,11 +84,11 @@ name: "RouteSelection",
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item:hover{
-  background-color: 	#a7cdf2;
+  background-color: 	#bbd7f2;
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item.v-autocomplete-item-active {
-  background-color:	#a7cdf2;
+  background-color:	#bbd7f2;
 }
 
 </style>

@@ -26,19 +26,19 @@
                 >Outbound</label
               >
             </div>
-            <div class="col-md-12">
+            <div class="col-xs-6 col-md-12">
               <div class="form-group" style="margin-top: 6px">
-                <label class="d-flex justify-content-start">Origin Stop</label>
+                <label class="d-flex justify-content-start">Start location</label>
                 <StopSelection v-on:stopSelected="getDepStop"></StopSelection>
               </div>
               <div class="form-group" style="margin-top: 10px">
                 <label class="d-flex justify-content-start"
-                  >Destination Stop</label
+                  >End location</label
                 >
                 <StopSelection v-on:stopSelected="getArrStop"></StopSelection>
               </div>
             </div>
-            <div class="col-sm-2 col-md-12" style="margin-top: 10px">
+            <div class="col-xs-6 col-md-12" style="margin-top: 10px">
               <div style="margin-top: 20px">
                 <DateInput v-model="date"></DateInput>
               </div>
@@ -46,7 +46,7 @@
                 <TimeInput v-model="time"></TimeInput>
               </div>
             </div>
-            <div id="submit" class="col-sm-2 col-md-12" style="margin-bottom: 15px">
+            <div id="submit" class="col-md-12" style="margin-bottom: 15px">
               <button
                 @click="handle"
                 type="button"
@@ -87,17 +87,17 @@
             </div>
             <div class="col-md-12">
               <div class="form-group" style="margin-top: 6px">
-                <label class="d-flex justify-content-start">Origin Stop</label>
+                <label class="d-flex justify-content-start">Start Stop</label>
                 <StopSelection v-on:stopSelected="getDepStop"></StopSelection>
               </div>
               <div class="form-group" style="margin-top: 10px">
                 <label class="d-flex justify-content-start"
-                  >Destination Stop</label
+                  >End Stop</label
                 >
                 <StopSelection v-on:stopSelected="getArrStop"></StopSelection>
               </div>
             </div>
-            <div class="col-sm-2 col-md-12" style="margin-top: 10px">
+            <div class="col-md-12" style="margin-top: 10px">
               <div style="margin-top: 20px">
                 <DateInput v-model="date"></DateInput>
               </div>
@@ -105,7 +105,7 @@
                 <TimeInput v-model="time"></TimeInput>
               </div>
             </div>
-            <div id="submit" class="col-sm-2 col-md-12" style="margin-bottom: 15px">
+            <div id="submit" class="col-md-12" style="margin-bottom: 15px">
               <button
                 @click="handle"
                 type="button"
@@ -136,7 +136,7 @@ import DateInput from "@/components/DateInput";
 import TimeInput from "@/components/TimeInput";
 import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
-import { Tweet, Timeline } from 'vue-tweet-embed'
+import Timeline from "vue-tweet-embed";
 
 export default {
   name: "TripSelection",
@@ -159,8 +159,8 @@ export default {
       journey: "Please input your journey info:",
       origin: null,
       destination: null,
-      time: "3:00",
-      date: null,
+      time: "3:15",
+      date: "2019-09-07",
     };
   },
   methods: {
@@ -212,6 +212,25 @@ export default {
     getArrStop: function (val) {
       this.stop_arr = val;
     },
+
+
+  // Attempt to have the date/time selector start with the current date/time
+  getDate() {
+    var currentdate = new Date();
+    var fulldate = currentdate.getFullYear() + "-" + currentdate.getMonth() + "-" + currentdate.getDay();
+    var fulltime = currentdate.getHours() + ":" + currentdate.getMinutes();
+
+    this.date = fulldate;
+    this.time = fulltime;
+    console.log(fulltime)
+    console.log(fulldate)
+  },
+
+  },
+
+  created() {
+    // Call the getDate method on start up
+    // this.getDate();
   },
 };
 </script>
@@ -222,12 +241,14 @@ export default {
   display: inline-block;
   width: 60px;
   height: 34px;
+  
 }
 
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
+
 }
 
 .slider {
@@ -237,9 +258,11 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: 	#a7cdf2;
+  background-color:#a7cdf2;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+  border-radius: 8px;
+  border: 1px solid #157977;
 }
 
 .slider:before {
@@ -273,4 +296,7 @@ input:checked + .slider:before {
   overflow-y: auto;
 }
 
+@media only screen and (max-width: 600px) {
+
+}
 </style>
