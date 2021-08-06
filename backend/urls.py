@@ -13,20 +13,29 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import debug_toolbar
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
 
 from .api.views import *
 
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
     path('admin/', admin.site.urls),
     path('', index_view, name='index'),
-    path('test', test_message, name='test'),
-    path('test_db', test_db),
     path('routes', get_routes, name='routes'),
-    path('stops/<stop>', get_stops, name='stops'),
-    path('coordinate/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
-    path('predict/<route>/<direction>/<int:arr_stop>/<int:dep_stop>/<int:datetime>', predict_time, name='predict'),
+    path('stops/<stop>/<int:direction>', get_stops, name='stops'),
+    path('stop/<int:stop>/coordinates', get_stop_coordinates, name='stop_position'),
+    path('coordinate/<int:direction>/<route>/<int:stop_dep>/<int:stop_arr>', get_coordinates, name='coordinate'),
+    path('predict/<route>/<int:direction>/<int:dep_stop>/<int:arr_stop>/<int:datetime>', predict_time, name='predict'),
     path('weather', get_weather, name='weather'),
-    path('ptpjourney', get_journey_time, name='journey')
+    path('ptpjourney', get_journey_time, name='journey'),
+    path('stops/<agency>/<route>/info', get_stop_info, name='stop info'),
+    path('shape/<route>/<int:direction>/<int:dep_stop>/<int:arr_stop>', get_shape, name='shape'),
+    path('trips/<agency>/<route>/current', get_bus_positions, name="trips"),
+    path("stops/<stop>/trips", get_stop_trips, name="stop trips"),
+    path('time/<route>/<int:stop>/<int:direction>', get_bus_time, name="time"),
+    re_path(r'^(?P<worker_name>manifest).json$', serve_worker_view, name='manifest'),
+    re_path(r'^(?P<worker_name>[-\w\d.]+).js$', serve_worker_view, name='serve_worker'),
+    re_path(r'^(?P<worker_name>robots).txt$', serve_worker_view, name='robots')
 ]

@@ -10,5 +10,11 @@ module.exports = {
     // and distribute
     devServer: {
       proxy: 'http://localhost:8000/'
+    },
+    pwa :{
+        workboxPluginMode:'InjectManifest',
+        workboxOptions:{
+            swSrc: 'src/service-worker.js'
+        }
     }
   }

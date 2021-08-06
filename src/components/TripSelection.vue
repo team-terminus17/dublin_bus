@@ -159,23 +159,17 @@ export default {
       journey: "Please input your journey info:",
       origin: null,
       destination: null,
-      time: "3:15",
-      date: "2019-09-07",
-    };
+      direction: null,
+      routeinfo: null
+    }
   },
-  methods: {
-    getRoutes: async function () {
-      let url =
-        "/coordinate/" +
-        "/" +
-        this.route +
-        "/" +
-        this.stop_dep +
-        "/" +
-        this.stop_arr;
+  methods:{
+    getRoutes:async function(){
+      let url = `/coordinate/${this.direction}/${this.route}/${this.stop_dep}/${this.stop_arr}`;
       let response = await fetch(url);
       let data = await response.json();
-      if (data["valid"] == 2) {
+
+      if(data['valid']==2){
         alert("Origin and destination can't be the same");
         this.valid = false;
         return;
@@ -185,54 +179,37 @@ export default {
         this.valid = false;
         return;
       }
-      this.valid = true;
-      this.origin = {
-        lat: data["stop_dep"]["lat"],
-        lng: data["stop_dep"]["lon"],
-      };
-      this.destination = {
-        lat: data["stop_arr"]["lat"],
-        lng: data["stop_dep"]["lon"],
-      };
-      bus.$emit("showDirection", this.origin, this.destination);
-    },
+      this.valid=true;
+      this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
+      this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
+      this.$emit("tripComplete",this.route,this.direction,this.stop_dep,this.stop_arr)
+  },
+
     handle() {
       if (this.stop_arr == null || this.stop_dep == null) {
         alert("Please fill in the complete route");
         return;
       }
       this.getRoutes();
-    },
-    getRoute: function (val) {
-      this.route = val;
-    },
-    getDepStop: function (val) {
-      this.stop_dep = val;
-    },
-    getArrStop: function (val) {
-      this.stop_arr = val;
-    },
-
-
-  // Attempt to have the date/time selector start with the current date/time
-  getDate() {
-    var currentdate = new Date();
-    var fulldate = currentdate.getFullYear() + "-" + currentdate.getMonth() + "-" + currentdate.getDay();
-    var fulltime = currentdate.getHours() + ":" + currentdate.getMinutes();
-
-    this.date = fulldate;
-    this.time = fulltime;
-    console.log(fulltime)
-    console.log(fulldate)
+      this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
   },
 
+    getRoute: function (){
+      this.route=arguments[0];
+      this.direction=arguments[1];
+      this.routeinfo=arguments;
+    },
+
+    getDepStop: function (val){
+      this.stop_dep=val;
+    },
+
+    getArrStop: function (val){
+      this.stop_arr=val;
+  }
   },
 
-  created() {
-    // Call the getDate method on start up
-    // this.getDate();
-  },
-};
+}
 </script>
 
 <style scoped>

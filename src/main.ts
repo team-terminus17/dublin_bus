@@ -8,14 +8,12 @@ import store from './store'
 // need to be considered as well?
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
-
+import './registerServiceWorker'
 import ownKeys = Reflect.ownKeys;
 import Autocomplete from 'v-autocomplete'
 
 Vue.use(Autocomplete)
 Vue.config.productionTip = false
-console.log("Hello from main.ts!")
-fetch("test").then(response => response.text()).then(data => console.log(data));
 
 new Vue({
   router,

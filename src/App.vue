@@ -108,6 +108,25 @@
 
  }
 
+/*
+  A basic little spinning circle from W3C:
+  https://www.w3schools.com/howto/howto_css_loader.asp
+*/
+
+.loader-template {
+  border: 0.7em solid #f3f3f3; /* Light grey */
+  border-top: 0.7em solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 5em;
+  height: 5em;
+  animation: loader-template-spin 2s linear infinite;
+}
+
+@keyframes loader-template-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>
 
 <script>
@@ -117,29 +136,51 @@ import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
 import PointToPointJourney from "@/components/PointToPointJourney";
+import DateTimeInput from "@/components/DateTimeInput";
+import StopRenderer from "@/components/map-renderers/StopRenderer.vue";
+import BusRenderer from './components/map-renderers/BusRenderer.vue';
+import StopTrips from "@/components/StopTrips.vue"
+
 export default {
-  name: 'App',
+  name: "App",
+
   components: {
+    PointToPointJourney,
+    DateTimeInput,
     Map,
     TripSelection,
     Weather,
     Prediction,
+    StopRenderer,
+    BusRenderer,
+    StopTrips
   },
+
   data() {
     return {
-      greet: 'Hello there',
-      name: "General Kenobi",
-      headingID: 'heading',
-      isDisabled: false,
-      status: 'success',
       journeyInfo: '<b>Journey Info</b>',
-
-      predict:{
-        time: "test",
-      },
-
+      timestamp: null,
+      selectedStop: null,
     };
   },
+
+  methods:{
+    showTripPrediction:function (route, direction, stop_dep, stop_arr){
+      this.$refs.predict.getTripPrediction(route, direction, stop_dep, stop_arr,this.timestamp);
+    },
+
+    showGooglePrediction:function (route){
+      this.$refs.predict.getGooglePrediction(route, this.timestamp);
+    },
+
+    updateTimestamp:function (val){
+      this.timestamp=val;
+    },
+
+    showStopTrips(stopID) {
+      this.selectedStop = stopID;
+    }
+  }
 }
 </script>
 

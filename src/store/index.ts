@@ -5,11 +5,16 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    map: null,
+    trackingStatus: false
   },
   mutations: {
-  },
-  actions: {
-  },
-  modules: {
+    initMap(state, map) {
+      state.map = map
+    },
+
+    changeTrackingStatus(state, status){
+      state.trackingStatus = status;
+    }
   }
 })
