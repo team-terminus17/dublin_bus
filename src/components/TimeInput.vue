@@ -200,3 +200,23 @@ function updateValue(value, kind) {
 }
 
 </script>
+
+<style scoped>
+
+  .form-control {
+    background-color: #bbd7f2;
+    border: 1px solid #157977;
+  }
+
+  .form-select {
+    background-color: #bbd7f2;
+    border-radius: 8px;
+    border: 1px solid #157977;
+  }
+
+  .input-group-text {
+    background-color: #bbd7f2;
+    border-radius: 8px;
+    border: 1px solid #157977;
+  }
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-sm-12 col-md-3">
+  <div class="col-sm-12 col-md-12 pred">
     <p>Journey Info:</p>
     <li v-for="(item,index) in wholeRouteDict" v-bind:key="index">
       {{item.mode}} - {{item.time}} -{{item.instruction}}
@@ -94,5 +94,10 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.pred {
+  margin-bottom: 20px;
+  border-top: 1px solid #fefefe;
+}
+
 </style>
