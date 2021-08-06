@@ -422,12 +422,30 @@ def get_active_services():
 
 
 def get_shape(request, route, direction, dep_stop, arr_stop):
-    """Take a route, two stops indices, return the array of shape corrdinates of the trip defined by the input"""
+    """Take a route, two stops indices,
+    return the array of shape corrdinates of the trip defined by the input
+    and the southwest and northeast bounds
+    """
     dep_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).shape_id
     arr_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).shape_id
     coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry)
                             .values('lat', lng=F('lon')))
     coordinates_dict = {'coordinates': coordinates_list}
+
+    lat_min = 90
+    lat_max = -90
+    lng_min = 190
+    lng_max = -190
+
+    for coordinates in coordinates_list:
+        lat_min = min(lat_min, coordinates['lat'])
+        lat_max = max(lat_max, coordinates['lat'])
+        lng_min = min(lng_min, coordinates['lng'])
+        lng_max = max(lng_max, coordinates['lng'])
+
+    bounds = [{'lat': lat_min, 'lng': lng_min}, {'lat': lat_max, 'lng': lng_max}]
+
+    coordinates_dict['bound'] = bounds
     return JsonResponse(coordinates_dict)
 
 
