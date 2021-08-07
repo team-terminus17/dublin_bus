@@ -1,7 +1,7 @@
 <template>
   <div>
     <Tabs
-        v-on:tabChanged="$emit('tabChanged')"
+        v-on:tabChanged="onTabChanged"
     >
       <Tab name="Tab 1" selected="true">
         <div id="Tab 1" class="col-sm-12 col-md-12 tabcontent">
@@ -10,6 +10,7 @@
             <div class="col-xs-6 col-md-12">
               <PointToPointJourney
                   v-on:googleQueryComplete="$emit('googleQueryComplete',arguments[0],arguments[1])"
+                  ref="ptpjourney"
               ></PointToPointJourney>
             </div>
           </div>
@@ -21,6 +22,7 @@
           <div class="row">
             <StopToStopJourney
                 v-on:tripComplete="$emit('tripComplete',arguments[0],arguments[1],arguments[2],arguments[3],arguments[4])"
+                ref="stsjourney"
             ></StopToStopJourney>
           </div>
         </div>
@@ -63,23 +65,11 @@ export default {
     }
   },
   methods:{
-
-
-
-
-    getRoute: function (){
-      this.route=arguments[0];
-      this.direction=arguments[1];
-      this.routeinfo=arguments;
-    },
-
-    getDepStop: function (val){
-      this.stop_dep=val;
-    },
-
-    getArrStop: function (val){
-      this.stop_arr=val;
-  }
+    onTabChanged: function (){
+      this.$emit('tabChanged');
+      this.$refs.ptpjourney.refreshView();
+      this.$refs.stsjourney.refreshView();
+    }
   },
 
 }

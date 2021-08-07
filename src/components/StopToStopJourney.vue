@@ -118,6 +118,10 @@ export default {
 
     updateTimestamp: function (val){
       this.timestamp = val;
+    },
+
+    refreshView: function (){
+      this.$refs.renderer.clearView();
     }
   }
 };
