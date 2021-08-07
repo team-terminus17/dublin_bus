@@ -20,8 +20,14 @@
     <div class="row">
       
       <div id="input" class="collapse col-xs-4 col-sm-5 col-md-5 col-lg-3">
-        <TripSelection></TripSelection>
-        <Prediction></Prediction>
+        <TripSelection
+            v-on:googleQueryComplete="showGooglePrediction"
+            v-on:tripComplete="showTripPrediction"
+            v-on:tabChanged="refreshView"
+        ></TripSelection>
+        <Prediction
+            ref="predict"
+        ></Prediction>
       </div>
       <div class="col-md-12">
         <Map></Map>
@@ -136,11 +142,6 @@ import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
 import Prediction from "./components/Prediction"
 
-import DateTimeInput from "@/components/DateTimeInput";
-import StopRenderer from "@/components/map-renderers/StopRenderer.vue";
-import BusRenderer from './components/map-renderers/BusRenderer.vue';
-import StopTrips from "@/components/StopTrips.vue"
-
 export default {
   name: "App",
 
@@ -149,9 +150,6 @@ export default {
     TripSelection,
     Weather,
     Prediction,
-    // StopRenderer,
-    // BusRenderer,
-    // StopTrips
   },
 
   data() {
@@ -163,12 +161,12 @@ export default {
   },
 
   methods:{
-    showTripPrediction:function (route, direction, stop_dep, stop_arr){
-      this.$refs.predict.getTripPrediction(route, direction, stop_dep, stop_arr,this.timestamp);
+    showTripPrediction:function (route, direction, stop_dep, stop_arr, timestamp){
+      this.$refs.predict.getTripPrediction(route, direction, stop_dep, stop_arr, timestamp);
     },
 
-    showGooglePrediction:function (route){
-      this.$refs.predict.getGooglePrediction(route, this.timestamp);
+    showGooglePrediction:function (route, timestamp){
+      this.$refs.predict.getGooglePrediction(route, timestamp);
     },
 
     updateTimestamp:function (val){
@@ -177,6 +175,10 @@ export default {
 
     showStopTrips(stopID) {
       this.selectedStop = stopID;
+    },
+
+    refreshView(){
+      this.$refs.predict.refreshView();
     }
   }
 }

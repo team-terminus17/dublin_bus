@@ -1,12 +1,16 @@
 <template>
   <div>
-    <Tabs>
+    <Tabs
+        v-on:tabChanged="$emit('tabChanged')"
+    >
       <Tab name="Tab 1" selected="true">
         <div id="Tab 1" class="col-sm-12 col-md-12 tabcontent">
           <div class="row">
             <div v-html="journey" class="d-flex"></div>
             <div class="col-xs-6 col-md-12">
-              <PointToPointJourney></PointToPointJourney>
+              <PointToPointJourney
+                  v-on:googleQueryComplete="$emit('googleQueryComplete',arguments[0],arguments[1])"
+              ></PointToPointJourney>
             </div>
           </div>
         </div>
@@ -15,7 +19,9 @@
       <Tab name="Tab 2">
         <div id="Tab 2" class="col-sm-12 col-md-12 tabcontent">
           <div class="row">
-            <StopToStopJourney></StopToStopJourney>
+            <StopToStopJourney
+                v-on:tripComplete="$emit('tripComplete',arguments[0],arguments[1],arguments[2],arguments[3],arguments[4])"
+            ></StopToStopJourney>
           </div>
         </div>
       </Tab>
@@ -57,35 +63,9 @@ export default {
     }
   },
   methods:{
-    getRoutes:async function(){
-      let url = `/coordinate/${this.direction}/${this.route}/${this.stop_dep}/${this.stop_arr}`;
-      let response = await fetch(url);
-      let data = await response.json();
 
-      if(data['valid']==2){
-        alert("Origin and destination can't be the same");
-        this.valid = false;
-        return;
-      }
-      if (data["valid"] == 1) {
-        alert("The selected route is not in the same direction");
-        this.valid = false;
-        return;
-      }
-      this.valid=true;
-      this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
-      this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
-      this.$emit("tripComplete",this.route,this.direction,this.stop_dep,this.stop_arr)
-  },
 
-    handle() {
-      if (this.stop_arr == null || this.stop_dep == null) {
-        alert("Please fill in the complete route");
-        return;
-      }
-      this.getRoutes();
-      this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
-  },
+
 
     getRoute: function (){
       this.route=arguments[0];

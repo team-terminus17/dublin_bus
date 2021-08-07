@@ -30,7 +30,11 @@ export default {
   methods: {
     tabSelect(selectedTab) {
       this.tabs.forEach(tab => {
+        let prevstate = tab.isActive
         tab.isActive = tab.name === selectedTab.name;
+        if(prevstate==false && tab.isActive==true){
+          this.$emit("tabChanged")
+        }
       });
     }
   },

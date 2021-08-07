@@ -52,8 +52,6 @@ export default {
     clearView() {
       if (this.directionsRenderer)
         this.directionsRenderer.setDirections({routes: []});
-      //Although it is functioning, I don't know why the console in chrome devtools would give me an error
-      //"InvalidValueError: setDirections: not an Object"
     },
 
     updateView() {
