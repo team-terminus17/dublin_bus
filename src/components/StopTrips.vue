@@ -16,7 +16,7 @@
             v-for="(trip, index) in trips"
             :key="index"
             @click="selectedTrip = trip.tripID"
-            :class="{selected: trip.tripID === selectedTrip}"
+            :class="{ selected: trip.tripID === selectedTrip }"
           >
             <span>{{ trip.arrivalTime }}</span>
             <span>{{ trip.routeName }}</span>
@@ -32,7 +32,9 @@
       <p v-else>No trips to display</p>
     </div>
     <div class="footer">
-      <button @click="track" :disabled="!selectedTrip">Track</button>
+      <button @click="track" :disabled="!selectedTrip" class="btn btn-warning">
+        Track
+      </button>
     </div>
   </div>
 </template>
@@ -85,30 +87,8 @@ span {
 }
 
 li.selected {
-  background: #aaaaff;
+  background: #bbd7f2;
 }
-
-button {
-  padding: 0.3em;
-  border: none;
-  background: #d5d5d5;
-  border-radius: 0.25em;
-  transition: background 0.3s;
-}
-
-button:disabled {
-  color: #aaaaaa;
-}
-
-button:hover {
-  background: rgb(160, 160, 160);
-}
-
-
-button:active {
-  background: rgb(85, 85, 85);
-}
-
 </style>
 
 <script>
@@ -162,8 +142,7 @@ export default {
         );
       }
 
-      if (this.trips.length > 0)
-        this.selectedTrip = this.trips[0].tripID;
+      if (this.trips.length > 0) this.selectedTrip = this.trips[0].tripID;
 
       this.loading = false;
     },
