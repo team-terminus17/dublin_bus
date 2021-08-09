@@ -68,7 +68,6 @@ export default {
           .then(data => {
             this.busPathCoordinates=data.coordinates;
             this.updateView();
-            console.log(data.bound)
             this.map.fitBounds(new window.google.maps.LatLngBounds(data.bound[0],data.bound[1]))
     })
     }
