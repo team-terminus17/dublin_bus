@@ -9,7 +9,7 @@ import json
 
 from .models import *
 from . import gtfs_r
-from .utils import add_time
+from .utils import add_time, minus_time
 
 import os
 from django.conf import settings
@@ -177,109 +177,22 @@ def get_stop_info(request, agency="all", route="all"):
 
 def get_bus_positions(request, agency, route):
     """
-    Return the array containing the trip id, start stop, end
-    stop, and departure/arrival times for the segment the trip is currently
-    on in json format
+            Retrieve information on active trips for a given route and given direction.
+
+            The agency should be the GTFS ID - 978 for Dublin bus for example.
+            The route should be a short name in capitals - 46A for example.
+            The direction should be 0 for outbound, 1 for inbound and 2(default) for both.
+
+            Returns the array containing the trip id, start stop, end
+            stop, and departure/arrival times for the segment the trip is currently
+            on.
+            Each object in the second array contains the information of future trips
+            including trip_id and arrival times.
     """
 
-    data = get_trip_info(agency, route)["valid"]
+    trips = get_active_trips(agency, route)
 
-    return JsonResponse(data, safe=False)
-
-
-def get_bus_time(request, route, stop, direction):
-    """Return the information of the shortest waiting time in minutes and the corresponding trip id"""
-    data = get_trip_info(978, route, direction)
-    # Given that the stops we provide in trip selection tab is from one fixed shape,
-    # there is possibility that we cannot find a valid trip that contains the stop which user
-    # selects. Valid_stop is to tag whether this stop is trackable
-    valid_stop = False
-    closet_seq = -1
-    closet_trip = 0
-    waiting_time = 0
-
-    for trip in data['valid']:
-        target_stop = StopTimes.objects.filter(trip_id=trip['trip'], stop_id=stop).first()
-
-        if target_stop is None:
-            continue
-        target_seq = target_stop.stop_sequence
-
-        cur_stop = StopTimes.objects.get(trip_id=trip['trip'], stop_id=trip['currentStop'])
-        cur_seq = cur_stop.stop_sequence
-        if cur_seq >= target_seq:
-            # This means the bus for this trip has already passed the target stop
-            continue
-
-        valid_stop = True
-        if cur_seq > closet_seq:
-            closet_seq = cur_seq
-            closet_trip = trip['trip']
-            # Operands '+' and '-' are not supported for datetime.time object, so we need to transform it
-            # to datetime.datetime object
-            cur_stop_actual_time = datetime.strptime(str(trip['departureTime']), '%H:%M:%S')
-            cur_stop_schedule_time = datetime.strptime(str(cur_stop.departure_time), '%H:%M:%S')
-            target_stop_schedule_time = datetime.strptime(str(target_stop.departure_time), '%H:%M:%S')
-            cur_time = datetime.strptime(str(datetime.now().time()), '%H:%M:%S.%f')
-            delay = cur_stop_actual_time - cur_stop_schedule_time
-            waiting_time = round((target_stop_schedule_time - cur_time + delay).seconds/60)
-
-    if not valid_stop:
-        waiting_time = 100000
-        for trip in data['future']:
-            target_stop = StopTimes.objects.filter(trip_id=trip['trip'], stop_id=stop).first()
-
-            if target_stop is None:
-                continue
-
-            valid_stop = True
-            cur_time = datetime.strptime(str(datetime.now().time()), '%H:%M:%S.%f')
-            target_stop_schedule_time = datetime.strptime(str(target_stop.departure_time), '%H:%M:%S')
-            trip_waiting_time = round((target_stop_schedule_time - cur_time).seconds/60)
-
-            if trip_waiting_time < waiting_time:
-                waiting_time = trip_waiting_time
-                closet_trip = trip['trip']
-
-    res = dict()
-    res['trackable'] = valid_stop
-    res['trip'] = closet_trip
-    res['time'] = waiting_time
-
-    return JsonResponse(res, safe=False)
-
-
-def get_trip_info(agency, route, direction=2):
-    """
-        Retrieve information on active trips for a given route and given direction.
-
-        The agency should be the GTFS ID - 978 for Dublin bus for example.
-        The route should be a short name in capitals - 46A for example.
-        The direction should be 0 for outbound, 1 for inbound and 2(default) for both.
-
-        Returns a dict containing two arrays.
-        Each object in first array contains the trip id, start stop, end
-        stop, and departure/arrival times for the segment the trip is currently
-        on.
-        Each object in the second array contains the information of future trips
-        including trip_id and arrival times.
-    """
-    # Retrieve all trip stops for this route in two queries.
-    # First, determine active services
-
-    services = get_active_services()
-
-    # Define a subquery for trips for the given services, route and agency
-
-    trips = Trips.objects.select_related("route",
-                                         "route__agency", "route__name")
-    trips = trips.filter(service_id__in=services,
-                         route__agency__external_id=agency, route__name__name=route)
-    if direction != 2:
-        trips = trips.filter(direction=direction)
-
-    # Collect stoptime entries whose trip id is in the result of
-    # the above subquery. (Django does the subquery and this in one go.)
+    # Collect stoptime entries whose trip id is in the trips list
 
     trip_ids = trips.values_list("id", flat=True)
     trip_stops = StopTimes.objects.filter(trip_id__in=trip_ids)
@@ -316,7 +229,6 @@ def get_trip_info(agency, route, direction=2):
                 dep = timedelta(seconds=update[1])
                 stop["departureTime"] = add_time(stop["departureTime"], dep)
 
-
     # The sequence numbers aren't perfect, they can jump sometimes.
     # Fix that here by storing them as a list
 
@@ -333,7 +245,6 @@ def get_trip_info(agency, route, direction=2):
 
     current_time = datetime.now().time()
     data = list()
-    future_trips = list()
 
     for trip_id, trip in trip_times_v2.items():
 
@@ -345,14 +256,7 @@ def get_trip_info(agency, route, direction=2):
 
         # None means the trip is over, 0 means the trip
         # has yet to start.
-        if next_stop_index is None:
-            continue
-
-        if next_stop_index == 0:
-            future_trips.append({
-                "trip": trip_id,
-                "departureTime": trip[0]["arrivalTime"]
-            })
+        if next_stop_index is None or next_stop_index == 0:
             continue
 
         current_stop = trip[next_stop_index - 1]
@@ -367,12 +271,66 @@ def get_trip_info(agency, route, direction=2):
             "direction": trip_directions[trip_id]
         })
 
+    return JsonResponse(data, safe=False)
+
+
+def get_bus_time(request, route, stop, direction):
+    """Return the information of the shortest waiting time in minutes and the corresponding trip id"""
+
+    valid_stop = False
+    waiting_time = 0
+    closet_trip = 0
+
+    active_trips = get_active_trips(978, route, direction).values_list('id', flat=True)
+
+    stoptimes = StopTimes.objects.filter(trip_id__in=active_trips, stop_id=stop) \
+        .order_by("arrival_time")
+
+    realtime_lookup = gtfs_r.get_realtime_data()
+
+    for entry in stoptimes:
+
+        arrival_time = entry.arrival_time
+
+        update = realtime_lookup.get((entry.trip_id, entry.stop_sequence), None)
+        if update is not None:
+            arrival_delay = timedelta(seconds=update[0])
+            arrival_time = add_time(arrival_time, arrival_delay)
+
+        if arrival_time < datetime.now().time():
+            continue
+        valid_stop = True
+        closet_trip = entry.trip_id
+        waiting_time = round((minus_time(arrival_time, datetime.now().time())).seconds / 60)
+
+        break
+
     res = dict()
-    res["valid"] = data
-    res["future"] = future_trips
+    res['trackable'] = valid_stop
+    res['trip'] = closet_trip
+    res['time'] = waiting_time
 
-    return res
+    return JsonResponse(res, safe=False)
 
+
+def get_active_trips(agency, route, direction=2):
+    """Given the agency, route and direction, return the list of the activate trips of current day"""
+
+    # Retrieve all trip stops for this route in two queries.
+    # First, determine active services
+
+    services = get_active_services()
+
+    # Define a subquery for trips for the given services, route and agency
+
+    trips = Trips.objects.select_related("route",
+                                         "route__agency", "route__name")
+    trips = trips.filter(service_id__in=services,
+                         route__agency__external_id=agency, route__name__name=route)
+    if direction != 2:
+        trips = trips.filter(direction=direction)
+
+    return trips
 
 
 def get_stop_trips(request, stop):
@@ -393,7 +351,7 @@ def get_stop_trips(request, stop):
 
     # There are about 30,000 trips that are active at any given time. 
     # Ideally this would be used as a subquery, though I'm not sure how to
-    # get Django to do so. The speedup would only be aout 150ms though
+    # get Django to do so. The speedup would only be about 150ms though
     # so it's not a major concern.
 
     stoptimes = StopTimes.objects.select_related("trip")\
@@ -425,7 +383,6 @@ def get_stop_trips(request, stop):
         })
 
     return JsonResponse(trips, safe=False)
-
 
 
 def get_active_services():
@@ -465,12 +422,30 @@ def get_active_services():
 
 
 def get_shape(request, route, direction, dep_stop, arr_stop):
-    """Take a route, two stops indices, return the array of shape corrdinates of the trip defined by the input"""
+    """Take a route, two stops indices,
+    return the array of shape corrdinates of the trip defined by the input
+    and the southwest and northeast bounds
+    """
     dep_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).shape_id
     arr_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).shape_id
     coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry)
                             .values('lat', lng=F('lon')))
     coordinates_dict = {'coordinates': coordinates_list}
+
+    lat_min = 90
+    lat_max = -90
+    lng_min = 190
+    lng_max = -190
+
+    for coordinates in coordinates_list:
+        lat_min = min(lat_min, coordinates['lat'])
+        lat_max = max(lat_max, coordinates['lat'])
+        lng_min = min(lng_min, coordinates['lng'])
+        lng_max = max(lng_max, coordinates['lng'])
+
+    bounds = [{'lat': lat_min, 'lng': lng_min}, {'lat': lat_max, 'lng': lng_max}]
+
+    coordinates_dict['bound'] = bounds
     return JsonResponse(coordinates_dict)
 
 

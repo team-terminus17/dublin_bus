@@ -31,18 +31,16 @@ export default {
   methods: {
     updateItems: function (value) {
       this.routes = this.items
-        .filter((item) => item.includes(value))
-        .slice(0, 5);
+        .filter((item) => item.includes(value));
     },
 
     getRoutes: async function () {
       let url = "/routes";
       let response = await fetch(url);
       let data = await response.json();
-      this.items = data.routes;
-      this.routes = data.routes.slice(0, 5);
-    },
-
+      this.items=data.routes;
+      this.routes=data.routes;
+  },
     passRoute: function (value) {
       this.route = value;
       this.$emit("selectRoute", value, this.direction);
