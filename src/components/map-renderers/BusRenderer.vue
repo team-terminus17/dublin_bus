@@ -36,7 +36,7 @@ export default {
      */
     route: {
       type: String,
-      default: "46A",
+      default: null,
     },
     /**
      * Filter by direction - '0' for outbound, '1' for inbound.
@@ -99,6 +99,11 @@ export default {
       });
     },
     async fetchData() {
+      if (!this.route || !this.agency) {
+        this.tripData = [];
+        this.stopLookup = new Map();
+        return;
+      }
       const stopUrl = `/stops/${this.agency}/${this.route}/info`;
       const stops = fetch(stopUrl).then((response) => response.json());
 

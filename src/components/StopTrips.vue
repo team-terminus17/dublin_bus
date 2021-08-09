@@ -1,7 +1,8 @@
 <template>
-  <section class="stop-trips">
+  <div class="stop-trips">
     <div class="content">
-      <div v-if="loading" class="loader-template"></div>
+      <p v-if="initial">Click on a stop to show trips</p>
+      <div v-else-if="loading" class="loader-template"></div>
       <!--
         It seems on one hand that putting overflow:auto and display:flex on the
         same element leads to trouble, but on the other, putting overflow:auto
@@ -10,43 +11,54 @@
         Hence the intermediate wrapper div below.
       -->
       <div class="table-wrapper" v-else-if="trips.length > 0">
-        <table>
-          <tr
+        <ol>
+          <li
             v-for="(trip, index) in trips"
             :key="index"
             @click="selectedTrip = trip.tripID"
-            :class="{selected: trip.tripID === selectedTrip}"
+            :class="{ selected: trip.tripID === selectedTrip }"
           >
-            <td>{{ trip.arrivalTime }}</td>
-            <td>{{ trip.routeName }}</td>
-            <td>{{ trip.tripHeadsign }}</td>
-          </tr>
-        </table>
+            <span>{{ trip.arrivalTime }}</span>
+            <span>{{ trip.routeName }}</span>
+            <!-- 
+              The headsign is how one differentiates between different 
+              route variants as a user, so it's important. I doesn't really fit
+              at the moment, though. 
+              <td>{{ trip.tripHeadsign }}</td>
+            -->
+          </li>
+        </ol>
       </div>
       <p v-else>No trips to display</p>
     </div>
-    <footer>
-      <button @click="track" :disabled="!selectedTrip">Track</button>
-    </footer>
-  </section>
+    <div class="footer">
+      <button @click="track" :disabled="!selectedTrip" class="btn btn-warning">
+        Track
+      </button>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .stop-trips {
-  margin: 2em;
-  display: inline-grid;
+  color: black;
 }
 
-footer {
-  display: inline;
+p {
+  color: #444444;
+  text-align: center;
+}
+
+.footer {
+  display: inline-block;
   padding: 1em;
 }
 
 .content {
   height: 10em;
-  width: 30em;
   display: flex;
   align-items: center;
+  align-content: stretch;
   justify-content: center;
   background: #eee;
 }
@@ -55,39 +67,28 @@ footer {
   overflow: auto;
   height: 10em;
   padding: 1em 0.3em;
+  flex-grow: 1;
 }
 
-td {
+ol {
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-around;
+  align-content: stretch;
+}
+
+span {
   padding: 0.3em 1em;
-  vertical-align: middle;
   margin: 0.2em;
+  width: 8em;
 }
 
-tr.selected {
-  background: #aaaaff;
+li.selected {
+  background: #bbd7f2;
 }
-
-button {
-  padding: 0.3em;
-  border: none;
-  background: #d5d5d5;
-  border-radius: 0.25em;
-  transition: background 0.3s;
-}
-
-button:disabled {
-  color: #aaaaaa;
-}
-
-button:hover {
-  background: rgb(160, 160, 160);
-}
-
-
-button:active {
-  background: rgb(85, 85, 85);
-}
-
 </style>
 
 <script>
@@ -105,12 +106,14 @@ export default {
   props: ["stopId"],
   watch: {
     stopId() {
+      this.initial = false;
       this.refresh();
     },
   },
   data() {
     return {
       trips: [],
+      initial: true,
       loading: false,
       selectedTrip: null,
     };
@@ -139,8 +142,7 @@ export default {
         );
       }
 
-      if (this.trips.length > 0)
-        this.selectedTrip = this.trips[0].tripID;
+      if (this.trips.length > 0) this.selectedTrip = this.trips[0].tripID;
 
       this.loading = false;
     },

@@ -27,6 +27,10 @@
           </div>
         </div>
       </Tab>
+      
+      <Tab name="Realtime">
+        <RealtimeView></RealtimeView>
+      </Tab>
 
       <Tab name="Twitter">
         <Timeline id="dublinbusnews" sourceType="profile" widget-class="twitter"/>
@@ -41,6 +45,7 @@ import Tabs from "@/components/Tabs";
 import {Timeline} from "vue-tweet-embed";
 import PointToPointJourney from "@/components/PointToPointJourney";
 import StopToStopJourney from "@/components/StopToStopJourney";
+import RealtimeView from "@/components/RealtimeView.vue"
 
 export default {
   name: "TripSelection",
@@ -49,7 +54,8 @@ export default {
     Tabs,
     Timeline,
     PointToPointJourney,
-    StopToStopJourney
+    StopToStopJourney,
+    RealtimeView,
   },
   data() {
     return {
