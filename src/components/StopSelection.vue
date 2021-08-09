@@ -35,7 +35,7 @@ export default {
       let response = await fetch(url);
       let data = await response.json();
       this.items=data.stops;
-      this.stops=data.stops.slice(0,5);
+      this.stops=data.stops;
   },
 
     passStop: function (value){
@@ -48,7 +48,7 @@ export default {
     },
 
     updateStops: function (value){
-      this.stops = this.items.filter(item=>item.stopName.includes(value)||item.stopNumber.toString().includes(value)).slice(0,5)
+      this.stops = this.items.filter(item=>item.stopName.includes(value)||item.stopNumber.toString().includes(value));
     },
 
     getLabel: function (stop){

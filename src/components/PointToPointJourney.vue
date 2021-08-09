@@ -20,7 +20,9 @@
       ref="renderer"
   ></PointToPointRenderer>
   <div class="col-xs-6 col-md-12" style="margin-top: 10px">
-  <DateTimeInput></DateTimeInput>
+  <DateTimeInput
+      v-on:sendTimestamp="updateTimestamp"
+  ></DateTimeInput>
   </div>
   <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
 </div>
@@ -39,12 +41,11 @@ export default {
     DateTimeInput
   },
 
-  props:['timestamp'],
-
   data(){
     return{
       start:null,
-      end:null
+      end:null,
+      timestamp:null,
     }
   },
 
@@ -71,7 +72,15 @@ export default {
     },
 
     showGooglePrediction: function (route){
-      this.$emit("googleQueryComplete",route);
+      this.$emit("googleQueryComplete",route,this.timestamp);
+    },
+
+    updateTimestamp: function (val){
+      this.timestamp = val;
+    },
+
+    refreshView: function (){
+      this.$refs.renderer.clearView();
     }
   }
 }

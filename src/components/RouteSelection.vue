@@ -36,7 +36,7 @@ name: "RouteSelection",
       let response = await fetch(url);
       let data = await response.json();
       this.items=data.routes;
-      this.routes=data.routes.slice(0,5);
+      this.routes=data.routes;
   },
 
     passRoute: function (value){

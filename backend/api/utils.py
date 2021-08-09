@@ -1,5 +1,6 @@
 from datetime import datetime, date
 
+
 def add_time(time, delta):
   
   # A bit of an awkward workaround, see:
@@ -9,3 +10,11 @@ def add_time(time, delta):
   dt += delta
   
   return dt.time()
+
+
+def minus_time(time1, time2):
+
+  dt1 = datetime.combine(date.today(), time1)
+  dt2 = datetime.combine(date.today(), time2)
+
+  return dt1-dt2

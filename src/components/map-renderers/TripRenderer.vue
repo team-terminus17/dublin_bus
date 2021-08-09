@@ -53,6 +53,8 @@ export default {
     clearView() {
       if (this.busPath)
         this.busPath.setPath([]);
+      this.map.setZoom(12);
+      this.map.setCenter({ lat: 53.3673893, lng: -6.2600157 });
     },
 
     updateView() {
@@ -66,6 +68,7 @@ export default {
           .then(data => {
             this.busPathCoordinates=data.coordinates;
             this.updateView();
+            this.map.fitBounds(new window.google.maps.LatLngBounds(data.bound[0],data.bound[1]))
     })
     }
   },
