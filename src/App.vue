@@ -172,6 +172,14 @@
     width: 50%;
   }
 
+  #weather {
+    position: absolute;
+  }
+
+  img {
+    width: 50%;
+  }
+
  }
 
 /*
