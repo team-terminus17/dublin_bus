@@ -40,14 +40,21 @@
 <style lang="scss">
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
+:root {
+  --background-color: #e2e2e2;
+  --border-color: #e59c24;
+  --border-radius: 8px;
+
+}
+
 #input {
   position: absolute;
   margin-top: 100px;
   margin-left: 40px;
   z-index: 2;
-  background-color: #6e99f5;
+  background-color: #0f567d;
   color: #F1ECED;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
 }
 
 
@@ -79,13 +86,13 @@
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
 }
 
 /* Handle on hover */

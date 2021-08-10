@@ -204,19 +204,19 @@ function updateValue(value, kind) {
 <style scoped>
 
   .form-control {
-    background-color: #bbd7f2;
-    border: 1px solid #157977;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
   }
 
   .form-select {
-    background-color: #bbd7f2;
-    border-radius: 8px;
-    border: 1px solid #157977;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
   }
 
   .input-group-text {
-    background-color: #bbd7f2;
-    border-radius: 8px;
-    border: 1px solid #157977;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
   }
 </style>
