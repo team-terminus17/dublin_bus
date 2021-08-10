@@ -4,7 +4,7 @@
       @click="startTracking"
       @dblclick="cancelTracking"
   >{{this.button_text}}</button>
-  <span>{{this.time_text}}</span>
+  <span style="color: red">{{this.time_text}}</span>
 </div>
 </template>
 

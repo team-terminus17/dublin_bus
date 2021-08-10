@@ -463,7 +463,7 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime):
         weather = Weather.objects.all().order_by('weather_time')
     weather = weather[0]
     stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
-    time_predict = 1
+    time_predict = 10
     return time_predict
 
 
