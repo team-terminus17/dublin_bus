@@ -38,7 +38,7 @@ export default {
 
       if (this.map) {
         this.busPath = new window.google.maps.Polyline({
-          strokeColor: '#FFB266',
+          strokeColor: '#1b9cfa',
           strokeOpacity: 0.5,
           strokeWeight: 6,
         });
