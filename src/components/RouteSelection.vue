@@ -115,4 +115,8 @@ export default {
   .v-autocomplete-list-item.v-autocomplete-item-active {
   background-color: var(--border-color);
 }
+
+#direction {
+  margin-top: 10px;
+}
 </style>

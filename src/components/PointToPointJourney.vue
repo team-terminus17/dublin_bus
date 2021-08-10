@@ -136,8 +136,13 @@ export default {
 
 
 .datetime {
+  margin-left: 16%;
+}
 
-  margin-left: 16%;  
+@media only screen and (max-width: 600px) {
+  .datetime {
+    margin-left: 0%;
+  }
 }
 
 </style>

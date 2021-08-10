@@ -50,10 +50,10 @@ export default {
     border: 2px solid var(--border-color);
     margin: 0 10px;
     margin-top: 10px;
-    font-size: 1.2em;
+    font-size: 1.0em;
     background-color: var(--background-color);
     border-radius: var(--border-radius);
-    
+    overflow-x: hidden;
   }
 
   .tabs-content {
