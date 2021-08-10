@@ -24,7 +24,7 @@
         ></StopSelection>
       </div>
     </div>
-    <div class="col-md-12" style="margin-top: 10px">
+    <div class="col-xs-6 col-md-8 datetime" style="margin-top: 10px">
       <DateTimeInput
           v-on:sendTimestamp="updateTimestamp"
       ></DateTimeInput>
@@ -36,7 +36,7 @@
       @click="handle"
       type="button"
       class="btn btn-warning"
-      style="margin-top: 70px"
+      style="margin-top: 40px"
     >
       Submit
     </button>
@@ -128,4 +128,9 @@ export default {
 </script>
 
 <style>
+
+.datetime {
+
+  margin-left: 16%;  
+}
 </style>

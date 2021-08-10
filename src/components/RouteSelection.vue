@@ -8,7 +8,7 @@
       :auto-select-one-item="false"
     >
     </v-autocomplete>
-    <button @click="selectDirection" id="direction">
+    <button @click="selectDirection" id="direction" class="btn btn-warning">
       {{ this.direction_text }}
     </button>
   </div>
@@ -73,11 +73,11 @@ export default {
   font-size: 1em;
   padding: 5px 15px;
   box-shadow: none;
-  border: 1px solid #157977;
+  border: 1px solid var(--border-color);
   width: 100%;
   outline: none;
-  background-color: #bbd7f2;
-  border-radius: 8px;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
 }
 
 .v-autocomplete .v-autocomplete-list {
@@ -91,28 +91,28 @@ export default {
   border-top: none;
   max-height: 400px;
   overflow-y: auto;
-  border-bottom: 1px solid #157977;
-  border-radius: 8px;
+  /* border-bottom: 1px solid var(--border-color); */
+  border-radius: var(--border-radius);
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item {
   cursor: pointer;
   color: black;
-  background-color: #bbdaa4;
+  background-color: var(--background-color);
   padding: 10px;
-  border-bottom: 1px solid #157977;
-  border-left: 1px solid #157977;
-  border-right: 1px solid #157977;
+  border-bottom: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   text-align: center;
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item:hover {
-  background-color: #bbd7f2;
+  background-color: var(--border-color);
 }
 
 .v-autocomplete
   .v-autocomplete-list
   .v-autocomplete-list-item.v-autocomplete-item-active {
-  background-color: #bbd7f2;
+  background-color: var(--border-color);
 }
 </style>

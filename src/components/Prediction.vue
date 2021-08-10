@@ -105,7 +105,10 @@ export default {
 <style scoped>
 .pred {
   margin-bottom: 20px;
-  border-top: 1px solid #fefefe;
+  border: 2px solid var(--border-color);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+
 }
 
 </style>

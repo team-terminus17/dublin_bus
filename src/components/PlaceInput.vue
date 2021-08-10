@@ -55,4 +55,10 @@ name: "PlaceInput",
 
 <style scoped>
 
+input {
+  background-color: var(--background-color);
+  width: 90%;
+  border-color: var(--border-color);
+  border-radius: var(--border-radius);
+}
 </style>
