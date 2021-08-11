@@ -8,7 +8,9 @@ from datetime import datetime, timedelta
 import json
 
 from .models import *
+from . import gtfs
 from . import gtfs_r
+from .prediction import model_predict
 from .utils import add_time, minus_time
 
 import os
@@ -319,7 +321,7 @@ def get_active_trips(agency, route, direction=2):
     # Retrieve all trip stops for this route in two queries.
     # First, determine active services
 
-    services = get_active_services()
+    services = gtfs.get_active_services()
 
     # Define a subquery for trips for the given services, route and agency
 
@@ -344,7 +346,7 @@ def get_stop_trips(request, stop):
     ascending.
     """
 
-    active_services = get_active_services()
+    active_services = gtfs.get_active_services()
     active_trips = Trips.objects\
         .filter(service_id__in=active_services)\
         .values_list("id", flat=True)
@@ -385,42 +387,6 @@ def get_stop_trips(request, stop):
     return JsonResponse(trips, safe=False)
 
 
-def get_active_services():
-    """
-    Returns a QuerySet which selects the IDs of services
-    that are active today. It is used to filter the trips table down to
-    those relevant to today.
-    """
-    # At some point this will need to work on a day that is not today?
-    # That's easy enough to change when the need arises though.
-
-    weekdays = ["monday", "tuesday", "wednesday", 
-        "thursday", "friday", "saturday", "sunday"]
-
-    date = datetime.now()
-    weekday = weekdays[date.weekday()]
-
-    # It's unfortunate to have raw SQL here,
-    # but I don't think the Django ORM feature supports anything like the
-    # multiple left join below.
-
-    services = Services.objects.raw(
-        "SELECT api_services.id FROM api_services"
-        # Optionally include an exception corresponding to today.
-        " LEFT JOIN api_serviceexceptions"
-            " ON api_services.id = api_serviceexceptions.service_id"
-            " AND api_serviceexceptions.date = %s"
-        " WHERE start_date <= %s" 
-            " AND end_date >= %s"
-            f" AND {weekday} = 1"
-            # The service is active if the optional exception is null.
-            " AND api_serviceexceptions.id IS NULL",
-        [date, date, date]
-    )
-
-    return services
-
-
 def get_shape(request, route, direction, dep_stop, arr_stop):
     """Take a route, two stops indices,
     return the array of shape corrdinates of the trip defined by the input
@@ -447,24 +413,6 @@ def get_shape(request, route, direction, dep_stop, arr_stop):
 
     coordinates_dict['bound'] = bounds
     return JsonResponse(coordinates_dict)
-
-
-def model_predict(route, direction, dep_stop, arr_stop, datetime):
-    """Take a route, two stops indices, a datetime. Return a predicted time taken."""
-    dep_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).sequence
-    arr_stop_seq = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).sequence
-    stop_list = list(RouteStops.objects.filter(name__name=route, direction=direction,
-                                               sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq)
-                     .values_list('stop__number', flat=True))
-    # First we need to find the predicted weather of the time closet to the input datetime.
-    # If it exceeds the limit of the prediction, we just get current weather info
-    weather = Weather.objects.filter(weather_time__gte=datetime).order_by('weather_time')
-    if len(weather) == 0:
-        weather = Weather.objects.all().order_by('weather_time')
-    weather = weather[0]
-    stop_ret = {'stops': stop_list, 'weather': weather.dictify()}
-    time_predict = 1
-    return time_predict
 
 
 def serve_worker_view(request, worker_name):
