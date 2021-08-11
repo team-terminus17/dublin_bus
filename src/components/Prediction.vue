@@ -1,7 +1,9 @@
 <template>
   <div class="col-sm-12 col-md-12 pred">
-    <p>Journey Info</p>
-    <div v-if="loading" class="loader-template"></div>
+    <p style="font-size: larger;font-weight: bolder">Journey Info</p>
+    <div v-if="loading" class="loading-content">
+      <div class="loader-template"></div>
+    </div>
     <div v-else>
     <div v-for="(item,index) in wholeRouteDict" v-bind:key="index">
       <JourneyInfoBox
@@ -119,5 +121,10 @@ export default {
   overflow: auto;
   max-height: 300px;
 }
-
+.loading-content {
+  height: 10em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>
