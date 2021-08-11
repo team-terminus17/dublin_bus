@@ -37,5 +37,5 @@ urlpatterns = [
     path('time/<route>/<int:stop>/<int:direction>', get_bus_time, name="time"),
     re_path(r'^(?P<worker_name>manifest).json$', serve_worker_view, name='manifest'),
     re_path(r'^(?P<worker_name>[-\w\d.]+).js$', serve_worker_view, name='serve_worker'),
-    re_path(r'^(?P<worker_name>robots).txt$', serve_worker_view, name='robots'),
+    re_path(r'^(?P<worker_name>robots).txt$', serve_worker_view, name='robots')
 ]
