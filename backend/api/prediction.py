@@ -230,9 +230,8 @@ def get_weather_features(target_dt):
         weather = response_data[-1]
 
     try:
-        # The rain is probably wrong, since I doubt the historical figures were
-        # accumulated over 3 hours.
-        rain = weather["rain"]["3hr"] if "rain" in weather else 0
+        # "rain" for the model is over 1hr, not 3, hence the division here.
+        rain = float(weather["rain"]["3hr"])/3 if "rain" in weather else 0
         temp = weather["main"]["temp"]
         wdsp = weather["wind"]["speed"]
         vis = weather["visibility"]
