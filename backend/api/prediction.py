@@ -1,3 +1,4 @@
+import traceback
 import requests, pickle, io
 from decouple import config
 
@@ -6,11 +7,11 @@ from . import utils
 from . import gtfs
 
 
-def model_predict(route, direction, dep_stop, arr_stop, datetime):
+def model_predict(route, direction, dep_stop, arr_stop, datetime, fallback=False):
     
     dt = utils.utc_unix_to_dt(datetime)
 
-    # Guess the planned time.
+    # Guess the planned time from the GTFS schedule.
 
     # The dep_stop and arr_stop might be swapped if they are found
     # to be in the wrong order.
@@ -22,18 +23,33 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime):
 
     # Predict delay.
 
-    dt_features = get_datetime_features(dt)
-    weather_features = get_weather_features(dt)
-       
-    model = get_model(route, direction)
-
-    features = [None, *dt_features, *weather_features]
     total_delay = 0
-    for number in numbers:
-        features[0] = number
-        delay = model.predict([features])[0]
-        print(delay)
-        total_delay += delay
+
+    try:
+
+        dt_features = get_datetime_features(dt)
+        weather_features = get_weather_features(dt)
+        
+        model = get_model(route, direction)
+
+        features = [None, *dt_features, *weather_features]
+
+        for number in numbers:
+            features[0] = number
+            delay = model.predict([features])[0]
+            total_delay += delay
+
+    except:
+        if fallback:
+            print("PREDICTION MODEL FAILURE")
+            print("(Defaulting to 0 delay)")
+            traceback.print_exc()
+        
+        # It can be better to handle this at the callsite.
+        # For example, if the google time is available, 
+        # that can be used instead.
+        else: raise
+
 
     predicted_time = planned_time + total_delay
     return predicted_time

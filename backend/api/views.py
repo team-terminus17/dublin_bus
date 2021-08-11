@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F, Subquery
 
 from datetime import datetime, timedelta
+import traceback
 import json
 
 from .models import *
@@ -57,10 +58,17 @@ def get_coordinates(request, direction, route, stop_dep, stop_arr):
 
 def predict_time(request, route, direction, dep_stop, arr_stop, datetime):
     """Return the predicted time from model in json format"""
-    time_predict = model_predict(route, direction, dep_stop, arr_stop, datetime)
-    dummy = dict()
-    dummy['time'] = time_predict
-    return JsonResponse(dummy)
+
+    # If delay prediction fails, GTFS planned time is used.
+    # There is no fallback if a GTFS planned time! The result is a 500 code.
+
+    # That should be rare though, I didn't think it worth trying to get google
+    # predictions as a fallback here.
+
+    time = model_predict(route, direction, dep_stop, 
+        arr_stop, datetime, fallback=True)
+
+    return JsonResponse({"time": time})
 
 
 def get_weather(request):
@@ -100,11 +108,19 @@ def get_journey_time(request):
                     trackable = True
                     dep_stop_id = dep_stop.first().stop_id
                     arr_stop_id = arr_stop.first().stop_id
-                    time_predict = model_predict(route, direction, dep_stop_id, arr_stop_id, timestamp)
                     trip_direction = direction
+
+                    try:
+                        time_predict = model_predict(route, direction, dep_stop_id, arr_stop_id, timestamp)
+                    except:
+                        print("PREDICTION FAILURE")
+                        print("(Defaulting to Google Time)")
+                        traceback.print_exc()
+                    
                     break
-        # If we could not find a valid id pair for departure stop and arrival stop, return the
-        # predicted time given by google
+
+    # If we could not find a valid id pair for departure stop and arrival stop, return the
+    # predicted time given by google
     return JsonResponse({'time': time_predict, 'trackable': trackable, 'stop_dep': dep_stop_id, 'stop_arr': arr_stop_id,
                          'direction': trip_direction})
 
