@@ -21,8 +21,8 @@
     </div>
     <div class="row">
       <div id="menu" class="col-md-1 d-flex justify-content-start">
-        <button v-on:click="isShow = !isShow" class="btn btn-warning" style="cursor: pointer;">
-          >
+        <button v-on:click="onClickViewButton" class="btn btn-warning" style="cursor: pointer;">
+          {{button_content}}
         </button>
       </div>
       <div v-show="isShow" id="input" class="col-xs-4 col-sm-5 col-md-5 col-lg-3">
@@ -189,10 +189,16 @@ export default {
       timestamp: null,
       selectedStop: null,
       isShow: true,
+      button_content: '>'
     };
   },
 
   methods:{
+    onClickViewButton:function (){
+      this.isShow = !this.isShow;
+      this.button_content = this.button_content==='>'?'<':'>';
+    },
+
     showTripPrediction:function (route, direction, stop_dep, stop_arr, timestamp){
       this.$refs.predict.getTripPrediction(route, direction, stop_dep, stop_arr, timestamp);
     },
