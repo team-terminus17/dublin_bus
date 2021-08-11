@@ -87,7 +87,7 @@ span {
 }
 
 li.selected {
-  background: #bbd7f2;
+  background: var(--border-color);
 }
 </style>
 
