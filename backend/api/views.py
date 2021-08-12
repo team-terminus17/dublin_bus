@@ -410,7 +410,7 @@ def get_shape(request, route, direction, dep_stop, arr_stop):
     """
     dep_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).shape_id
     arr_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).shape_id
-    coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry)
+    coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry).order_by("id")
                             .values('lat', lng=F('lon')))
     coordinates_dict = {'coordinates': coordinates_list}
 
