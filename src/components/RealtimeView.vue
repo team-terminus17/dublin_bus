@@ -8,9 +8,17 @@
       :routeFilter="route"
       :directionFilter="direction"
       @stop-clicked="onStopClicked"
+      ref="stoprenderer"
     ></StopRenderer>
-    <BusRenderer :route="route" :direction="direction"></BusRenderer>
-    <StopTrips :stopId="stop"></StopTrips>
+    <BusRenderer
+        :route="route"
+        :direction="direction"
+        ref="busrenderer"
+    ></BusRenderer>
+    <StopTrips
+        :stopId="stop"
+        ref="stoptrips"
+    ></StopTrips>
   </div>
 </template>
 
@@ -52,9 +60,16 @@ export default {
       this.route = route;
       this.direction = direction.toString();
     },
+
     onStopClicked(stopID) {
       this.stop = stopID;
     },
+
+    refreshView: function (){
+      this.$refs.stoprenderer.removeMarkers();
+      this.$refs.busrenderer.clear();
+      this.$refs.stoptrips.clear();
+    }
   },
 };
 </script>

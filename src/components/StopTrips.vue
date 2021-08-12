@@ -123,6 +123,7 @@ export default {
   },
   methods: {
     clear() {
+      this.initial = true;
       this.trips = [];
       this.selectedTrip = null;
     },
