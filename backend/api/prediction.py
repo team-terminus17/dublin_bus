@@ -239,11 +239,8 @@ def get_weather_features(target_dt):
     except:
         raise ValueError("Failed to parse data from weather API response.")
 
-    # This is temporary, the feature is going to be removed.
-    clamt = 5
-
     # Open Weather gives temperature in Kelvin,
     # Dublin Bus had it in Celsius.
     temp = temp - 273.15 
     
-    return rain, temp, wdsp, vis, clamt
+    return rain, temp, wdsp, vis
