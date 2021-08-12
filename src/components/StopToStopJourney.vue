@@ -32,6 +32,7 @@
     <TripRenderer
         ref="renderer"
     ></TripRenderer>
+    <div class="col-12" style="margin-bottom: 10px">
     <button
       @click="handle"
       type="button"
@@ -40,6 +41,12 @@
     >
       Submit
     </button>
+      </div>
+    <div class="col-12">
+      <Prediction
+          ref="predict"
+      ></Prediction>
+    </div>
   </div>
 </template>
 
@@ -48,8 +55,10 @@ import DateTimeInput from "./DateTimeInput.vue";
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
 import TripRenderer from "@/components/map-renderers/TripRenderer";
+import Prediction from "@/components/Prediction";
 export default {
   components: {
+    Prediction,
     TripRenderer,
     DateTimeInput,
     RouteSelection,
@@ -90,7 +99,7 @@ export default {
       this.valid=true;
       this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
       this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
-      this.$emit("tripComplete",this.route,this.direction,this.stop_dep,this.stop_arr,this.timestamp)
+      await this.$refs.predict.getTripPrediction(this.route,this.direction,this.stop_dep,this.stop_arr,this.timestamp);
     },
 
     handle() {
@@ -122,6 +131,7 @@ export default {
 
     refreshView: function (){
       this.$refs.renderer.clearView();
+      this.$refs.predict.refreshView();
     }
   }
 };

@@ -29,11 +29,7 @@
         <TripSelection
             v-on:googleQueryComplete="showGooglePrediction"
             v-on:tripComplete="showTripPrediction"
-            v-on:tabChanged="refreshView"
         ></TripSelection>
-        <Prediction
-            ref="predict"
-        ></Prediction>
       </div>
       <div class="col-md-12">
         <Map></Map>
@@ -171,7 +167,6 @@
 import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
-import Prediction from "./components/Prediction"
 
 export default {
   name: "App",
@@ -180,7 +175,6 @@ export default {
     Map,
     TripSelection,
     Weather,
-    Prediction,
   },
 
   data() {
@@ -215,9 +209,6 @@ export default {
       this.selectedStop = stopID;
     },
 
-    refreshView(){
-      this.$refs.predict.refreshView();
-    }
   }
 }
 </script>

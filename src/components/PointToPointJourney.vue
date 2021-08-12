@@ -24,7 +24,14 @@
       v-on:sendTimestamp="updateTimestamp"
   ></DateTimeInput>
   </div>
+  <div class="col-12" style="margin-bottom: 10px">
   <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 40px;">Submit</button>
+  </div>
+  <div class="col-12">
+  <Prediction
+      ref="predict"
+  ></Prediction>
+  </div>
 </div>
 </template>
 
@@ -32,10 +39,12 @@
 import PlaceInput from "@/components/PlaceInput";
 import PointToPointRenderer from "@/components/map-renderers/PointToPointRenderer";
 import DateTimeInput from "@/components/DateTimeInput";
+import Prediction from "@/components/Prediction";
 export default {
   name: "PointToPointJourney",
 
   components: {
+    Prediction,
     PointToPointRenderer,
     PlaceInput,
     DateTimeInput
@@ -72,7 +81,7 @@ export default {
     },
 
     showGooglePrediction: function (route){
-      this.$emit("googleQueryComplete",route,this.timestamp);
+      this.$refs.predict.getGooglePrediction(route,this.timestamp);
     },
 
     updateTimestamp: function (val){
@@ -81,6 +90,7 @@ export default {
 
     refreshView: function (){
       this.$refs.renderer.clearView();
+      this.$refs.predict.refreshView();
     }
   }
 }
