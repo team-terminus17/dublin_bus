@@ -331,6 +331,20 @@ def get_bus_time(request, route, stop, direction):
     return JsonResponse(res, safe=False)
 
 
+def get_trip_time(request, trip, stop, sequence):
+    arrival_time = StopTimes.objects.get(trip_id=trip, stop_id=stop).arrival_time
+    realtime_lookup = gtfs_r.get_realtime_data()
+
+    update = realtime_lookup.get((trip, sequence), None)
+    if update is not None:
+        arrival_delay = timedelta(seconds=update[0])
+        arrival_time = add_time(arrival_time, arrival_delay)
+
+    waiting_time = round((minus_time(arrival_time, datetime.now().time())).seconds / 60)
+
+    return JsonResponse(waiting_time, safe=False)
+
+
 def get_active_trips(agency, route, direction=2):
     """Given the agency, route and direction, return the list of the activate trips of current day"""
 

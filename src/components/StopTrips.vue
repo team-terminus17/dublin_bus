@@ -103,7 +103,7 @@ export default {
    * This should be an internal stop ID, such as that as returned by the
    * /stop/<agency>/<route>/info endpoint and used by the stop renderer.
    */
-  props: ["stopId"],
+  props: ["stopId","sequence"],
   watch: {
     stopId() {
       this.initial = false;
@@ -116,6 +116,7 @@ export default {
       initial: true,
       loading: false,
       selectedTrip: null,
+      timerID : null,
     };
   },
   created() {
@@ -123,7 +124,6 @@ export default {
   },
   methods: {
     clear() {
-      this.initial = true;
       this.trips = [];
       this.selectedTrip = null;
     },
@@ -147,9 +147,42 @@ export default {
 
       this.loading = false;
     },
+
     track() {
-      if (this.selectedTrip) this.$emit("track", this.selectedTrip);
+      if (!this.selectedTrip){
+        alert("Please select a trip to track")
+        return;
+      }
+      this.cancelTracking();
+      this.timerID = window.setInterval(this.trackTrip,30*1000);
+      this.trackTrip();
     },
+
+    async trackTrip(){
+      let time=this.fetchWaitingTime();
+      if(time < 3){
+        const title = 'Reminder';
+            const options = {
+            body: 'The selected bus is coming. Please get ready.'
+          };
+            navigator.serviceWorker.ready.then(function (registration){
+                registration.showNotification(title,options);
+            });
+
+            this.cancelTracking();
+      }
+    },
+
+    async fetchWaitingTime(){
+      let url = `/time/${this.selectedTrip}/${this.stopId}/${this.sequence}/trip`;
+      let response = await fetch(url);
+      let data = await response.json();
+      return data;
+    },
+
+    cancelTracking(){
+      if (this.timerID) window.clearInterval(this.timerID);
+    }
   },
 };
 </script>

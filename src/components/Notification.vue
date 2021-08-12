@@ -55,6 +55,7 @@ export default {
         this.status=TRACKING_ARRIVAL;
         window.clearInterval(this.timerID);
         this.timerID = window.setInterval(this.trackArrStop,30*1000);//Refresh every half minute
+        this.trackArrStop();
       }
 
       else {

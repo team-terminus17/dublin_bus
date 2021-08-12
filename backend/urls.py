@@ -35,6 +35,7 @@ urlpatterns = [
     path('trips/<agency>/<route>/current', get_bus_positions, name="trips"),
     path("stops/<stop>/trips", get_stop_trips, name="stop trips"),
     path('time/<route>/<int:stop>/<int:direction>', get_bus_time, name="time"),
+    path('time/<int:trip>/<int:stop>/<int:sequence>/trip', get_trip_time, name='trip_time'),
     re_path(r'^(?P<worker_name>manifest).json$', serve_worker_view, name='manifest'),
     re_path(r'^(?P<worker_name>[-\w\d.]+).js$', serve_worker_view, name='serve_worker'),
     re_path(r'^(?P<worker_name>robots).txt$', serve_worker_view, name='robots')
