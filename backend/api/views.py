@@ -293,7 +293,7 @@ def get_bus_positions(request, agency, route):
 
 
 def get_bus_time(request, route, stop, direction):
-    """Return the information of the shortest waiting time in minutes and the corresponding trip id"""
+    """Return the information of the shortest waiting time in minutes given the route, stop and direction"""
 
     valid_stop = False
     waiting_time = 0
