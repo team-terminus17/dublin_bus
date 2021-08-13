@@ -42,9 +42,9 @@ export default {
       const predictionURL = `/predict/${route}/${direction}/${dep_stop}/${arr_stop}/${datetime}`
       const response = await fetch(predictionURL);
       const data = await response.json();
-      data.time = data.time.toString()+' mins'
+      let time = this.secondToMinute(data.time);
 
-      this.wholeRouteDict[0]={'mode':'bus','time':data.time,
+      this.wholeRouteDict[0]={'mode':'bus','time':time,
       'trackable':true, 'stop_dep':dep_stop, 'stop_arr':arr_stop, 'direction':direction, 'route':route};
       this.loading=false;
       this.$forceUpdate();
@@ -57,7 +57,7 @@ export default {
           let routeDict = {};
 
           if (route.steps[i].travel_mode == 'WALKING') {
-            this.wholeRouteDict[i]={'mode':'walking','time':round(route.steps[i].duration.value/60)+' mins',
+            this.wholeRouteDict[i]={'mode':'walking','time':this.secondToMinute(route.steps[i].duration.value),
               'instruction':route.steps[i].instructions};
             continue;
 
@@ -69,7 +69,7 @@ export default {
             instruction += '<div>To<div>'
             instruction += `<div>${end}<div>`
             if(route.steps[i].transit.line.agencies[0].name!="Dublin Bus"){
-              this.wholeRouteDict[i]={'mode':'bus','time':route.steps[i].duration.value,
+              this.wholeRouteDict[i]={'mode':'bus','time':this.secondToMinute(route.steps[i].duration.value),
                 'instruction':instruction,'busroute':route.steps[i]['transit']['line']['short_name']};
               continue;
             }
@@ -84,7 +84,7 @@ export default {
             routeDict['googleTime'] = googleTime;
             routeDict['datetime'] = timestamp;
             await this.replacePrediction(routeDict).then(res=>{
-              let time = round(res.time).toString()+' mins';
+              let time = this.secondToMinute(res.time);
               this.wholeRouteDict[i]={'mode':'bus','time':time,'instruction':instruction,
               'trackable':res.trackable, 'stop_dep':res.stop_dep, 'stop_arr':res.stop_arr, 'direction':res.direction,
               'route':routeID,'busroute':route.steps[i]['transit']['line']['short_name']};
@@ -106,7 +106,12 @@ export default {
           })
       const data = await response.json();
       return data;
-    }
+    },
+
+    secondToMinute: function (second){
+      return round(second/60).toString()+' mins';
+    },
+
   },
 };
 </script>
