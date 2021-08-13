@@ -3,3 +3,7 @@ gunicorn
 django-heroku
 requests
 whitenoise
+mysqlclient
+django-debug-toolbar
+python-decouple
+scikit-learn
