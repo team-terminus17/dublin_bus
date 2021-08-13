@@ -1,7 +1,10 @@
 <template>
   <div>
     <div class="route-selection">
-      <RouteSelection @selectRoute="onRouteSelected"></RouteSelection>
+      <RouteSelection
+          @selectRoute="onRouteSelected"
+          ref="route"
+      ></RouteSelection>
     </div>
     <StopRenderer
       :showMarkers="route != null"
@@ -72,6 +75,7 @@ export default {
       this.$refs.stoprenderer.removeMarkers();
       this.$refs.busrenderer.clear();
       this.$refs.stoptrips.clear();
+      this.$refs.route.clearView();
     }
   },
 };

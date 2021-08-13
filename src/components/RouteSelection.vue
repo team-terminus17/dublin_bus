@@ -59,6 +59,10 @@ export default {
         this.passRoute(this.route);
       }
     },
+
+    clearView: function (){
+      this.route = null;
+    }
   },
 
   created() {
