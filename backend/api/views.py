@@ -332,6 +332,8 @@ def get_bus_time(request, route, stop, direction):
 
 
 def get_trip_time(request, trip, stop, sequence):
+    """Get the waiting time of a bus defined by the input trip ID and stop ID"""
+
     arrival_time = StopTimes.objects.get(trip_id=trip, stop_id=stop).arrival_time
     realtime_lookup = gtfs_r.get_realtime_data()
 

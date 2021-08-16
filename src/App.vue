@@ -148,7 +148,7 @@
 
 .loader-template {
   border: 0.7em solid #f3f3f3; /* Light grey */
-  border-top: 0.7em solid var(--border-color); /* Blue */
+  border-top: 0.7em solid var(--border-color);
   border-radius: 50%;
   width: 5em;
   height: 5em;
