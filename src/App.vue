@@ -236,7 +236,7 @@ export default {
       },
 
     setDarkMode: function (){
-      this.root.style.setProperty('--background-color','#1f2835');
+      this.root.style.setProperty('--background-color','#242f3e');
       this.root.style.setProperty('--font-color','#ffffff');
       this.root.style.setProperty('--counter-font-color','#000000');
     }

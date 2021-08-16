@@ -220,5 +220,10 @@ function updateValue(value, kind) {
     background-color: var(--background-color);
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
+    color: var(--font-color);
+  }
+
+  .dropdown-menu{
+    background-color: var(--background-color);
   }
 </style>

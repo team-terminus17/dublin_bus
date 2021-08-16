@@ -143,4 +143,8 @@ function onTextInput(newValue) {
   border: 1px solid var(--border-color);
 }
 
+.dropdown-menu{
+  background-color: var(--background-color);
+}
+
 </style>
