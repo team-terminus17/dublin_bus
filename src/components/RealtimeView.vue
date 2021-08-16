@@ -20,7 +20,6 @@
     ></BusRenderer>
     <StopTrips
         :stopId="stop"
-        :sequence="sequence"
         ref="stoptrips"
     ></StopTrips>
   </div>
@@ -57,7 +56,6 @@ export default {
       route: null,
       direction: null,
       stop: null,
-      sequence: null,
     };
   },
   methods: {
@@ -66,9 +64,8 @@ export default {
       this.direction = direction.toString();
     },
 
-    onStopClicked(stopID, sequence) {
+    onStopClicked(stopID) {
       this.stop = stopID;
-      this.sequence = sequence;
     },
 
     refreshView: function (){

@@ -411,7 +411,8 @@ def get_stop_trips(request, stop):
             "tripID": entry.trip_id,
             "arrivalTime": arrival_time,
             "routeName": entry.trip.route.name.name,
-            "tripHeadsign": entry.trip.headsign
+            "tripHeadsign": entry.trip.headsign,
+            "sequence": entry.stop_sequence
         })
 
     return JsonResponse(trips, safe=False)

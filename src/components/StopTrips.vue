@@ -15,7 +15,7 @@
           <li
             v-for="(trip, index) in trips"
             :key="index"
-            @click="selectedTrip = trip.tripID"
+            @click="handle(trip)"
             :class="{ selected: trip.tripID === selectedTrip }"
           >
             <span>{{ trip.arrivalTime }}</span>
@@ -103,7 +103,7 @@ export default {
    * This should be an internal stop ID, such as that as returned by the
    * /stop/<agency>/<route>/info endpoint and used by the stop renderer.
    */
-  props: ["stopId","sequence"],
+  props: ["stopId"],
   watch: {
     stopId() {
       this.initial = false;
@@ -116,6 +116,7 @@ export default {
       initial: true,
       loading: false,
       selectedTrip: null,
+      selectedSequence:null,
       timerID : null,
     };
   },
@@ -123,6 +124,10 @@ export default {
     this.refresh();
   },
   methods: {
+    handle(trip){
+      this.selectedTrip = trip.tripID;
+      this.selectedSequence=trip.sequence;
+    },
     clear() {
       this.trips = [];
       this.selectedTrip = null;
@@ -174,7 +179,7 @@ export default {
     },
 
     async fetchWaitingTime(){
-      let url = `/time/${this.selectedTrip}/${this.stopId}/${this.sequence}/trip`;
+      let url = `/time/${this.selectedTrip}/${this.stopId}/${this.selectedSequence}/trip`;
       let response = await fetch(url);
       let data = await response.json();
       return data;
