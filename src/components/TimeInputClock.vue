@@ -73,6 +73,7 @@
    */
   .root {
     user-select: none;
+    background-color: var(--background-color);
   }
 
   /* The circle background */

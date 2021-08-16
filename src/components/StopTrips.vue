@@ -41,11 +41,11 @@
 
 <style scoped>
 .stop-trips {
-  color: black;
+  color: var(--font-color);
 }
 
 p {
-  color: #444444;
+  color: var(--font-color);
   text-align: center;
 }
 
@@ -60,7 +60,7 @@ p {
   align-items: center;
   align-content: stretch;
   justify-content: center;
-  background: #eee;
+  background: var(--background-color);
 }
 
 .table-wrapper {

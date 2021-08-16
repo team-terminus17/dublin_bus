@@ -60,5 +60,6 @@ input {
   width: 90%;
   border-color: var(--border-color);
   border-radius: var(--border-radius);
+  color: var(--font-color);
 }
 </style>

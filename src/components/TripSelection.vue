@@ -11,6 +11,7 @@
               <PointToPointJourney
                   v-on:googleQueryComplete="$emit('googleQueryComplete',arguments[0],arguments[1])"
                   ref="ptpjourney"
+                  :mode="mode"
               ></PointToPointJourney>
             </div>
           </div>
@@ -23,6 +24,7 @@
             <StopToStopJourney
                 v-on:tripComplete="$emit('tripComplete',arguments[0],arguments[1],arguments[2],arguments[3],arguments[4])"
                 ref="stsjourney"
+                :mode="mode"
             ></StopToStopJourney>
           </div>
         </div>
@@ -35,7 +37,9 @@
       </Tab>
 
       <Tab name="Twitter">
-        <Timeline id="dublinbusnews" sourceType="profile" widget-class="twitter"/>
+        <Twitter
+            :mode="mode"
+        ></Twitter>
       </Tab>
     </Tabs>
   </div>
@@ -48,13 +52,18 @@ import {Timeline} from "vue-tweet-embed";
 import PointToPointJourney from "@/components/PointToPointJourney";
 import StopToStopJourney from "@/components/StopToStopJourney";
 import RealtimeView from "@/components/RealtimeView.vue"
+import Twitter from "@/components/Twitter";
 
 export default {
   name: "TripSelection",
+
+  props:['mode'],
+
   components: {
+    Twitter,
     Tab,
     Tabs,
-    Timeline,
+    // Timeline,
     PointToPointJourney,
     StopToStopJourney,
     RealtimeView,
@@ -69,7 +78,7 @@ export default {
       origin: null,
       destination: null,
       direction: null,
-      routeinfo: null
+      routeinfo: null,
     }
   },
   methods:{

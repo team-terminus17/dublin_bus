@@ -206,9 +206,11 @@ function updateValue(value, kind) {
   .form-control {
     background-color: var(--background-color);
     border: 1px solid var(--border-color);
+    color: var(--font-color);
   }
 
   .form-select {
+    color: var(--font-color);
     background-color: var(--background-color);
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);

@@ -43,7 +43,14 @@ export default {
     Notification,
   },
 
-  props:['item'],
+  props:['item','mode'],
+
+  watch:{
+    mode(val){
+      console.log(val)
+      this.setImg();
+    }
+  },
 
   data(){
     return{
@@ -51,9 +58,21 @@ export default {
     }
   },
 
-  created() {
-    this.img_link = this.item.mode=='bus'?"https://img.icons8.com/fluency-systems-regular/48/000000/bus.png":
+  methods:{
+    setImg:function (){
+      if(this.mode==='dark'){
+        this.img_link = this.item.mode=='bus'?"https://img.icons8.com/material-rounded/48/ffffff/bus.png":
+            "https://img.icons8.com/material-outlined/48/ffffff/walking--v1.png";
+      }
+      else{
+        this.img_link = this.item.mode=='bus'?"https://img.icons8.com/fluency-systems-regular/48/000000/bus.png":
         "https://img.icons8.com/fluency-systems-filled/48/000000/walking.png";
+      }
+    }
+  },
+
+  created() {
+    this.setImg();
   }
 }
 </script>
