@@ -24,7 +24,7 @@
         ></StopSelection>
       </div>
     </div>
-    <div class="col-md-12" style="margin-top: 10px">
+    <div class="col-xs-6 col-md-8 datetime" style="margin-top: 10px">
       <DateTimeInput
           v-on:sendTimestamp="updateTimestamp"
       ></DateTimeInput>
@@ -32,14 +32,21 @@
     <TripRenderer
         ref="renderer"
     ></TripRenderer>
+    <div class="col-12" style="margin-bottom: 10px">
     <button
       @click="handle"
       type="button"
       class="btn btn-warning"
-      style="margin-top: 70px"
+      style="margin-top: 40px"
     >
       Submit
     </button>
+      </div>
+    <div class="col-12">
+      <Prediction
+          ref="predict"
+      ></Prediction>
+    </div>
   </div>
 </template>
 
@@ -48,8 +55,10 @@ import DateTimeInput from "./DateTimeInput.vue";
 import RouteSelection from "@/components/RouteSelection";
 import StopSelection from "@/components/StopSelection";
 import TripRenderer from "@/components/map-renderers/TripRenderer";
+import Prediction from "@/components/Prediction";
 export default {
   components: {
+    Prediction,
     TripRenderer,
     DateTimeInput,
     RouteSelection,
@@ -90,7 +99,7 @@ export default {
       this.valid=true;
       this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
       this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
-      this.$emit("tripComplete",this.route,this.direction,this.stop_dep,this.stop_arr,this.timestamp)
+      await this.$refs.predict.getTripPrediction(this.route,this.direction,this.stop_dep,this.stop_arr,this.timestamp);
     },
 
     handle() {
@@ -122,10 +131,21 @@ export default {
 
     refreshView: function (){
       this.$refs.renderer.clearView();
+      this.$refs.predict.refreshView();
     }
   }
 };
 </script>
 
 <style>
+
+.datetime {
+  margin-left: 16%;  
+}
+
+@media only screen and (max-width: 600px) {
+  .datetime {
+    margin-left: 0%;
+  }
+}
 </style>

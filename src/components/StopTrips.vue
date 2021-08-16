@@ -15,7 +15,7 @@
           <li
             v-for="(trip, index) in trips"
             :key="index"
-            @click="selectedTrip = trip.tripID"
+            @click="handle(trip)"
             :class="{ selected: trip.tripID === selectedTrip }"
           >
             <span>{{ trip.arrivalTime }}</span>
@@ -87,7 +87,7 @@ span {
 }
 
 li.selected {
-  background: #bbd7f2;
+  background: var(--border-color);
 }
 </style>
 
@@ -116,12 +116,18 @@ export default {
       initial: true,
       loading: false,
       selectedTrip: null,
+      selectedSequence:null,
+      timerID : null,
     };
   },
   created() {
     this.refresh();
   },
   methods: {
+    handle(trip){
+      this.selectedTrip = trip.tripID;
+      this.selectedSequence=trip.sequence;
+    },
     clear() {
       this.trips = [];
       this.selectedTrip = null;
@@ -146,9 +152,42 @@ export default {
 
       this.loading = false;
     },
+
     track() {
-      if (this.selectedTrip) this.$emit("track", this.selectedTrip);
+      if (!this.selectedTrip){
+        alert("Please select a trip to track")
+        return;
+      }
+      this.cancelTracking();
+      this.timerID = window.setInterval(this.trackTrip,30*1000);
+      this.trackTrip();
     },
+
+    async trackTrip(){
+      let time=this.fetchWaitingTime();
+      if(time < 3){
+        const title = 'Reminder';
+            const options = {
+            body: 'The selected bus is coming. Please get ready.'
+          };
+            navigator.serviceWorker.ready.then(function (registration){
+                registration.showNotification(title,options);
+            });
+
+            this.cancelTracking();
+      }
+    },
+
+    async fetchWaitingTime(){
+      let url = `/time/${this.selectedTrip}/${this.stopId}/${this.selectedSequence}/trip`;
+      let response = await fetch(url);
+      let data = await response.json();
+      return data;
+    },
+
+    cancelTracking(){
+      if (this.timerID) window.clearInterval(this.timerID);
+    }
   },
 };
 </script>

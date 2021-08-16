@@ -1,10 +1,10 @@
 <template>
 <div>
-  <button
+  <button class="btn btn-warning"
       @click="startTracking"
       @dblclick="cancelTracking"
   >{{this.button_text}}</button>
-  <span>{{this.time_text}}</span>
+  <span style="color: red">{{this.time_text}}</span>
 </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
 
   data(){
     return{
-      button_text : "track",
+      button_text : "Track departure stop",
       time_text : null,
       status : NOT_TRACKING,//0 for not tracking, 1 for tracking departure stop, 2 for tracking arrival stop
       timerID : null,
@@ -42,7 +42,7 @@ export default {
 
         else{
           this.status=TRACKING_DEPARTURE;
-          this.button_text="Notify me when my stop is coming up";
+          this.button_text="Track end stop";
           this.$store.commit("changeTrackingStatus",true);
           this.timerID = window.setInterval(this.trackDepStop,30*1000);
           this.trackDepStop();
@@ -55,6 +55,7 @@ export default {
         this.status=TRACKING_ARRIVAL;
         window.clearInterval(this.timerID);
         this.timerID = window.setInterval(this.trackArrStop,30*1000);//Refresh every half minute
+        this.trackArrStop();
       }
 
       else {
@@ -123,7 +124,7 @@ export default {
       this.depNotificationRecord = new Set();
       this.status=NOT_TRACKING;
       this.$store.commit("changeTrackingStatus",false);
-      this.button_text="track";
+      this.button_text="Track departure stop";
     },
 
     getDistance:function (lat1, lon1, lat2, lon2) {

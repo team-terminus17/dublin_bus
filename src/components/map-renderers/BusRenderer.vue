@@ -172,6 +172,11 @@ export default {
         }
       }
     },
+
+    clear: function (){
+      this.clearView();
+      if (this.timerID) window.clearInterval(this.timerID);
+    }
   },
 };
 </script>

@@ -87,7 +87,7 @@
 
 .weekday {
   font-weight: normal;
-  color: dodgerblue;
+  color: var(--border-color);
 }
 
 .day {
@@ -103,7 +103,7 @@
 }
 
 .day.active.selected, .day.active.current.selected {
-  background-color: dodgerblue;
+  background-color: var(--border-color);
   color: white;
   border-radius: 0.3em;
 }

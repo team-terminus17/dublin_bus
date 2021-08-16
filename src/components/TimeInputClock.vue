@@ -92,12 +92,12 @@
 
    /* Circle at the end of the clock hand */
   .hand {
-    fill: dodgerblue;
+    fill: var(--border-color);
   }
 
   /* Line from the center to the clock hand */
   .hand-line {
-    stroke: dodgerblue;
+    stroke: var(--border-color);
     stroke-width: 0.025;
   }
 

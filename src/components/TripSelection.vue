@@ -29,7 +29,9 @@
       </Tab>
       
       <Tab name="Realtime">
-        <RealtimeView></RealtimeView>
+        <RealtimeView
+            ref="realtime"
+        ></RealtimeView>
       </Tab>
 
       <Tab name="Twitter">
@@ -75,6 +77,7 @@ export default {
       this.$emit('tabChanged');
       this.$refs.ptpjourney.refreshView();
       this.$refs.stsjourney.refreshView();
+      this.$refs.realtime.refreshView();
     }
   },
 

@@ -293,7 +293,7 @@ def get_bus_positions(request, agency, route):
 
 
 def get_bus_time(request, route, stop, direction):
-    """Return the information of the shortest waiting time in minutes and the corresponding trip id"""
+    """Return the information of the shortest waiting time in minutes given the route, stop and direction"""
 
     valid_stop = False
     waiting_time = 0
@@ -329,6 +329,22 @@ def get_bus_time(request, route, stop, direction):
     res['time'] = waiting_time
 
     return JsonResponse(res, safe=False)
+
+
+def get_trip_time(request, trip, stop, sequence):
+    """Get the waiting time of a bus defined by the input trip ID and stop ID"""
+
+    arrival_time = StopTimes.objects.get(trip_id=trip, stop_id=stop).arrival_time
+    realtime_lookup = gtfs_r.get_realtime_data()
+
+    update = realtime_lookup.get((trip, sequence), None)
+    if update is not None:
+        arrival_delay = timedelta(seconds=update[0])
+        arrival_time = add_time(arrival_time, arrival_delay)
+
+    waiting_time = round((minus_time(arrival_time, datetime.now().time())).seconds / 60)
+
+    return JsonResponse(waiting_time, safe=False)
 
 
 def get_active_trips(agency, route, direction=2):
@@ -397,7 +413,8 @@ def get_stop_trips(request, stop):
             "tripID": entry.trip_id,
             "arrivalTime": arrival_time,
             "routeName": entry.trip.route.name.name,
-            "tripHeadsign": entry.trip.headsign
+            "tripHeadsign": entry.trip.headsign,
+            "sequence": entry.stop_sequence
         })
 
     return JsonResponse(trips, safe=False)
@@ -410,7 +427,7 @@ def get_shape(request, route, direction, dep_stop, arr_stop):
     """
     dep_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=dep_stop).shape_id
     arr_stop_entry = RouteStops.objects.get(name__name=route, direction=direction, stop_id=arr_stop).shape_id
-    coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry)
+    coordinates_list = list(Shapes.objects.filter(id__gte=dep_stop_entry, id__lte=arr_stop_entry).order_by("id")
                             .values('lat', lng=F('lon')))
     coordinates_dict = {'coordinates': coordinates_list}
 

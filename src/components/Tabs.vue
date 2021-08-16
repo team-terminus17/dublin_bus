@@ -47,13 +47,13 @@ export default {
 
 <style lang="scss" scoped>
   .tabs {
-    border-bottom: 2px solid #fefefe;
+    border: 2px solid var(--border-color);
     margin: 0 10px;
     margin-top: 10px;
-    font-size: 1.2em;
-    background-color: #bbd7f2;
-    border-radius: 8px;
-    
+    font-size: 1.0em;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    overflow-x: hidden;
   }
 
   .tabs-content {
@@ -75,12 +75,13 @@ export default {
       color: black;
 
       &:hover {
-        color: #678c4c;
+        background-color: var(--border-color);
+        border-radius: var(--border-radius);
       }
 
       &.is-active {
-        background-color: #bbdaa4;
-        border-radius: 8px;
+        background-color: var(--border-color);
+        border-radius: var(--border-radius);
       }
     }
   }

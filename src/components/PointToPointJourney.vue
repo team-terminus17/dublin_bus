@@ -24,7 +24,14 @@
       v-on:sendTimestamp="updateTimestamp"
   ></DateTimeInput>
   </div>
-  <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 70px;">Submit</button>
+  <div class="col-12" style="margin-bottom: 10px">
+  <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 40px;">Submit</button>
+  </div>
+  <div class="col-12">
+  <Prediction
+      ref="predict"
+  ></Prediction>
+  </div>
 </div>
 </template>
 
@@ -32,10 +39,12 @@
 import PlaceInput from "@/components/PlaceInput";
 import PointToPointRenderer from "@/components/map-renderers/PointToPointRenderer";
 import DateTimeInput from "@/components/DateTimeInput";
+import Prediction from "@/components/Prediction";
 export default {
   name: "PointToPointJourney",
 
   components: {
+    Prediction,
     PointToPointRenderer,
     PlaceInput,
     DateTimeInput
@@ -72,7 +81,7 @@ export default {
     },
 
     showGooglePrediction: function (route){
-      this.$emit("googleQueryComplete",route,this.timestamp);
+      this.$refs.predict.getGooglePrediction(route,this.timestamp);
     },
 
     updateTimestamp: function (val){
@@ -81,6 +90,7 @@ export default {
 
     refreshView: function (){
       this.$refs.renderer.clearView();
+      this.$refs.predict.refreshView();
     }
   }
 }
@@ -93,11 +103,11 @@ export default {
   font-size: 1.0em;
   padding: 5px 15px;
   box-shadow: none;
-  border: 1px solid #157977;
+  border: 1px solid var(--border-color);
   width: 100%;
   outline: none;
-  background-color: 	#bbd7f2;
-  border-radius: 8px;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
   }
 
 .v-autocomplete .v-autocomplete-list{
@@ -111,8 +121,8 @@ export default {
   border-top: none;
   max-height: 400px;
   overflow-y: auto;
-  border-bottom: 1px solid #157977;
-  border-radius: 8px;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item{
@@ -120,18 +130,29 @@ export default {
   color: black;
   background-color: #bbdaa4;
   padding: 10px;
-  border-bottom: 1px solid #157977;
-  border-left: 1px solid #157977;
-  border-right: 1px solid #157977;
+  border-bottom: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
   text-align: center;
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item:hover{
-  background-color: 	#bbd7f2;
+  background-color: #bbd7f2;
 }
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item.v-autocomplete-item-active {
   background-color:	#bbd7f2;
+}
+
+
+.datetime {
+  margin-left: 16%;
+}
+
+@media only screen and (max-width: 600px) {
+  .datetime {
+    margin-left: 0%;
+  }
 }
 
 </style>

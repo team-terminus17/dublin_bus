@@ -138,8 +138,8 @@ function onTextInput(newValue) {
 <style scoped>
 
 .form-control {
-  background-color: #bbd7f2;
-  border: 1px solid #157977;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
 }
 
 </style>

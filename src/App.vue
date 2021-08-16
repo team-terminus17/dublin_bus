@@ -1,33 +1,35 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-md-1">
-        <button class="btn menu" type="button" data-bs-toggle="collapse" data-bs-target="#input" aria-expanded="false" aria-controls="input">
-          <div class="bar"></div>
-          <div class="bar"></div>
-          <div class="bar"></div>
-        </button>
-      </div>
-      <div class="col-md-2">
+      <div class="col-sm-6 col-md-6 d-flex
+        justify-content-start">
         <img src="./assets/team.png">
       </div>
-      <!-- <div class="col-sm-6 col-md-10 d-flex justify-content-end" style="margin-top: 40px; margin-bottom: 40px; z-index: 1;">
-        <button type="button" class="btn btn-light">Light</button>
-        <button type="button" class="btn btn-dark">Dark</button>
-      </div> -->
+      <div
+      class="
+        col-xs-6
+        col-sm-6
+        col-lg-6
+        d-flex
+        justify-content-end
+        
+      "
+      id="weather"
+    >
          <Weather></Weather>
+      </div>
     </div>
     <div class="row">
-      
-      <div id="input" class="collapse col-xs-4 col-sm-5 col-md-5 col-lg-3">
+      <div id="menu" class="col-md-1 d-flex justify-content-start">
+        <button v-on:click="onClickViewButton" class="btn btn-warning" style="cursor: pointer;">
+          {{button_content}}
+        </button>
+      </div>
+      <div v-show="isShow" id="input" class="col-xs-4 col-sm-5 col-md-5 col-lg-3">
         <TripSelection
             v-on:googleQueryComplete="showGooglePrediction"
             v-on:tripComplete="showTripPrediction"
-            v-on:tabChanged="refreshView"
         ></TripSelection>
-        <Prediction
-            ref="predict"
-        ></Prediction>
       </div>
       <div class="col-md-12">
         <Map></Map>
@@ -40,14 +42,25 @@
 <style lang="scss">
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
+:root {
+  --background-color: #e2e2e2;
+  --border-color: #e59c24;
+  --border-radius: 8px;
+
+}
+
 #input {
   position: absolute;
-  margin-top: 100px;
+  margin-top: 90px;
   margin-left: 40px;
   z-index: 2;
-  background-color: #6e99f5;
+  background-color: #0f567d;
   color: #F1ECED;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
+}
+
+#weather {
+  z-index: 1;
 }
 
 
@@ -57,11 +70,12 @@
   height: 100%;
 }
 
-.menu {
+#menu {
   position: absolute;
   display: inline-block;
-  cursor: pointer;
-
+  z-index: 1;
+  margin-top: 100px;
+  
 }
 
 .bar {
@@ -79,13 +93,13 @@
 /* Track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 8px;
+  border-radius: var(--border-radius);
 }
 
 /* Handle on hover */
@@ -96,20 +110,33 @@
 @media only screen and (max-width: 992px) {
 
   #input {
-    margin-top: 160px;
-    margin-left: 20px;
+    margin-left: 40px;
   }
+
+  #weather {
+    margin-left: 0%; 
+  }
+
  }
 
 @media only screen and (max-width: 600px) {
 
   .container-fluid {
     max-width: none;
+    max-height: none;
   }
   
   #input {
-    margin-top: 610px;
+    margin-top: 550px;
     margin-left: 0px;
+  }
+
+  #weather {
+    position: absolute;
+  }
+
+  img {
+    width: 50%;
   }
 
  }
@@ -121,7 +148,7 @@
 
 .loader-template {
   border: 0.7em solid #f3f3f3; /* Light grey */
-  border-top: 0.7em solid #3498db; /* Blue */
+  border-top: 0.7em solid var(--border-color);
   border-radius: 50%;
   width: 5em;
   height: 5em;
@@ -140,7 +167,6 @@
 import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
-import Prediction from "./components/Prediction"
 
 export default {
   name: "App",
@@ -149,7 +175,6 @@ export default {
     Map,
     TripSelection,
     Weather,
-    Prediction,
   },
 
   data() {
@@ -157,10 +182,17 @@ export default {
       journeyInfo: '<b>Journey Info</b>',
       timestamp: null,
       selectedStop: null,
+      isShow: true,
+      button_content: '>'
     };
   },
 
   methods:{
+    onClickViewButton:function (){
+      this.isShow = !this.isShow;
+      this.button_content = this.button_content==='>'?'<':'>';
+    },
+
     showTripPrediction:function (route, direction, stop_dep, stop_arr, timestamp){
       this.$refs.predict.getTripPrediction(route, direction, stop_dep, stop_arr, timestamp);
     },
@@ -177,9 +209,6 @@ export default {
       this.selectedStop = stopID;
     },
 
-    refreshView(){
-      this.$refs.predict.refreshView();
-    }
   }
 }
 </script>

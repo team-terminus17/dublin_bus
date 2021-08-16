@@ -14,7 +14,8 @@ export default {
   data: function () {
     return {
       busPath: null,
-      busPathCoordinates: []
+      busPathCoordinates: [],
+      markers: []
     };
   },
 
@@ -38,7 +39,7 @@ export default {
 
       if (this.map) {
         this.busPath = new window.google.maps.Polyline({
-          strokeColor: '#FFB266',
+          strokeColor: '#1b9cfa',
           strokeOpacity: 0.5,
           strokeWeight: 6,
         });
@@ -55,11 +56,13 @@ export default {
         this.busPath.setPath([]);
       this.map.setZoom(12);
       this.map.setCenter({ lat: 53.3673893, lng: -6.2600157 });
+      this.removeMarkers();
     },
 
     updateView() {
       if (this.busPath)
         this.busPath.setPath(this.busPathCoordinates);
+        this.placeMarkers();
     },
 
     displaySegment(route, stop_dep, stop_arr, direction) {
@@ -70,7 +73,31 @@ export default {
             this.updateView();
             this.map.fitBounds(new window.google.maps.LatLngBounds(data.bound[0],data.bound[1]))
     })
-    }
+    },
+
+    placeMarkers: function (){
+      if(this.map){
+        const marker_start=new window.google.maps.Marker({
+        position:this.busPathCoordinates[0],
+        map:this.map,
+        label:'A'
+      });
+      const marker_stop=new window.google.maps.Marker({
+        position:this.busPathCoordinates[this.busPathCoordinates.length-1],
+        map:this.map,
+        label:'B'
+      }
+      );
+      this.markers.push(marker_start);
+      this.markers.push(marker_stop);
+      }
+
+    },
+
+    removeMarkers: function () {
+      for (let marker of this.markers) marker.setMap(null);
+      this.markers = [];
+    },
   },
 };
 </script>
