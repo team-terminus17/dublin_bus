@@ -201,7 +201,7 @@ function updateValue(value, kind) {
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
   .form-control {
     background-color: var(--background-color);
@@ -212,6 +212,17 @@ function updateValue(value, kind) {
     background-color: var(--background-color);
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
+  }
+
+  option {
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+
+    &:hover {
+        background-color: var(--border-color);
+        border-radius: var(--border-radius);
+      }
   }
 
   .input-group-text {

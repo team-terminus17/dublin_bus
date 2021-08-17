@@ -133,6 +133,7 @@
   #input {
     margin-top: 550px;
     margin-left: 0px;
+    border-radius: 0px;
   }
 
   #weather {

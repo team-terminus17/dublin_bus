@@ -57,7 +57,7 @@ name: "PlaceInput",
 
 input {
   background-color: var(--background-color);
-  width: 90%;
+  width: 100%;
   border-color: var(--border-color);
   border-radius: var(--border-radius);
 }

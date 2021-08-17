@@ -6,7 +6,6 @@
       <Tab name="Tab 1" selected="true">
         <div id="Tab 1" class="col-sm-12 col-md-12 tabcontent">
           <div class="row">
-            <div v-html="journey" class="d-flex"></div>
             <div class="col-xs-6 col-md-12">
               <PointToPointJourney
                   v-on:googleQueryComplete="$emit('googleQueryComplete',arguments[0],arguments[1])"
@@ -33,7 +32,9 @@
       </Tab>
 
       <Tab name="Twitter">
-        <Timeline id="dublinbusnews" sourceType="profile" widget-class="twitter"/>
+        <h2>Twitter</h2>
+        <button v-on:click="test">Test</button>
+        <Timeline id="dublinbusnews" sourceType="profile" widget-class="twitter" :options="{ theme: 'light' }"/>
       </Tab>
     </Tabs>
   </div>
@@ -63,7 +64,6 @@ export default {
       route: null,
       stop_dep: null,
       stop_arr: null,
-      journey: "Please input your journey info:",
       origin: null,
       destination: null,
       direction: null,
@@ -75,6 +75,14 @@ export default {
       this.$emit('tabChanged');
       this.$refs.ptpjourney.refreshView();
       this.$refs.stsjourney.refreshView();
+    },
+
+    test() {
+      console.log('test')
+      document.getElementById('dublinbusnews'),
+      {
+        options:"{ theme: 'dark' }"
+      }
     }
   },
 

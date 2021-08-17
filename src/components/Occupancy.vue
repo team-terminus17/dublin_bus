@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h2>Stop-to-stop Journey</h2>
-    <div v-html="journey" class="d-flex"></div>
     <div
       class="col-md-4 justify-content-space-between"
       style="margin-top: 20px"
@@ -17,22 +15,7 @@
             :routeinfo="routeinfo"
         ></StopSelection>
       </div>
-      <div class="form-group" style="margin-top: 10px">
-        <label class="d-flex justify-content-start">End Stop</label>
-        <StopSelection
-            v-on:stopSelected="getArrStop"
-            :routeinfo="routeinfo"
-        ></StopSelection>
-      </div>
     </div>
-    <div class="col-xs-6 col-md-8 datetime" style="margin-top: 10px">
-      <DateTimeInput
-          v-on:sendTimestamp="updateTimestamp"
-      ></DateTimeInput>
-    </div>
-    <TripRenderer
-        ref="renderer"
-    ></TripRenderer>
     <button
       @click="handle"
       type="button"
@@ -45,32 +28,28 @@
 </template>
 
 <script>
-import DateTimeInput from "./DateTimeInput.vue";
-import RouteSelection from "@/components/RouteSelection";
+
+import RouteSelection from "@/components/RouteSelection.vue"
 import StopSelection from "@/components/StopSelection";
-import TripRenderer from "@/components/map-renderers/TripRenderer";
+
 export default {
   components: {
-    TripRenderer,
-    DateTimeInput,
     RouteSelection,
-    StopSelection
+    StopSelection,
   },
 
   data(){
-    return{
-      valid:false,
+    return {
       route:null,
-      stop_dep:null,
-      stop_arr:null,
-      journey :"Please input your journey info:",
-      origin: null,
-      destination: null,
       direction: null,
       routeinfo: null,
-      timestamp: null
+      stop_dep:null,
+
     }
   },
+
+
+
 
   methods:{
     getRoutes:async function(){
@@ -94,15 +73,6 @@ export default {
       this.$emit("tripComplete",this.route,this.direction,this.stop_dep,this.stop_arr,this.timestamp)
     },
 
-    handle() {
-      if (this.stop_arr == null || this.stop_dep == null) {
-        alert("Please fill in the complete route");
-        return;
-      }
-      this.getRoutes();
-      this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
-    },
-
     getRoute: function (){
       this.route=arguments[0];
       this.direction=arguments[1];
@@ -113,30 +83,15 @@ export default {
       this.stop_dep=val;
     },
 
-    getArrStop: function (val){
-      this.stop_arr=val;
-    },
-
-    updateTimestamp: function (val){
-      this.timestamp = val;
-    },
-
     refreshView: function (){
       this.$refs.renderer.clearView();
     }
-  }
-};
+}
+}
+
+
 </script>
 
 <style>
 
-.datetime {
-  margin-left: 16%;  
-}
-
-@media only screen and (max-width: 600px) {
-  .datetime {
-    margin-left: 0%;
-  }
-}
 </style>
