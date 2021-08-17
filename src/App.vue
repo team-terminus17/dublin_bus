@@ -69,7 +69,7 @@
   z-index: 1;
 }
 
-.row {
+.main.row {
   margin: 0 !important;
   padding: 0 !important;
 }
