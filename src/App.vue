@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="main d-flex flex-column">
     <DarkMode
         v-on:changeMode="changeMode"
     ></DarkMode>
@@ -22,7 +22,7 @@
          <Weather></Weather>
       </div>
     </div>
-    <div class="row">
+    <div class="row flex-grow-1">
       <div id="menu" class="col-md-1 d-flex justify-content-start">
         <button v-on:click="onClickViewButton" class="btn btn-warning" style="cursor: pointer;">
           {{button_content}}
@@ -35,7 +35,7 @@
             :mode="mode"
         ></TripSelection>
       </div>
-      <div class="col-md-12">
+      <div class="h-100 col-md-12">
         <Map></Map>
       </div>
     </div>
@@ -69,11 +69,16 @@
   z-index: 1;
 }
 
+.row {
+  margin: 0 !important;
+  padding: 0 !important;
+}
 
-.container-fluid {
+.main {
   background-color: var(--container-color);
   text-align: center;
-  height: 100%;
+  height: 100vh;
+  padding-bottom: 0.8em;
 }
 
 #menu {
