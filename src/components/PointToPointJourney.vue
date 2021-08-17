@@ -1,18 +1,18 @@
 <template>
 <div>
   <div class="form-group" style="margin-top: 6px">
-  <label class="d-flex justify-content-start">Start location</label>
   <PlaceInput
       id_name="autocomplete1"
       v-on:sendPlaceID="getStart"
+      place_holder="Enter the start location"
   ></PlaceInput>
 <!--  id_name is set to differentiate between two placeinput components-->
   </div>
   <div class="form-group" style="margin-top: 10px">
-  <label class="d-flex justify-content-start">End location</label>
   <PlaceInput
       id_name="autocomplete2"
       v-on:sendPlaceID="getEnd"
+      place_holder="Enter the end location"
   ></PlaceInput>
   </div>
   <PointToPointRenderer
