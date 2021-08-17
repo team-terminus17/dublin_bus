@@ -44,6 +44,10 @@
   color: black;
 }
 
+.content {
+  border-radius: 0.5em;
+}
+
 p {
   color: #444444;
   text-align: center;
