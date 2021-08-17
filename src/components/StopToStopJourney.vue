@@ -2,10 +2,10 @@
   <div>
     <div v-html="journey" class="d-flex"></div>
     <div
-      class="col-md-4 justify-content-space-between"
+      class=" justify-content-space-between"
       style="margin-top: 20px"
     >
-      <label class="d-flex justify-content-start">Route Selection</label>
+<!--      <label class="d-flex justify-content-start">Route Selection</label>-->
       <RouteSelection v-on:selectRoute="getRoute"></RouteSelection>
     </div>
     <div class="col-md-12">
