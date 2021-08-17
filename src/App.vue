@@ -1,5 +1,8 @@
 <template>
   <div class="main d-flex flex-column">
+    <DarkMode
+        v-on:changeMode="changeMode"
+    ></DarkMode>
     <div class="row">
       <div class="col-sm-6 col-md-6 d-flex
         justify-content-start">
@@ -29,6 +32,7 @@
         <TripSelection
             v-on:googleQueryComplete="showGooglePrediction"
             v-on:tripComplete="showTripPrediction"
+            :mode="mode"
         ></TripSelection>
       </div>
       <div class="h-100 col-md-12">
@@ -43,10 +47,12 @@
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
 :root {
+  --container-color: #0f567d;
   --background-color: #e2e2e2;
   --border-color: #e59c24;
   --border-radius: 8px;
-
+  --font-color: #000000;
+  --counter-font-color: #ffffff;
 }
 
 #input {
@@ -54,7 +60,7 @@
   margin-top: 90px;
   margin-left: 40px;
   z-index: 2;
-  background-color: #0f567d;
+  background-color: var(--container-color);
   color: #F1ECED;
   border-radius: var(--border-radius);
 }
@@ -63,15 +69,13 @@
   z-index: 1;
 }
 
-
 .row {
-  /*  */
   margin: 0 !important;
   padding: 0 !important;
 }
 
 .main {
-  background-color: #0f567d;
+  background-color: var(--container-color);
   text-align: center;
   height: 100vh;
   padding-bottom: 0.8em;
@@ -174,11 +178,13 @@
 import Map from "./components/Map";
 import TripSelection from "./components/TripSelection"
 import Weather from "./components/Weather"
+import DarkMode from "@/components/DarkMode";
 
 export default {
   name: "App",
 
   components: {
+    DarkMode,
     Map,
     TripSelection,
     Weather,
@@ -190,7 +196,9 @@ export default {
       timestamp: null,
       selectedStop: null,
       isShow: true,
-      button_content: '>'
+      button_content: '>',
+      root: null,
+      mode: 'light'
     };
   },
 
@@ -216,6 +224,31 @@ export default {
       this.selectedStop = stopID;
     },
 
+    changeMode: function (mode){
+      if(mode ==='dark'){
+        this.setDarkMode();
+      }
+      else {
+        this.setLightMode();
+      }
+      this.mode=mode;
+    },
+
+    setLightMode: function (){
+      this.root.style.setProperty('--background-color','#e2e2e2');
+      this.root.style.setProperty('--font-color','#000000');
+      this.root.style.setProperty('--counter-font-color','#ffffff');
+      },
+
+    setDarkMode: function (){
+      this.root.style.setProperty('--background-color','#242f3e');
+      this.root.style.setProperty('--font-color','#ffffff');
+      this.root.style.setProperty('--counter-font-color','#000000');
+    }
+  },
+
+  mounted() {
+    this.root=document.documentElement
   }
 }
 </script>

@@ -30,6 +30,7 @@
   <div class="col-12">
   <Prediction
       ref="predict"
+      :mode="mode"
   ></Prediction>
   </div>
 </div>
@@ -42,6 +43,8 @@ import DateTimeInput from "@/components/DateTimeInput";
 import Prediction from "@/components/Prediction";
 export default {
   name: "PointToPointJourney",
+
+  props:['mode'],
 
   components: {
     Prediction,

@@ -62,5 +62,7 @@ export default {
 </script>
 
 <style scoped>
-
+input{
+  color: var(--font-color);
+}
 </style>

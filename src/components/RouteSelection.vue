@@ -72,6 +72,10 @@ export default {
 </script>
 
 <style>
+input{
+  color: var(--font-color);
+}
+
 .v-autocomplete .v-autocomplete-input-group .v-autocomplete-input {
   position: relative;
   font-size: 1em;
@@ -101,7 +105,7 @@ export default {
 
 .v-autocomplete .v-autocomplete-list .v-autocomplete-list-item {
   cursor: pointer;
-  color: black;
+  color: var(--font-color);
   background-color: var(--background-color);
   padding: 10px;
   border-bottom: 1px solid var(--border-color);
