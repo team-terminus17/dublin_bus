@@ -1,10 +1,10 @@
 <template>
   <div class="col-sm-12 col-md-12 pred">
-    <p style="font-size: larger;font-weight: bolder">Journey Info</p>
     <div v-if="loading" class="loading-content">
       <div class="loader-template"></div>
     </div>
     <div v-else>
+      <p v-if="wholeRouteDict.length()>0" style="font-size: larger;font-weight: bolder">Journey Info</p>
     <div v-for="(item,index) in wholeRouteDict" v-bind:key="index">
       <JourneyInfoBox
       :item="item"
