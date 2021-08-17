@@ -11,6 +11,7 @@ import json
 from .models import *
 from . import gtfs
 from . import gtfs_r
+from . import weather
 from .prediction import model_predict
 from .utils import add_time, minus_time
 
@@ -73,8 +74,11 @@ def predict_time(request, route, direction, dep_stop, arr_stop, datetime):
 
 def get_weather(request):
     """Return weather information of current time"""
-    weather = Weather.objects.all().order_by('weather_time')[0]
-    return JsonResponse(weather.dictify())
+    temp, icon = weather.get_summary()
+    return JsonResponse({
+        "temp": temp,
+        "icon": icon
+    })
 
 
 @csrf_exempt
