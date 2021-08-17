@@ -32,8 +32,17 @@
         @focusin="showClock(false)"
         @input="updateValue($event.target.value, 'suffix')"
     >
-      <option selected>AM</option>
-      <option>PM</option>
+    <!--
+      Just using "value" in the parent select was not working for me. Also, 
+      it seems the result from the binding of 'selected' has to be a string. 
+      So this looks more awkward than it needs to.  
+    -->
+      <option :selected="(value.suffix==='AM').toString()">
+        AM
+      </option>
+      <option :selected="(value.suffix==='PM').toString()">
+        PM
+      </option>
     </select>
     <button
         class="btn btn-outline-secondary dropdown-toggle.caret-off"
@@ -95,6 +104,9 @@ export default {
 */
 
 function internalValue() {
+
+  console.log(this.value)
+
   // Match HH:MM, or H:MM.
   // Allow for whitespace to either side, but nothing else.
   // Capture (HH?) and (MM)
@@ -127,6 +139,8 @@ function internalValue() {
 
   if (value.hours === 0)
     value.hours = 12
+
+  console.log(value)
 
   return value
 }
