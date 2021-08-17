@@ -5,6 +5,7 @@ from decouple import config
 from .models import *
 from . import utils
 from . import gtfs
+from . import weather
 
 
 def model_predict(route, direction, dep_stop, arr_stop, datetime, fallback=False):
@@ -195,46 +196,16 @@ def get_datetime_features(target_datetime):
 # Weather Features #
 ####################
 
-API_KEY = config("OPEN_WEATHER_API_KEY")
-CITY_NAME = "dublin"
-WEATHER_URL = (
-    "http://api.openweathermap.org/data/2.5/forecast"
-    f"?q={CITY_NAME}&appid={API_KEY}"
-)
-
 def get_weather_features(target_dt):
 
-    try:
-        response = requests.get(WEATHER_URL)
-        response_data = response.json()["list"]
-    except:
-        raise ValueError("Failed to retrieve weather API data.")
-
-    if len(response_data) == 0:
-        raise ValueError("Weather API response contained no data.")
-
-    # A prediction is returned for every 3hrs up to 5 days.
-    # Choose the first one after the target time.
-    for entry in response_data:
-        try:
-            dt = utils.utc_unix_to_dt(entry["dt"])
-        except:
-            raise ValueError("Failed to parse data from weather API response.")
-
-        if target_dt < dt:
-            weather = entry
-            break
-    else:
-        # Default to the last entry if the target datetime is
-        # beyond the forecast range.
-        weather = response_data[-1]
+    target_weather = weather.get_data(target_dt)
 
     try:
         # "rain" for the model is over 1hr, not 3, hence the division here.
-        rain = float(weather["rain"]["3hr"])/3 if "rain" in weather else 0
-        temp = weather["main"]["temp"]
-        wdsp = weather["wind"]["speed"]
-        vis = weather["visibility"]
+        rain = float(target_weather["rain"]["3hr"])/3 if "rain" in target_weather else 0
+        temp = float(target_weather["main"]["temp"])
+        wdsp = float(target_weather["wind"]["speed"])
+        vis = float(target_weather["visibility"])
 
     except:
         raise ValueError("Failed to parse data from weather API response.")
