@@ -65,6 +65,7 @@
 
 import * as bootstrap from "bootstrap"
 import Clock from "./TimeInputClock.vue"
+import { onClickaway, offClickaway } from "./clickaway"
 
 export default {
   name: "TimeInput",
@@ -73,7 +74,9 @@ export default {
   },
   data() {
     return {
-      clockKind: "hours"
+      clockKind: "hours",
+      clickawayHandle: null, 
+      clickawayCount: 0
     }
   },
   props: ["value"],
@@ -161,10 +164,33 @@ function showClock(kind) {
   const dropdown = new bootstrap.Dropdown(toggle, {
     autoClose: false
   })
-  if (kind)
+
+  if (kind) {
     dropdown.show()
-  else
+
+    if (this.clickawayHandle) 
+      offClickaway(this.clickawayHandle)
+
+    // This is a bad workaround, but anyways. 
+    // The clickaway event triggers once when the clock is first shown,
+    // which means that we actually want to dismiss the clock on the second
+    // instance of the event, which is what this count keeps track of.
+    this.clickawayCount = 0
+
+    const clock = this.$refs.clock
+    this.clickawayHandle = onClickaway(clock.$el, () => {
+      this.clickawayCount += 1
+      if (this.clickawayCount > 1) {
+        this.showClock(false);
+      }
+    })
+  }
+  else {
+    if (this.clickawayHandle) 
+      offClickaway(this.clickawayHandle)
+      
     dropdown.hide()
+  }
 }
 
 function nextClock() {

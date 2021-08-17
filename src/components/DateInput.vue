@@ -31,6 +31,7 @@
 import * as bootstrap from "bootstrap"
 import Calendar from "./DateInputCalendar"
 import * as helper from "./DateInputHelpers"
+import { onClickaway, offClickaway } from "./clickaway.js"
 
 export default {
   name: "DateInput",
@@ -40,7 +41,9 @@ export default {
   props: ["value", "startDate", "endDate"],
   data() {
     return {
-      inputText: this.value
+      inputText: this.value,
+      clickawayHandle: null,
+      clickawayCount: 0,
     }
   },
   computed: {
@@ -116,10 +119,33 @@ function showCalendar(bool) {
     reference: "parent"
   })
 
-  if (bool)
+  const calendar = this.$refs.dropdown
+
+  if (bool) {
     dropdown.show()
-  else
+
+    if (this.clickawayHandle) 
+      offClickaway(this.clickawayHandle)
+
+    // This is a bad workaround, but anyways. 
+    // The clickaway event triggers once when the calendar is first shown,
+    // which means that we actually want to dismiss the calendar on the second
+    // instance of the event, which is what this count keeps track of.
+    this.clickawayCount = 0
+
+    this.clickawayHandle = onClickaway(calendar, () => {
+      this.clickawayCount += 1
+      if (this.clickawayCount > 1) {
+        this.showCalendar(false);
+      }
+    })
+  }
+  else {
+    if (this.clickawayHandle) 
+      offClickaway(this.clickawayHandle)
+      
     dropdown.hide()
+  }
 
 }
 
