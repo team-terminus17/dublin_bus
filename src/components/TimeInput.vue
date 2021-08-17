@@ -105,8 +105,6 @@ export default {
 
 function internalValue() {
 
-  console.log(this.value)
-
   // Match HH:MM, or H:MM.
   // Allow for whitespace to either side, but nothing else.
   // Capture (HH?) and (MM)
@@ -139,8 +137,6 @@ function internalValue() {
 
   if (value.hours === 0)
     value.hours = 12
-
-  console.log(value)
 
   return value
 }

@@ -93,6 +93,7 @@
 
 .day {
   color: var(--counter-font-color);
+  cursor: pointer;
 }
 
 .active {

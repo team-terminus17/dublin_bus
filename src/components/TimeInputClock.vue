@@ -76,6 +76,10 @@
     background-color: var(--background-color);
   }
 
+  .root, .face, .hand, .number, .active-number {
+    cursor: pointer;
+  }
+
   /* The circle background */
   .face {
     fill: #dddddd;

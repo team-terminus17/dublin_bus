@@ -24,7 +24,7 @@ export default {
 
       const response = await fetch(weatherURL);
       const data = await response.json();
-      console.log(data);
+      
       this.weather.temp = Math.round(data.temp);
       this.weather.description = data.rain;
       this.weather.icon = "<img src=\"http://openweathermap.org/img/wn/" + data.icon + "@2x.png\"></img>";
