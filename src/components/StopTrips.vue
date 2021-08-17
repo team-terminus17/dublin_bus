@@ -44,6 +44,10 @@
   color: var(--font-color);
 }
 
+.content {
+  border-radius: 0.5em;
+}
+
 p {
   color: var(--font-color);
   text-align: center;
