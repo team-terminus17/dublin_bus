@@ -48,7 +48,6 @@
 <script>
 import Tab from "@/components/Tab";
 import Tabs from "@/components/Tabs";
-import {Timeline} from "vue-tweet-embed";
 import PointToPointJourney from "@/components/PointToPointJourney";
 import StopToStopJourney from "@/components/StopToStopJourney";
 import RealtimeView from "@/components/RealtimeView.vue"
@@ -63,7 +62,6 @@ export default {
     Twitter,
     Tab,
     Tabs,
-    // Timeline,
     PointToPointJourney,
     StopToStopJourney,
     RealtimeView,
