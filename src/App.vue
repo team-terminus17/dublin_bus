@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="main d-flex flex-column">
     <div class="row">
       <div class="col-sm-6 col-md-6 d-flex
         justify-content-start">
@@ -19,7 +19,7 @@
          <Weather></Weather>
       </div>
     </div>
-    <div class="row">
+    <div class="row flex-grow-1">
       <div id="menu" class="col-md-1 d-flex justify-content-start">
         <button v-on:click="onClickViewButton" class="btn btn-warning" style="cursor: pointer;">
           {{button_content}}
@@ -31,7 +31,7 @@
             v-on:tripComplete="showTripPrediction"
         ></TripSelection>
       </div>
-      <div class="col-md-12">
+      <div class="h-100 col-md-12">
         <Map></Map>
       </div>
     </div>
@@ -64,10 +64,17 @@
 }
 
 
-.container-fluid {
+.row {
+  /*  */
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.main {
   background-color: #0f567d;
   text-align: center;
-  height: 100%;
+  height: 100vh;
+  padding-bottom: 0.8em;
 }
 
 #menu {
