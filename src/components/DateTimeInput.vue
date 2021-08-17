@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div style="margin-top: 20px">
+    <label class="d-flex justify-content-start"  style="margin-top: 20px">Date & Time</label>
+    <div>
       <DateInput v-model="date"></DateInput>
     </div>
     <div style="margin-top: 20px">

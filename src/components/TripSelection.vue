@@ -7,7 +7,6 @@
       <Tab name="Point To Point Journey" selected="true" :img_link="img_link[0]">
         <div id="Tab 1" class="col-sm-12 col-md-12 tabcontent">
           <div class="row">
-            <div v-html="journey" class="d-flex"></div>
             <div class="col-xs-6 col-md-12">
               <PointToPointJourney
                   v-on:googleQueryComplete="$emit('googleQueryComplete',arguments[0],arguments[1])"
@@ -73,7 +72,6 @@ export default {
       route: null,
       stop_dep: null,
       stop_arr: null,
-      journey: "Please input your journey info:",
       origin: null,
       destination: null,
       direction: null,

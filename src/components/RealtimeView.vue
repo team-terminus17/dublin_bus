@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h2>Point-to-point Journey</h2>
     <div class="route-selection">
       <RouteSelection
           @selectRoute="onRouteSelected"
