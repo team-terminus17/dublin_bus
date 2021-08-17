@@ -1,6 +1,6 @@
 <template>
   <div class="main d-flex flex-column">
-    <DarkMode
+    <DarkMode class="dark-mode-toggle"
         v-on:changeMode="changeMode"
     ></DarkMode>
     <div class="row">
@@ -45,6 +45,14 @@
 
 <style lang="scss">
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
+.dark-mode-toggle {
+  /* 
+    This will be no longer be in effect once the element is passed
+    to the google map for rendering.
+   */
+  display: none;
+}
 
 :root {
   --container-color: #0f567d;
