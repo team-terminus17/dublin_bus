@@ -72,7 +72,7 @@ export default {
 
     .nav-item {
       cursor: pointer;
-      color: black;
+      color: var(--font-color);
 
       &:hover {
         background-color: var(--border-color);

@@ -49,6 +49,7 @@
   display: inline-block;
   padding: 0.3em;
   text-align: center;
+  background-color: var(--background-color);
 }
 
 .header > button {
@@ -71,7 +72,7 @@
   font-size: 1em;
   margin: 0.2em;
   font-weight: bold;
-  color: black;
+  color: var(--font-color);
   display: inline-block;
 }
 
@@ -91,15 +92,15 @@
 }
 
 .day {
-  color: lightgrey;
+  color: var(--counter-font-color);
 }
 
 .active {
-    color: grey;
+    color: darkgray;
 }
 
 .day.active.current {
-  color: black;
+  color: var(--font-color);
 }
 
 .day.active.selected, .day.active.current.selected {

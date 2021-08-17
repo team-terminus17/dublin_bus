@@ -7,7 +7,8 @@
     <div v-else>
     <div v-for="(item,index) in wholeRouteDict" v-bind:key="index">
       <JourneyInfoBox
-      :item="item">
+      :item="item"
+      :mode="mode">
       </JourneyInfoBox>
     </div>
     </div>
@@ -20,6 +21,9 @@ import JourneyInfoBox from "@/components/JourneyInfoBox";
 import {round} from "@popperjs/core/lib/utils/math";
 export default {
   components: {JourneyInfoBox},
+
+  props:['mode'],
+
   data() {
     return {
       predict: {
@@ -118,7 +122,7 @@ export default {
 
 <style scoped>
 .pred {
-  color: #1b1b1b;
+  color: var(--font-color);
   margin-bottom: 20px;
   border: 2px solid var(--border-color);
   background-color: var(--background-color);

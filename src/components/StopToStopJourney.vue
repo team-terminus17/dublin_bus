@@ -45,6 +45,7 @@
     <div class="col-12">
       <Prediction
           ref="predict"
+          :mode="mode"
       ></Prediction>
     </div>
   </div>
@@ -64,6 +65,8 @@ export default {
     RouteSelection,
     StopSelection
   },
+
+  props:['mode'],
 
   data(){
     return{
