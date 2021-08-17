@@ -179,6 +179,10 @@
   100% { transform: rotate(360deg); }
 }
 
+.btn-warning{
+  background-color: var(--border-color) !important;//overwrite the default color of bootstrap
+}
+
 </style>
 
 <script>
