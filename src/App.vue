@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="row">
-      <div id="menu" class="col-md-1 d-flex justify-content-start">
+      <div id="menu" class="d-none d-sm-grid col-md-1 d-flex justify-content-start">
         <button v-on:click="isShow = !isShow" class="btn btn-warning" style="cursor: pointer;">
           >
         </button>
