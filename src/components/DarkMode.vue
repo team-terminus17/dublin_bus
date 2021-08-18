@@ -1,12 +1,14 @@
 <template>
-  <button
-      id="dark"
-      class="btn btn-warning"
-      style="margin: 50px 20px"
-      @click="changeMode"
-  >
-    {{ mode }}
-  </button>
+    <div>
+      <button
+          id="dark"
+          class="btn btn-warning"
+          style="margin: 50px 20px"
+          @click="changeMode"
+      >
+        {{ mode }}
+      </button>
+    </div>
 </template>
 
 <script>
