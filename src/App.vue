@@ -57,7 +57,7 @@
 :root {
   --container-color: #0f567d;
   --background-color: #e2e2e2;
-  --border-color: #e59c24;
+  --border-color: #FEC901;
   --border-radius: 8px;
   --font-color: #000000;
   --counter-font-color: #ffffff;
