@@ -23,7 +23,7 @@
       </div>
     </div>
     <div class="content row flex-grow-1">
-      <div id="menu" class="col-md-1 d-flex justify-content-start">
+      <div id="menu" class="d-none d-sm-grid col-md-1 d-flex justify-content-start">
         <button v-on:click="onClickViewButton" class="btn btn-warning" style="cursor: pointer;">
           {{button_content}}
         </button>
