@@ -82,6 +82,7 @@ export default {
       padding: 5px 0;
       position: absolute;
       z-index: 1;
+      pointer-events: none;
     }
 
     .nav-item {
