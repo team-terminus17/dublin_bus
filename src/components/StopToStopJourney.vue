@@ -41,11 +41,13 @@
       Submit
     </button>
       </div>
+    <div v-show="show_prediction">
     <div class="col-12">
       <Prediction
           ref="predict"
           :mode="mode"
       ></Prediction>
+    </div>
     </div>
   </div>
 </template>
@@ -78,7 +80,8 @@ export default {
       destination: null,
       direction: null,
       routeinfo: null,
-      timestamp: null
+      timestamp: null,
+      show_prediction: false,
     }
   },
 
@@ -109,6 +112,7 @@ export default {
         alert("Please fill in the complete route");
         return;
       }
+      this.show_prediction = true;
       this.getRoutes();
       this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
     },
@@ -134,6 +138,7 @@ export default {
     refreshView: function (){
       this.$refs.renderer.clearView();
       this.$refs.predict.refreshView();
+      this.show_prediction=false;
     }
   }
 };
