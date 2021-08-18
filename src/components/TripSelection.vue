@@ -2,8 +2,9 @@
   <div>
     <Tabs
         v-on:tabChanged="onTabChanged"
+        :mode="mode"
     >
-      <Tab name="Tab 1" selected="true">
+      <Tab name="Point To Point Journey" selected="true" :img_link="img_link[0]">
         <div id="Tab 1" class="col-sm-12 col-md-12 tabcontent">
           <div class="row">
             <div v-html="journey" class="d-flex"></div>
@@ -18,7 +19,7 @@
         </div>
       </Tab>
 
-      <Tab name="Tab 2">
+      <Tab name="Stop To Stop Journey" :img_link="img_link[1]">
         <div id="Tab 2" class="col-sm-12 col-md-12 tabcontent">
           <div class="row">
             <StopToStopJourney
@@ -30,13 +31,13 @@
         </div>
       </Tab>
       
-      <Tab name="Realtime">
+      <Tab name="Realtime" :img_link="img_link[2]">
         <RealtimeView
             ref="realtime"
         ></RealtimeView>
       </Tab>
 
-      <Tab name="Twitter">
+      <Tab name="Twitter" :img_link="img_link[3]">
         <Twitter
             :mode="mode"
         ></Twitter>
@@ -77,6 +78,15 @@ export default {
       destination: null,
       direction: null,
       routeinfo: null,
+      img_link: [
+        {'light':'https://img.icons8.com/material/48/000000/location-update.png',
+        'dark':'https://img.icons8.com/material-rounded/48/ffffff/worldwide-location.png'},
+        {'light':'https://img.icons8.com/fluency-systems-regular/48/000000/bus-stop.png',
+        'dark':'https://img.icons8.com/fluency-systems-regular/48/ffffff/bus-stop.png'},
+        {'light':'https://img.icons8.com/material-outlined/48/000000/wall-clock.png',
+        'dark':'https://img.icons8.com/material-outlined/48/ffffff/wall-clock.png'},
+        {'light':'https://img.icons8.com/material-outlined/48/000000/twitter.png',
+        'dark':'https://img.icons8.com/material-outlined/48/ffffff/twitter.png'}],
     }
   },
   methods:{
@@ -85,9 +95,9 @@ export default {
       this.$refs.ptpjourney.refreshView();
       this.$refs.stsjourney.refreshView();
       this.$refs.realtime.refreshView();
-    }
-  },
+    },
 
+  },
 }
 </script>
 

@@ -1,12 +1,13 @@
 <template>
   <article>
       <header class="tabs">
-        <ul>
-          <li v-for="(tab, index) in tabs" :key="index">
+        <ul ref="tab_list">
+          <li v-for="(tab, index) in tabs" :key="index" class="col-3">
             <div class="nav-item"
                 :class="{ 'is-active': tab.isActive }"
                 @click="tabSelect(tab)">
-              {{ tab.name}}
+              <img :src="tab.$attrs.img_link[mode]"/>
+              <span class="nav-text">{{tab.name}}</span>
             </div>
           </li>
         </ul>
@@ -21,6 +22,8 @@
 
 <script>
 export default {
+  props:['mode'],
+
   data: () => {
     return {
       tabs: []
@@ -48,12 +51,10 @@ export default {
 <style lang="scss" scoped>
   .tabs {
     border: 2px solid var(--border-color);
-    margin: 0 10px;
-    margin-top: 10px;
+    margin: 10px 10px;
     font-size: 1.0em;
     background-color: var(--background-color);
     border-radius: var(--border-radius);
-    overflow-x: hidden;
   }
 
   .tabs-content {
@@ -61,13 +62,26 @@ export default {
   }
 
   ul {
+    margin: 0;
     display: flex;
     padding: 0;
     list-style: none;
-    
     li {
-      margin-right: 40px;
+      //margin-block: auto;
+      //margin-right: 40px;
       // border-right: 2px solid #fefefe;
+    }
+
+    .nav-item .nav-text{
+      visibility: hidden;
+      width: 120px;
+      background-color: black;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      position: absolute;
+      z-index: 1;
     }
 
     .nav-item {
@@ -77,6 +91,10 @@ export default {
       &:hover {
         background-color: var(--border-color);
         border-radius: var(--border-radius);
+      }
+
+      &:hover .nav-text{
+        visibility: visible;
       }
 
       &.is-active {
