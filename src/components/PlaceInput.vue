@@ -1,13 +1,13 @@
 <template>
 <div>
-<input :id="id_name" type="text">
+<input :id="id_name" type="text" :placeholder="place_holder">
 </div>
 </template>
 
 <script>
 export default {
 name: "PlaceInput",
-  props:['id_name'],
+  props:['id_name','place_holder'],
 
   data(){
   return{

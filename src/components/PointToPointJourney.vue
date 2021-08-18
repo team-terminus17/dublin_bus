@@ -1,18 +1,18 @@
 <template>
 <div>
   <div class="form-group" style="margin-top: 6px">
-  <label class="d-flex justify-content-start">Start location</label>
   <PlaceInput
       id_name="autocomplete1"
       v-on:sendPlaceID="getStart"
+      place_holder="Enter the start location"
   ></PlaceInput>
 <!--  id_name is set to differentiate between two placeinput components-->
   </div>
   <div class="form-group" style="margin-top: 10px">
-  <label class="d-flex justify-content-start">End location</label>
   <PlaceInput
       id_name="autocomplete2"
       v-on:sendPlaceID="getEnd"
+      place_holder="Enter the end location"
   ></PlaceInput>
   </div>
   <PointToPointRenderer
@@ -27,11 +27,13 @@
   <div class="col-12" style="margin-bottom: 10px">
   <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 40px;">Submit</button>
   </div>
+  <div v-show="show_prediction">
   <div class="col-12">
   <Prediction
       ref="predict"
       :mode="mode"
   ></Prediction>
+  </div>
   </div>
 </div>
 </template>
@@ -58,6 +60,7 @@ export default {
       start:null,
       end:null,
       timestamp:null,
+      show_prediction:false,
     }
   },
 
@@ -67,6 +70,7 @@ export default {
         alert("You need to enter both origin and destination.");
       }
       else{
+        this.show_prediction=true;
         this.renderRoute();
       }
     },
@@ -92,6 +96,7 @@ export default {
     },
 
     refreshView: function (){
+      this.show_prediction=false;
       this.$refs.renderer.clearView();
       this.$refs.predict.refreshView();
     }

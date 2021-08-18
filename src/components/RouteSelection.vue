@@ -6,6 +6,7 @@
       @change="updateItems"
       @item-clicked="passRoute"
       :auto-select-one-item="false"
+      placeholder="Route"
     >
     </v-autocomplete>
     <button @click="selectDirection" id="direction" class="btn btn-warning">
@@ -27,7 +28,6 @@ export default {
       direction_text: "inbound",
     };
   },
-
   methods: {
     updateItems: function (value) {
       this.routes = this.items
