@@ -16,5 +16,7 @@ export default {
 </script>
 
 <style scoped>
-
+  span {
+    margin-left: 1em;
+  }
 </style>
