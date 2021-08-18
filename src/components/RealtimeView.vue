@@ -67,6 +67,7 @@ export default {
 
     onStopClicked(stopID) {
       this.stop = stopID;
+      this.$refs.stoptrips.cancelTracking();
     },
 
     refreshView: function (){
