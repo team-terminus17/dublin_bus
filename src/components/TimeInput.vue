@@ -27,6 +27,7 @@
         @focus="$event.target.select()"
     >
     <select
+        id="round"
         class="form-select"
         style="flex-grow:1.5"
         @focusin="showClock(false)"
@@ -248,19 +249,12 @@ function updateValue(value, kind) {
   .form-select {
     color: var(--font-color);
     background-color: var(--background-color);
-    border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
   }
 
-  option {
-    background-color: var(--background-color);
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-
-    &:hover {
-        background-color: var(--border-color);
-        border-radius: var(--border-radius);
-      }
+  #round {
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
   }
 
   .input-group-text {
