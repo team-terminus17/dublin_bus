@@ -47,7 +47,6 @@ export default {
 
   watch:{
     mode(val){
-      console.log(val)
       this.setImg();
     }
   },
