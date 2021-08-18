@@ -29,11 +29,13 @@
         </button>
       </div>
       <div v-show="isShow" id="input" class="col-xs-4 col-sm-5 col-md-5 col-lg-3">
-        <TripSelection
+        <div class="scroll-wrapper">
+          <TripSelection
             v-on:googleQueryComplete="showGooglePrediction"
             v-on:tripComplete="showTripPrediction"
             :mode="mode"
-        ></TripSelection>
+          ></TripSelection>
+        </div>
       </div>
       <div class="h-100 col-md-12">
         <Map></Map>
@@ -71,9 +73,17 @@
   background-color: var(--container-color);
   color: #F1ECED;
   border-radius: var(--border-radius);
+  max-height: calc(100% - 300px);
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: stretch;
+}
+
+.scroll-wrapper {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: calc(100% - 300px);
+  height: 100%;
 }
 
 #weather {
