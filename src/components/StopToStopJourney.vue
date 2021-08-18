@@ -2,7 +2,7 @@
   <div>
     <div v-html="journey" class="d-flex"></div>
     <div
-      class="col-md-4 justify-content-space-between"
+      class=" justify-content-space-between"
       style="margin-top: 20px"
     >
       <RouteSelection v-on:selectRoute="getRoute"></RouteSelection>
