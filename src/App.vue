@@ -57,7 +57,7 @@
 :root {
   --container-color: #0f567d;
   --background-color: #e2e2e2;
-  --border-color: #e59c24;
+  --border-color: #FEC901;
   --border-radius: 8px;
   --font-color: #000000;
   --counter-font-color: #ffffff;
@@ -181,6 +181,10 @@
 @keyframes loader-template-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.btn-warning{
+  background-color: var(--border-color) !important;//overwrite the default color of bootstrap
 }
 
 </style>
