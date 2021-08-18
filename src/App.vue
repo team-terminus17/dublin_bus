@@ -3,7 +3,7 @@
     <DarkMode class="dark-mode-toggle"
         v-on:changeMode="changeMode"
     ></DarkMode>
-    <div class="row">
+    <div class="content row">
       <div class="col-sm-6 col-md-6 d-flex
         justify-content-start">
         <img src="./assets/team2.png">
@@ -22,7 +22,7 @@
          <Weather></Weather>
       </div>
     </div>
-    <div class="row flex-grow-1">
+    <div class="content row flex-grow-1">
       <div id="menu" class="col-md-1 d-flex justify-content-start">
         <button v-on:click="onClickViewButton" class="btn btn-warning" style="cursor: pointer;">
           {{button_content}}
@@ -71,13 +71,16 @@
   background-color: var(--container-color);
   color: #F1ECED;
   border-radius: var(--border-radius);
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100% - 300px);
 }
 
 #weather {
   z-index: 1;
 }
 
-.main.row {
+.content.row {
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -148,6 +151,7 @@
   #input {
     margin-top: 550px;
     margin-left: 0px;
+    max-height: none;
   }
 
   #weather {
