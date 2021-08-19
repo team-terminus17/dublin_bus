@@ -16,7 +16,7 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime, fallback=False
 
     # The dep_stop and arr_stop might be swapped if they are found
     # to be in the wrong order.
-    dep_stop, arr_stop, numbers = get_stop_sequence(
+    dep_stop, arr_stop, sequence = get_stop_sequence(
         route, direction, dep_stop, arr_stop, dt)
     
     planned_time = get_planned_time(
@@ -35,9 +35,10 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime, fallback=False
 
         features = [None, *dt_features, *weather_features]
 
-        for number in numbers:
+        for number, expected_min, expected_max in sequence:
             features[0] = number
             delay = model.predict([features])[0]
+            delay = max(expected_min, min(delay, expected_max))
             total_delay += delay
 
     except:
@@ -50,7 +51,6 @@ def model_predict(route, direction, dep_stop, arr_stop, datetime, fallback=False
         # For example, if the google time is available, 
         # that can be used instead.
         else: raise
-
 
     predicted_time = planned_time + total_delay
     return predicted_time
@@ -108,13 +108,32 @@ def get_stop_sequence(route, direction, dep_stop, arr_stop, dt):
 
     # Get all the stops between the start and end stop, inclusive.
 
-    stops = RouteStops.objects.filter(
+    routestops_entries = RouteStops.objects.filter(
         name__name=route, direction=direction,
         sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq
-    )
-    stop_list = list(stops.values_list('stop__number', flat=True))
+    ).select_related("stop")
 
-    return dep_stop, arr_stop, stop_list
+    stops = dict()
+    for entry in routestops_entries:
+        stops[entry.stop_id] = entry.stop.number
+
+    bounds_entries = PredictionBounds.objects.filter(
+        route_name__name=route, direction=direction,
+        stop_id__in=stops.keys()
+    )
+
+    bounds_lookup = dict()
+    for entry in bounds_entries:
+        bounds_lookup[entry.stop_id] = entry.min, entry.max
+
+    sequence = list()
+    for stop_id, number in stops.items():
+        bounds = bounds_lookup.get(stop_id, None)
+        if bounds is None:
+            bounds = (0, 600)
+        sequence.append((number, *bounds))
+
+    return dep_stop, arr_stop, sequence
 
 
 def get_planned_time(route, direction, dep_stop, arr_stop, dt):
