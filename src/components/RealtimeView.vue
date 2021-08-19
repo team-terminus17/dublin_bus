@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Point-to-point Journey</h2>
+    <h2>Real Time</h2>
     <div class="route-selection">
       <RouteSelection @selectRoute="onRouteSelected"></RouteSelection>
     </div>

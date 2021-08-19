@@ -33,7 +33,6 @@
 
       <Tab name="Twitter">
         <h2>Twitter</h2>
-        <button v-on:click="test">Test</button>
         <Timeline id="dublinbusnews" sourceType="profile" widget-class="twitter" :options="{ theme: 'light' }"/>
       </Tab>
     </Tabs>
