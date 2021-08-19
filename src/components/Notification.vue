@@ -100,7 +100,7 @@ export default {
 
       let waitingTime = data.time;
       let tripID = data.trip;
-      this.time_text = ' in '+waitingTime+' mins'
+      this.time_text = 'Next bus in '+waitingTime+' mins'
       //Avoid pushing notifications of one trip for multiple times
       if(this.depNotificationRecord.has(tripID)) return;
 
