@@ -1,7 +1,7 @@
 <template>
   <div class="input-group">
     <input
-        class="time-input form-control"
+        class="time-input form-control hour"
         type="text" maxlength="2" placeholder="HH"
         :value="internalValue.hours"
         @focusin="showClock('hours')"
@@ -19,7 +19,7 @@
       :
     </span>
     <input
-        class="time-input form-control"
+        class="time-input form-control min"
         type="text" maxlength="2" placeholder="MM"
         :value="internalValue.minutes"
         @focusin="showClock('minutes')"
@@ -242,14 +242,21 @@ function updateValue(value, kind) {
 
   .form-control {
     background-color: var(--background-color);
-    border: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     color: var(--font-color);
+  }
+
+  .hour {
+    border-left: 1px solid var(--border-color);
   }
 
   .form-select {
     color: var(--font-color);
     background-color: var(--background-color);
-    border: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    border-right: 1px solid var(--border-color);
   }
 
   #round {
@@ -260,7 +267,8 @@ function updateValue(value, kind) {
   .input-group-text {
     background-color: var(--background-color);
     border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     color: var(--font-color);
   }
 

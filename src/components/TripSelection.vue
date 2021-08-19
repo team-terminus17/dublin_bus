@@ -37,6 +37,7 @@
       </Tab>
 
       <Tab name="Twitter" :img_link="img_link[3]">
+        <h2>Twitter</h2>
         <Twitter
             :mode="mode"
         ></Twitter>
