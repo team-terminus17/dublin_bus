@@ -1,8 +1,15 @@
 <template>
 <div>
   <h2>Point-to-point Journey</h2>
+  <button
+      class="btn btn-warning"
+      @click="useCurrentLocation"
+  >
+    Use current location
+  </button>
   <div class="form-group" style="margin-top: 6px">
   <PlaceInput
+      ref="start_input"
       id_name="autocomplete1"
       v-on:sendPlaceID="getStart"
       place_holder="Enter the start location"
@@ -61,8 +68,14 @@ export default {
       start:null,
       end:null,
       timestamp:null,
-      show_prediction:false,
+      show_prediction:false
     }
+  },
+
+  computed: {
+    map() {
+      return this.$store.state.map;
+    },
   },
 
   methods: {
@@ -94,6 +107,32 @@ export default {
 
     updateTimestamp: function (val){
       this.timestamp = val;
+    },
+
+    useCurrentLocation: function (){
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(res => {
+          let latlon = {'lat':res.coords.latitude, 'lng':res.coords.longitude}
+
+          if(this.map){
+            let geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: latlon }).then((response)=>{
+
+              if (response.results[0]){
+                this.$refs.start_input.changeAddress(response.results[0].formatted_address);
+                this.start = response.results[0].place_id;
+              }
+              else{
+                alert("Something went wrong with geocoding")
+              }
+            })
+          }
+        }
+        )
+      }
+      else{
+        alert("Geolocation is not supported by this browser.")
+      }
     },
 
     refreshView: function (){
