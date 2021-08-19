@@ -1,5 +1,6 @@
 <template>
 <div>
+  <h2>Point-to-point Journey</h2>
   <div class="form-group" style="margin-top: 6px">
   <PlaceInput
       id_name="autocomplete1"
@@ -19,7 +20,7 @@
       v-on:directionsValidated="showGooglePrediction"
       ref="renderer"
   ></PointToPointRenderer>
-  <div class="col-xs-6 col-md-12" style="margin-top: 10px">
+  <div class="col-xs-6 col-md-8 datetime" style="margin-top: 10px">
   <DateTimeInput
       v-on:sendTimestamp="updateTimestamp"
   ></DateTimeInput>

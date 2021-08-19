@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h2>Stop-to-stop Journey</h2>
     <div v-html="journey" class="d-flex"></div>
     <div
       class=" justify-content-space-between"
