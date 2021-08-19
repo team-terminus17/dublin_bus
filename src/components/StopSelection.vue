@@ -48,7 +48,9 @@ export default {
     },
 
     updateStops: function (value){
-      this.stops = this.items.filter(item=>item.stopName.includes(value)||item.stopNumber.toString().includes(value));
+      this.stops = this.items.filter(
+          item=>item.stopName.toLowerCase().includes(value.toLowerCase())
+              ||item.stopNumber.toString().includes(value));
     },
 
     getLabel: function (stop){
