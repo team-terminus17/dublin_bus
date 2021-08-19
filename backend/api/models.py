@@ -84,6 +84,7 @@ class ServiceExceptions(models.Model):
 
     id = models.IntegerField(primary_key=True)
     service = models.ForeignKey(Services, on_delete=CASCADE)
+    date = models.DateField()
 
     exception_type = models.IntegerField(choices=[
         (SERVICE_ADDED, "Service added"),
@@ -186,7 +187,6 @@ class StopTimes(models.Model):
 # DERIVED FROM GTFS #
 #####################
 
-
 class RouteStops(models.Model):
 
     id = models.IntegerField(primary_key=True)
@@ -201,3 +201,19 @@ class RouteStops(models.Model):
     sequence = models.IntegerField(null=True)
 
     shape = models.ForeignKey(Shapes, on_delete=CASCADE, null=True)
+
+
+################################
+# DERIVED FROM HISTORICAL DATA #
+################################
+
+class PredictionBounds(models.Model):
+
+    id = models.IntegerField(primary_key=True)
+    
+    route_name = models.ForeignKey(RouteNames, on_delete=CASCADE)
+    direction = models.IntegerField(choices=DIRECTION_CHOICES)
+    stop = models.ForeignKey(Stops, on_delete=CASCADE)
+
+    min = models.IntegerField()
+    max = models.IntegerField()
