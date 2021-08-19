@@ -57,9 +57,9 @@
 }
 
 :root {
-  --container-color: #0f567d;
-  --background-color: #e2e2e2;
-  --border-color: #FEC901;
+  --container-color: #347AA0;
+  --background-color: #E2E2E2;
+  --border-color: #F3D463;
   --border-radius: 8px;
   --font-color: #000000;
   --counter-font-color: #ffffff;
