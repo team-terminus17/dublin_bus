@@ -136,7 +136,7 @@ export default {
           });
 
           marker.addListener("click", () => {
-            this.$emit("stop-clicked", stop.ID);
+            this.$emit("stop-clicked", stop);
           });
           
           this.markers.push(marker);

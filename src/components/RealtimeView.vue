@@ -20,7 +20,7 @@
         ref="busrenderer"
     ></BusRenderer>
     <StopTrips
-        :stopId="stop"
+        :stop="stop"
         ref="stoptrips"
     ></StopTrips>
   </div>
@@ -65,8 +65,8 @@ export default {
       this.direction = direction.toString();
     },
 
-    onStopClicked(stopID) {
-      this.stop = stopID;
+    onStopClicked(stop) {
+      this.stop = stop;
     },
 
     refreshView: function (){
