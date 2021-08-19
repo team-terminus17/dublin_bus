@@ -62,7 +62,7 @@
   --border-color: #F3D463;
   --border-radius: 8px;
   --font-color: #000000;
-  --counter-font-color: #ffffff;
+  --counter-font-color: #7a7a7a;
 }
 
 #input {

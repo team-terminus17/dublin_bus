@@ -97,12 +97,12 @@
 
    /* Circle at the end of the clock hand */
   .hand {
-    fill: var(--border-color);
+    fill: var(--container-color);
   }
 
   /* Line from the center to the clock hand */
   .hand-line {
-    stroke: var(--border-color);
+    stroke: var(--container-color);
     stroke-width: 0.025;
   }
 
