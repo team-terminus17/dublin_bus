@@ -31,7 +31,7 @@ export default {
   methods: {
     updateItems: function (value) {
       this.routes = this.items
-        .filter((item) => item.includes(value));
+        .filter((item) => item.toLowerCase().includes(value.toLowerCase()));
     },
 
     getRoutes: async function () {
