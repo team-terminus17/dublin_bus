@@ -1,7 +1,6 @@
 <template>
 <div>
   <h2>Point-to-point Journey</h2>
-  <div v-html="journey" class="d-flex"></div>
   <div class="form-group" style="margin-top: 6px">
   <PlaceInput
       id_name="autocomplete1"
