@@ -7,7 +7,7 @@
     <div class="content row">
       <div class="col-sm-6 col-md-6 d-flex
         justify-content-start">
-        <img src="./assets/team2.png">
+        <img src="./assets/Team.png">
       </div>
       <div
       class="
