@@ -92,27 +92,34 @@ export default {
       if(data['valid']==2){
         alert("Origin and destination can't be the same");
         this.valid = false;
-        return;
+        return false;
       }
       if (data["valid"] == 1) {
         alert("The selected route is not in the same direction");
         this.valid = false;
-        return;
+        return false;
       }
+      this.show_prediction = true;
       this.valid=true;
       this.origin = {lat: data['stop_dep']['lat'],lng:data['stop_dep']['lon']}
       this.destination = {lat: data['stop_arr']['lat'],lng:data['stop_dep']['lon']}
       await this.$refs.predict.getTripPrediction(this.route,this.direction,this.stop_dep,this.stop_arr,this.timestamp);
+      return true;
     },
 
-    handle() {
+    handle: async function () {
       if (this.stop_arr == null || this.stop_dep == null) {
         alert("Please fill in the complete route");
         return;
       }
-      this.show_prediction = true;
-      this.getRoutes();
-      this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
+
+      if(await this.getRoutes()){
+        this.$refs.renderer.displaySegment(this.route,this.stop_dep,this.stop_arr,this.direction);
+      }
+      else{
+        this.show_prediction = false;
+        this.$refs.renderer.clearView();
+      }
     },
 
     getRoute: function (){

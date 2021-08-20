@@ -95,7 +95,6 @@ export default {
         alert("You need to enter both origin and destination.");
       }
       else{
-        this.show_prediction=true;
         this.renderRoute();
       }
     },
@@ -113,6 +112,7 @@ export default {
     },
 
     showGooglePrediction: function (route){
+      this.show_prediction = true;
       this.$refs.predict.getGooglePrediction(route,this.timestamp);
     },
 
