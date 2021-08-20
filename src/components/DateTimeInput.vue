@@ -1,10 +1,14 @@
 <template>
   <div>
-    <label class="d-flex justify-content-start"  style="margin-top: 20px">Date & Time</label>
-    <div>
+    <!--
+      It's an ongoing debate is to whether this label should be here,
+      hence the comment.
+      <label class="d-flex justify-content-start">Date & Time</label>
+    -->
+    <div class="date" :style="`margin-bottom: ${gap}`">
       <DateInput v-model="date"></DateInput>
     </div>
-    <div style="margin-top: 20px">
+    <div>
       <TimeInput v-model="time"></TimeInput>
     </div>
   </div>
@@ -20,6 +24,8 @@ export default {
     TimeInput,
     DateInput,
   },
+
+  props: ["gap"],
 
   data() {
     return {
@@ -74,6 +80,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-</style>

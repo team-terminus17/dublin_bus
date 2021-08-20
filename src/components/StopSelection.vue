@@ -6,7 +6,8 @@
     @input="passStop"
     :component-item='template'
     :get-label='getLabel'
-    :auto-select-one-item="false">
+    :auto-select-one-item="false"
+    :placeholder="placeholder">
 </v-autocomplete>
 </template>
 
@@ -23,7 +24,7 @@ export default {
       template: StopTemplate
     };
   },
-  props:['routeinfo'],
+  props:['routeinfo', 'placeholder'],
   watch:{
     routeinfo(newval,oldval){
       this.getStops(newval);

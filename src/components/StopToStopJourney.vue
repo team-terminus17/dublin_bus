@@ -1,30 +1,28 @@
 <template>
-  <div>
+  <div class="stop2stop-main">
     <h2>Stop-to-stop Journey</h2>
-    <div v-html="journey" class="d-flex"></div>
     <div
       class=" justify-content-space-between"
-      style="margin-top: 20px"
     >
       <RouteSelection v-on:selectRoute="getRoute"></RouteSelection>
     </div>
     <div class="col-md-12">
-      <div class="form-group" style="margin-top: 6px">
-        <label class="d-flex justify-content-start">Start Stop</label>
+      <div class="start-stop form-group">
         <StopSelection
             v-on:stopSelected="getDepStop"
             :routeinfo="routeinfo"
+            placeholder="Start stop"
         ></StopSelection>
       </div>
-      <div class="form-group" style="margin-top: 10px">
-        <label class="d-flex justify-content-start">End Stop</label>
+      <div class="end-stop form-group">
         <StopSelection
             v-on:stopSelected="getArrStop"
             :routeinfo="routeinfo"
+            placeholder="End stop"
         ></StopSelection>
       </div>
     </div>
-    <div class="col-xs-6 col-md-8 datetime" style="margin-top: 10px">
+    <div class="col-xs-6 col-md-8 datetime">
       <DateTimeInput
           v-on:sendTimestamp="updateTimestamp"
       ></DateTimeInput>
@@ -32,12 +30,11 @@
     <TripRenderer
         ref="renderer"
     ></TripRenderer>
-    <div class="col-12" style="margin-bottom: 10px">
+    <div class="col-12">
     <button
       @click="handle"
       type="button"
-      class="btn btn-warning"
-      style="margin-top: 40px"
+      class="submit btn btn-warning"
     >
       Submit
     </button>
@@ -76,7 +73,6 @@ export default {
       route:null,
       stop_dep:null,
       stop_arr:null,
-      journey :"Please input your journey info:",
       origin: null,
       destination: null,
       direction: null,
@@ -147,13 +143,16 @@ export default {
 
 <style>
 
-.datetime {
-  margin-left: 16%;  
+.stop2stop-main > div {
+  margin-top: 2em;
 }
 
-@media only screen and (max-width: 600px) {
-  .datetime {
-    margin-left: 0%;
-  }
+.start-stop {
+  margin-bottom: 1em;
 }
+
+.datetime {
+  margin: auto; 
+}
+
 </style>
