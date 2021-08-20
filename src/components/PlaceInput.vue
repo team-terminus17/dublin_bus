@@ -1,18 +1,24 @@
 <template>
 <div>
-<input :id="id_name" type="text" :placeholder="place_holder">
+<input
+    :id="id_name"
+    type="text"
+    :placeholder="place_holder"
+    v-bind:value="address"
+>
 </div>
 </template>
 
 <script>
 export default {
 name: "PlaceInput",
-  props:['id_name','place_holder'],
+  props:['id_name','place_holder',],
 
   data(){
   return{
     autocomplete:null,
     element:null,
+    address:null
   }
   },
 
@@ -36,6 +42,10 @@ name: "PlaceInput",
     onPlaceChanged:function (){
     let place=this.autocomplete.getPlace();
     this.$emit("sendPlaceID",place.place_id);
+    },
+
+    changeAddress: function (val){
+      document.getElementById(this.id_name).value=val;
     }
   },
 

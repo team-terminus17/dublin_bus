@@ -1,4 +1,5 @@
 <template>
+<div id="color-mode" :class="mode">
   <div class="main d-flex flex-column">
     <DarkMode class="dark-mode-toggle"
         v-on:changeMode="changeMode"
@@ -19,7 +20,7 @@
       "
       id="weather"
     >
-         <Weather></Weather>
+        <Weather></Weather>
       </div>
     </div>
     <div class="content row flex-grow-1">
@@ -41,8 +42,8 @@
         <Map></Map>
       </div>
     </div>
-    
   </div>
+</div>
 </template>
 
 <style lang="scss">
@@ -57,12 +58,25 @@
 }
 
 :root {
+  --border-radius: 8px;
+}
+
+#color-mode.light * {
   --container-color: #347AA0;
+  --main-border-color: #347AA0;
   --background-color: #E2E2E2;
   --border-color: #F3D463;
-  --border-radius: 8px;
   --font-color: #000000;
   --counter-font-color: #7a7a7a;
+}
+
+#color-mode.dark * {
+  --main-border-color: #17263C;
+  --container-color: #2e4a7a;
+  --background-color: #242f3e;
+  --border-color: #D59563;
+  --font-color: #ffffff;
+  --counter-font-color: #000000;
 }
 
 #input {
@@ -96,7 +110,7 @@
 }
 
 .main {
-  background-color: var(--container-color);
+  background-color: var(--main-border-color);
   text-align: center;
   height: 100vh;
   padding-bottom: 0.8em;
@@ -152,24 +166,11 @@
  }
 
 @media only screen and (max-width: 600px) {
-
-  .container-fluid {
-    max-width: none;
-    max-height: none;
-  }
   
   #input {
     margin-top: 550px;
     margin-left: 0px;
     max-height: none;
-  }
-
-  #weather {
-    position: absolute;
-  }
-
-  img {
-    width: 50%;
   }
 
   #weather {
@@ -203,6 +204,7 @@
 
 .btn-warning{
   background-color: var(--border-color) !important;//overwrite the default color of bootstrap
+  border-color: var(--border-color) !important;
 }
 
 </style>
@@ -259,26 +261,8 @@ export default {
     },
 
     changeMode: function (mode){
-      if(mode ==='dark'){
-        this.setDarkMode();
-      }
-      else {
-        this.setLightMode();
-      }
       this.mode=mode;
     },
-
-    setLightMode: function (){
-      this.root.style.setProperty('--background-color','#e2e2e2');
-      this.root.style.setProperty('--font-color','#000000');
-      this.root.style.setProperty('--counter-font-color','#ffffff');
-      },
-
-    setDarkMode: function (){
-      this.root.style.setProperty('--background-color','#242f3e');
-      this.root.style.setProperty('--font-color','#ffffff');
-      this.root.style.setProperty('--counter-font-color','#000000');
-    }
   },
 
   mounted() {

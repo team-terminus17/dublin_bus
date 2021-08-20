@@ -4,41 +4,26 @@
       id="dublinbusnews"
       sourceType="profile"
       widget-class="twitter"
-      :options="theme"
-  />
+      :options="{theme: mode}"
+      :key="mode"
+    />
   </div>
 </template>
 
 <script>
-import {Timeline} from "vue-tweet-embed";
+import { Timeline } from "vue-tweet-embed";
 
 export default {
-name: "Twitter",
-
-  components:{
-  Timeline
+  name: "Twitter",
+  components: {
+    Timeline,
   },
-
-  data(){
-  return{
-    theme:{theme:'light'}
-  }
-  },
-
-  props:['mode'],
-
-  watch:{
-  mode(val){
-    this.theme= {theme:val};
-    this.$forceUpdate();
-  }
-  }
-}
+  props: ["mode"],
+};
 </script>
 
 <style scoped>
 .twitter {
-  max-height: 450px;
-  overflow-y: auto;
+  margin: 2em 0;
 }
 </style>

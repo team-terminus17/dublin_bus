@@ -4,7 +4,7 @@
       @click="startTracking"
       @dblclick="cancelTracking"
   >{{this.button_text}}</button>
-  <span style="color: red">{{this.time_text}}</span>
+  <div>{{this.time_text}}</div>
 </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
 
         else{
           this.status=TRACKING_DEPARTURE;
-          this.button_text="Track end stop";
+          this.button_text="Track destination stop";
           this.$store.commit("changeTrackingStatus",true);
           this.timerID = window.setInterval(this.trackDepStop,30*1000);
           this.trackDepStop();
@@ -100,7 +100,7 @@ export default {
 
       let waitingTime = data.time;
       let tripID = data.trip;
-      this.time_text = ' in '+waitingTime+' mins'
+      this.time_text = 'Next bus in '+waitingTime+' mins'
       //Avoid pushing notifications of one trip for multiple times
       if(this.depNotificationRecord.has(tripID)) return;
 
