@@ -25,7 +25,7 @@
         ref="busrenderer"
     ></BusRenderer>
     <StopTrips
-        :stopId="stop"
+        :stop="stop"
         ref="stoptrips"
     ></StopTrips>
   </div>
@@ -97,12 +97,10 @@ export default {
       this.route = route;
       this.direction = direction.toString();
     },
-
-    onStopClicked(stopID) {
-      this.stop = stopID;
+    onStopClicked(stop) {
+      this.stop = stop;
       this.$refs.stoptrips.cancelTracking();
     },
-
     refreshView: function (){
       this.$refs.stoprenderer.removeMarkers();
       this.$refs.busrenderer.clear();

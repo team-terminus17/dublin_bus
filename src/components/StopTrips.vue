@@ -3,31 +3,34 @@
     <div class="content">
       <p v-if="initial">Click on a stop to show trips</p>
       <div v-else-if="loading" class="loader-template"></div>
-      <!--
-        It seems on one hand that putting overflow:auto and display:flex on the
-        same element leads to trouble, but on the other, putting overflow:auto
-        directly on a table also leads to trouble.
+      <div class="loaded-content" v-else-if="trips.length > 0">
+        <p class="stop-title">
+          <span class="stop-name">{{stop.name}}</span>
+          <span class="stop-number">#{{stop.number}}</span>
+        </p>
+        <!--
+          It seems on one hand that putting overflow:auto and display:flex on the
+          same element leads to trouble, but on the other, putting overflow:auto
+          directly on a table also leads to trouble.
 
-        Hence the intermediate wrapper div below.
-      -->
-      <div class="table-wrapper" v-else-if="trips.length > 0">
-        <ol>
-          <li
-            v-for="(trip, index) in trips"
-            :key="index"
-            @click="handle(trip)"
-            :class="{ selected: trip.tripID === selectedTrip }"
-          >
-            <span>{{ trip.arrivalTime }}</span>
-            <span>{{ trip.routeName }}</span>
-            <!-- 
-              The headsign is how one differentiates between different 
-              route variants as a user, so it's important. I doesn't really fit
-              at the moment, though. 
-              <td>{{ trip.tripHeadsign }}</td>
-            -->
-          </li>
-        </ol>
+          Hence the intermediate wrapper div below.
+        -->
+        <div class="table-wrapper">
+          <ol>
+            <li
+              v-for="(trip, index) in trips"
+              :key="index"
+              @click="handle(trip)"
+              :class="{ selected: trip.tripID === selectedTrip }"
+            >
+              <div class="trip-summary">
+                <span>{{ trip.arrivalTime }}</span>
+                <span>{{ trip.routeName }}</span>
+              </div>
+              <div class="trip-details">{{ trip.tripHeadsign }}</div>
+            </li>
+          </ol>
+        </div>
       </div>
       <p v-else>No trips to display</p>
     </div>
@@ -44,13 +47,14 @@
   color: var(--font-color);
 }
 
-.content {
-  border-radius: 0.5em;
-}
-
 p {
   color: var(--font-color);
   text-align: center;
+}
+
+.stop-title {
+  font-size:1.2em;
+  border-bottom: 1px var(--container-color) solid;
 }
 
 .footer {
@@ -59,7 +63,8 @@ p {
 }
 
 .content {
-  height: 10em;
+  border-radius: 0.5em;
+  height: 13.5em;
   display: flex;
   align-items: center;
   align-content: stretch;
@@ -67,9 +72,13 @@ p {
   background: var(--background-color);
 }
 
+.loaded-content {
+  width: 100%;
+}
+
 .table-wrapper {
-  overflow: auto;
   height: 10em;
+  overflow: auto;
   padding: 1em 0.3em;
   flex-grow: 1;
 }
@@ -79,9 +88,18 @@ ol {
 }
 
 li {
+  padding: 0.2em;
+}
+
+.trip-summary {
   display: flex;
   justify-content: space-around;
   align-content: stretch;
+}
+
+.trip-details {
+  padding: 0.3em 1em;
+  font-size: 0.8em;
 }
 
 span {
@@ -107,10 +125,11 @@ export default {
    * This should be an internal stop ID, such as that as returned by the
    * /stop/<agency>/<route>/info endpoint and used by the stop renderer.
    */
-  props: ["stopId"],
+  props: ["stop"],
   watch: {
-    stopId() {
+    stop() {
       this.initial = false;
+      console.log(this.stop)
       this.refresh();
     },
   },
@@ -129,10 +148,9 @@ export default {
     this.refresh();
   },
   methods: {
-    handle(trip){
+    handle(trip) {
       this.selectedTrip = trip.tripID;
-      console.log(trip)
-      this.selectedSequence=trip.sequence;
+      this.selectedSequence = trip.sequence;
     },
     clear() {
       this.trips = [];
@@ -141,17 +159,17 @@ export default {
     },
     async refresh() {
       this.clear();
-      if (!this.stopId) return;
+      if (!this.stop) return;
       this.loading = true;
 
-      const response = await fetch(`stops/${this.stopId}/trips`);
+      const response = await fetch(`stops/${this.stop.ID}/trips`);
 
       if (response.ok) {
         const data = await response.json();
         this.trips = data;
       } else {
         console.error(
-          `Failed to retrieve data for stop with ID '${this.stopId}'`
+          `Failed to retrieve data for stop with ID '${this.stop.ID}'`
         );
       }
 
@@ -178,23 +196,23 @@ export default {
       this.trackTrip();
     },
 
-    async trackTrip(){
-      let time=this.fetchWaitingTime();
-      if(time < 3){
-        const title = 'Reminder';
-            const options = {
-            body: 'The selected bus is coming. Please get ready.'
-          };
-            navigator.serviceWorker.ready.then(function (registration){
-                registration.showNotification(title,options);
-            });
+    async trackTrip() {
+      let time = this.fetchWaitingTime();
+      if (time < 3) {
+        const title = "Reminder";
+        const options = {
+          body: "The selected bus is coming. Please get ready.",
+        };
+        navigator.serviceWorker.ready.then(function (registration) {
+          registration.showNotification(title, options);
+        });
 
-            this.cancelTracking();
+        this.cancelTracking();
       }
     },
 
-    async fetchWaitingTime(){
-      let url = `/time/${this.selectedTrip}/${this.stopId}/${this.selectedSequence}/trip`;
+    async fetchWaitingTime() {
+      let url = `/time/${this.selectedTrip}/${this.stop.ID}/${this.selectedSequence}/trip`;
       let response = await fetch(url);
       let data = await response.json();
       return data;
@@ -203,7 +221,7 @@ export default {
     cancelTracking(){
       this.track_text='Track';
       if (this.timerID) window.clearInterval(this.timerID);
-    }
+    },
   },
 };
 </script>

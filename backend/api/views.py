@@ -169,6 +169,7 @@ def get_stop_info(request, agency="all", route="all"):
         main = entry.main
         agency = entry.agency.external_id
         sequence = entry.sequence
+        number = entry.stop.number
 
         current_stop = results.get(stop.id, None)
         if current_stop is None:
@@ -188,7 +189,8 @@ def get_stop_info(request, agency="all", route="all"):
             "direction": direction,
             "main": main,
             "agency": agency,
-            "sequence": sequence
+            "sequence": sequence,
+            "number": number
         })
 
     # Sending lists as opposed to objects is actually insecure, hence
