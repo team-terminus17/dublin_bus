@@ -220,6 +220,9 @@ function updateValue(value, kind) {
   else
     minutes = value
 
+  hours = Math.max(0, Math.min(hours, 12))
+  minutes = Math.max(0, Math.min(minutes, 59))
+
   if(hours === 12)
     hours = 0
 
