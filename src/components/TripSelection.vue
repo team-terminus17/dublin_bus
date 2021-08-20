@@ -79,7 +79,7 @@ export default {
       routeinfo: null,
       img_link: [
         {'light':'https://img.icons8.com/material/48/000000/location-update.png',
-        'dark':'https://img.icons8.com/material-rounded/48/ffffff/worldwide-location.png'},
+        'dark':'https://img.icons8.com/material/48/ffffff/location-update.png'},
         {'light':'https://img.icons8.com/fluency-systems-regular/48/000000/bus-stop.png',
         'dark':'https://img.icons8.com/fluency-systems-regular/48/ffffff/bus-stop.png'},
         {'light':'https://img.icons8.com/material-outlined/48/000000/wall-clock.png',
