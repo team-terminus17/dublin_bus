@@ -37,19 +37,4 @@ export default {
   margin-top: 0px;
 }
 
-@media only screen and (max-width: 992px) {
-  #map {
-  margin-top: 0px;
-  height: 950px;
-  }
-
-}
-
-@media only screen and (max-width: 600px) {
-  #map {
-    /* margin-top: -120px; */
-    height: 550px;
-  }
-}
-
 </style>
