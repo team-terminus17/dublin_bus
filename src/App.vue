@@ -152,24 +152,11 @@
  }
 
 @media only screen and (max-width: 600px) {
-
-  .container-fluid {
-    max-width: none;
-    max-height: none;
-  }
   
   #input {
     margin-top: 550px;
     margin-left: 0px;
     max-height: none;
-  }
-
-  #weather {
-    position: absolute;
-  }
-
-  img {
-    width: 50%;
   }
 
   #weather {
