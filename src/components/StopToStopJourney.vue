@@ -25,6 +25,7 @@
     <div class="col-xs-6 col-md-8 datetime">
       <DateTimeInput
           v-on:sendTimestamp="updateTimestamp"
+          gap="1em"
       ></DateTimeInput>
     </div>
     <TripRenderer
