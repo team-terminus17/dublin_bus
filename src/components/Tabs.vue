@@ -7,7 +7,6 @@
                 :class="{ 'is-active': tab.isActive }"
                 @click="tabSelect(tab)">
               <img class="tab-header-icon" :src="tab.$attrs.img_link[mode]"/>
-              <span class="nav-text">{{tab.name}}</span>
             </div>
           </li>
         </ul>
@@ -80,31 +79,10 @@ export default {
     flex-grow: 1;
   }
 
-  .nav-text {
-    /*
-      Temporarily disabling these for now, pending 
-      a decision on what we are doing with them.
-      As is, they need a bit of work to not interfere with 
-      the rest of the layout.
-    */
-    display: none;
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    pointer-events: none;
-  }
-
   .nav-item {
     cursor: pointer;
     color: var(--font-color);
     height: 3em;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,13 +92,6 @@ export default {
       background-color: var(--border-color);
       border-radius: var(--border-radius);
     }
-
-    /*
-      Temporarily removed, see comment above.
-    &:hover .nav-text{
-      visibility: visible;
-    }
-    */
 
     &.is-active {
       background-color: var(--border-color);
