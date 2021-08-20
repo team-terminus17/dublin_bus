@@ -55,18 +55,8 @@ def get_summary():
         response_data = response.json()
     except:
         raise ValueError("Failed to retrieve weather API data.")
+
     temp = response_data['main']['temp'] - 273.15
     icon = response_data['weather'][0]['icon']
+
     return temp, icon
-  # data = get_data(datetime.now())
-  #
-  # try:
-  #   temp = float(data["main"]["temp"])
-  #   icon = data["weather"][0]["icon"]
-  # except:
-  #   raise ValueError("Failed to parse data from weather API response.")
-  #
-  # # Temperature is in Kelvin, we need it in Celsius
-  # temp -= 273.15
-  #
-  # return temp, icon
