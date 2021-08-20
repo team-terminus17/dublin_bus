@@ -76,7 +76,7 @@ export default {
 
   .tabs-content {
     padding: 10px;
-    max-width: 25em;
+    width: min(100vw, 25em);
     flex-grow: 1;
   }
 
