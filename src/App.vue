@@ -8,7 +8,7 @@
       <div id="view-content">
         <div class="row">
           <div class="col-sm-6 col-md-6 d-flex justify-content-start">
-            <img id="logo" src="./assets/team2.png" />
+            <img id="logo" src="./assets/team.png" />
           </div>
           <div
             class="col-xs-6 col-sm-6 col-lg-6 d-flex justify-content-end"
