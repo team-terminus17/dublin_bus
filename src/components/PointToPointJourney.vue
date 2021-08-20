@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="point2point-main">
   <h2>Point-to-point Journey</h2>
   <button
       class="btn btn-warning"
@@ -7,33 +7,34 @@
   >
     Use current location
   </button>
-  <div class="form-group" style="margin-top: 6px">
+  <div class="form-group">
   <PlaceInput
       ref="start_input"
       id_name="autocomplete1"
       v-on:sendPlaceID="getStart"
-      place_holder="Enter the start location"
+      place_holder="Start location"
   ></PlaceInput>
 <!--  id_name is set to differentiate between two placeinput components-->
   </div>
-  <div class="form-group" style="margin-top: 10px">
+  <div class="form-group">
   <PlaceInput
       id_name="autocomplete2"
       v-on:sendPlaceID="getEnd"
-      place_holder="Enter the end location"
+      place_holder="End location"
   ></PlaceInput>
   </div>
   <PointToPointRenderer
       v-on:directionsValidated="showGooglePrediction"
       ref="renderer"
   ></PointToPointRenderer>
-  <div class="col-xs-6 col-md-8 datetime" style="margin-top: 10px">
+  <div class="col-xs-6 col-md-8 datetime">
   <DateTimeInput
+      gap="1.5em"
       v-on:sendTimestamp="updateTimestamp"
   ></DateTimeInput>
   </div>
-  <div class="col-12" style="margin-bottom: 10px">
-  <button @click="handle" type="button" class="btn btn-warning" style="margin-top: 40px;">Submit</button>
+  <div class="col-12">
+    <button @click="handle" type="button" class="btn btn-warning">Submit</button>
   </div>
   <div v-show="show_prediction">
   <div class="col-12">
@@ -45,6 +46,16 @@
   </div>
 </div>
 </template>
+
+<style scoped>
+.point2point-main > div, .point2point-main > button {
+  margin-top: 1.5em;
+}
+
+.datetime {
+  margin: auto;
+}
+</style>
 
 <script>
 import PlaceInput from "@/components/PlaceInput";
@@ -143,64 +154,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-.v-autocomplete .v-autocomplete-input-group .v-autocomplete-input {
-  position: relative;
-  font-size: 1.0em;
-  padding: 5px 15px;
-  box-shadow: none;
-  border: 1px solid var(--border-color);
-  width: 100%;
-  outline: none;
-  background-color: var(--background-color);
-  border-radius: var(--border-radius);
-  }
-
-.v-autocomplete .v-autocomplete-list{
-  z-index: 1000;
-  width: 100%;
-  height: 200px;
-  overflow-y:auto;
-  overflow-x: hidden;
-  text-align: left;
-  border: none;
-  border-top: none;
-  max-height: 400px;
-  overflow-y: auto;
-  border-bottom: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-}
-
-.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item{
-  cursor: pointer;
-  color: black;
-  background-color: #bbdaa4;
-  padding: 10px;
-  border-bottom: 1px solid var(--border-color);
-  border-left: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
-  text-align: center;
-}
-
-.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item:hover{
-  background-color: #bbd7f2;
-}
-
-.v-autocomplete .v-autocomplete-list .v-autocomplete-list-item.v-autocomplete-item-active {
-  background-color:	#bbd7f2;
-}
-
-
-.datetime {
-  margin-left: 16%;
-}
-
-@media only screen and (max-width: 600px) {
-  .datetime {
-    margin-left: 0%;
-  }
-}
-
-</style>

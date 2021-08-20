@@ -34,7 +34,8 @@
 <style scoped>
 
 .route-selection {
-  margin-bottom: 1em;
+  margin-bottom: 2em;
+  margin-top: 2em;
 }
 
 .stop-trips {

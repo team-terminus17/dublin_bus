@@ -71,5 +71,8 @@ input {
   border-color: var(--border-color);
   border-radius: var(--border-radius);
   color: var(--font-color);
+  padding: 5px 15px;
+  font-size: 1em;
+  border-width: 1px;
 }
 </style>

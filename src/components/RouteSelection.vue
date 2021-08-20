@@ -125,6 +125,6 @@ input{
 }
 
 #direction {
-  margin-top: 10px;
+  margin-top: 1em;
 }
 </style>
