@@ -5,10 +5,14 @@ from datetime import datetime, timezone
 from . import utils
 
 API_KEY = config("OPEN_WEATHER_API_KEY")
-CITY_NAME = "dublin"
+CITY_ID = 2964574
 URL = (
     "http://api.openweathermap.org/data/2.5/forecast"
-    f"?q={CITY_NAME}&appid={API_KEY}"
+    f"?id={CITY_ID}&appid={API_KEY}"
+)
+URL_CURRENT = (
+    "http://api.openweathermap.org/data/2.5/weather"
+    f"?id={CITY_ID}&appid={API_KEY}"
 )
 
 
@@ -46,16 +50,13 @@ def get_data(target_dt):
 
 
 def get_summary():
+    try:
+        response = requests.get(URL_CURRENT)
+        response_data = response.json()
+    except:
+        raise ValueError("Failed to retrieve weather API data.")
 
-  data = get_data(datetime.now())
+    temp = response_data['main']['temp'] - 273.15
+    icon = response_data['weather'][0]['icon']
 
-  try:
-    temp = float(data["main"]["temp"])
-    icon = data["weather"][0]["icon"]
-  except:
-    raise ValueError("Failed to parse data from weather API response.")
-
-  # Temperature is in Kelvin, we need it in Celsius
-  temp -= 273.15
-
-  return temp, icon
+    return temp, icon
