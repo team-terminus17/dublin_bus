@@ -10,17 +10,17 @@
     </div>
     <div class="col-md-12">
       <div class="form-group" style="margin-top: 6px">
-        <label class="d-flex justify-content-start">Start Stop</label>
         <StopSelection
             v-on:stopSelected="getDepStop"
             :routeinfo="routeinfo"
+            placeholder="Enter departure stop"
         ></StopSelection>
       </div>
       <div class="form-group" style="margin-top: 10px">
-        <label class="d-flex justify-content-start">End Stop</label>
         <StopSelection
             v-on:stopSelected="getArrStop"
             :routeinfo="routeinfo"
+            placeholder="Enter destination stop"
         ></StopSelection>
       </div>
     </div>

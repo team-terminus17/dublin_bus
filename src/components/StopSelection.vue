@@ -6,7 +6,9 @@
     @input="passStop"
     :component-item='template'
     :get-label='getLabel'
-    :auto-select-one-item="false">
+    :auto-select-one-item="false"
+    :placeholder="placeholder"
+>
 </v-autocomplete>
 </template>
 
@@ -15,6 +17,7 @@ import 'v-autocomplete/dist/v-autocomplete.css'
 import StopTemplate from "@/components/StopTemplate";
 export default {
   name: "StopSelection",
+
   data(){
     return{
       stop:null,
@@ -23,12 +26,15 @@ export default {
       template: StopTemplate
     };
   },
-  props:['routeinfo'],
+
+  props:['routeinfo','placeholder'],
+
   watch:{
     routeinfo(newval,oldval){
       this.getStops(newval);
     }
   },
+
   methods:{
     getStops:async function(routedir){
       let url = 'stops/'+ routedir[0]+ '/'+ routedir[1];
