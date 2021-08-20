@@ -1,6 +1,10 @@
 <template>
   <div class="col-sm-12 col-md-12 pred">
-    <p style="font-size: larger;font-weight: bolder">Journey Info</p>
+    <div style="font-size: larger;font-weight: bolder" id="journey_header">
+      Journey Info
+      <img :src="info_img[mode]"/>
+      <div v-html="instruction_info" id="track_instruction"></div>
+    </div>
     <div v-if="loading" class="loading-content">
       <div class="loader-template"></div>
     </div>
@@ -16,7 +20,6 @@
 </template>
 
 <script>
-import Notification from "@/components/Notification";
 import JourneyInfoBox from "@/components/JourneyInfoBox";
 import {round} from "@popperjs/core/lib/utils/math";
 export default {
@@ -31,6 +34,14 @@ export default {
       },
       wholeRouteDict: {},
       loading: false,
+      info_img:{'light':'https://img.icons8.com/small/16/000000/info.png',
+      'dark':'https://img.icons8.com/small/16/ffffff/info.png'},
+      instruction_info: '<h5>Instructions on Tracking</h5>' +
+          '<h6>Track departure stop</h6>'+
+          '<p>Push notification when the bus is coming in 3 minutes</p>'+
+          '<h6>Track departure stop</h6>' +
+          '<p>Click it when you get on the bus <br>' +
+          'Push a notification when you are in 500 meters radius of destinnation</p>'
     };
   },
 
@@ -129,11 +140,35 @@ export default {
   border-radius: var(--border-radius);
   overflow: auto;
   max-height: 300px;
+  position: relative;
 }
 .loading-content {
   height: 10em;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#track_instruction{
+  font-size: small;
+  font-weight: normal;
+  visibility: hidden;
+  /*margin: 20px;*/
+
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+}
+
+#journey_header:hover #track_instruction{
+  visibility: visible;
+}
+#journey_header img{
+  height: 16px;
+  width: 16px;
 }
 </style>

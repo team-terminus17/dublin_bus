@@ -33,7 +33,7 @@
     </div>
     <div class="footer">
       <button @click="track" :disabled="!selectedTrip" class="btn btn-warning">
-        Track
+        {{track_text}}
       </button>
     </div>
   </div>
@@ -122,6 +122,7 @@ export default {
       selectedTrip: null,
       selectedSequence:null,
       timerID : null,
+      track_text: 'Track'
     };
   },
   created() {
@@ -130,11 +131,13 @@ export default {
   methods: {
     handle(trip){
       this.selectedTrip = trip.tripID;
+      console.log(trip)
       this.selectedSequence=trip.sequence;
     },
     clear() {
       this.trips = [];
       this.selectedTrip = null;
+      this.cancelTracking();
     },
     async refresh() {
       this.clear();
@@ -152,17 +155,25 @@ export default {
         );
       }
 
-      if (this.trips.length > 0) this.selectedTrip = this.trips[0].tripID;
+      if (this.trips.length > 0) {
+        this.selectedTrip = this.trips[0].tripID;
+        this.selectedSequence = this.trips[0].sequence;
+      }
 
       this.loading = false;
     },
 
     track() {
+      if(this.track_text==='Stop Tracking'){
+        this.cancelTracking();
+        return;
+      }
+      this.track_text='Stop Tracking'
       if (!this.selectedTrip){
         alert("Please select a trip to track")
         return;
       }
-      this.cancelTracking();
+      if (this.timerID) window.clearInterval(this.timerID);
       this.timerID = window.setInterval(this.trackTrip,30*1000);
       this.trackTrip();
     },
@@ -190,6 +201,7 @@ export default {
     },
 
     cancelTracking(){
+      this.track_text='Track';
       if (this.timerID) window.clearInterval(this.timerID);
     }
   },

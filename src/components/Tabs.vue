@@ -66,11 +66,6 @@ export default {
     display: flex;
     padding: 0;
     list-style: none;
-    li {
-      //margin-block: auto;
-      //margin-right: 40px;
-      // border-right: 2px solid #fefefe;
-    }
 
     .nav-item .nav-text{
       visibility: hidden;
