@@ -108,6 +108,7 @@ export default {
     },
 
     handle: async function () {
+      this.$refs.renderer.clearView();
       if (this.stop_arr == null || this.stop_dep == null) {
         alert("Please fill in the complete route");
         return;
