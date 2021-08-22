@@ -5,6 +5,9 @@
         class="dark-mode-toggle"
         v-on:changeMode="changeMode"
       ></DarkMode>
+      <ScrollButoon
+        :mode="mode"
+      ></ScrollButoon>
       <div id="view-content">
         <div class="row">
           <div class="col-sm-6 col-md-6 d-flex justify-content-start">
@@ -180,7 +183,7 @@
 
 /*
   Scrollbar Styling
-  Currentl Chrome only.
+  Currently Chrome only.
 */
 
 ::-webkit-scrollbar {
@@ -238,11 +241,13 @@ import Map from "./components/Map";
 import TripSelection from "./components/TripSelection";
 import Weather from "./components/Weather";
 import DarkMode from "@/components/DarkMode";
+import ScrollButoon from "@/components/ScrollButoon";
 
 export default {
   name: "App",
 
   components: {
+    ScrollButoon,
     DarkMode,
     Map,
     TripSelection,

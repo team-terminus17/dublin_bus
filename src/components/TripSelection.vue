@@ -102,13 +102,4 @@ export default {
 
 <style scoped>
 
-
-.twitter {
-  max-height: 450px;
-  overflow-y: auto;
-}
-
-@media only screen and (max-width: 600px) {
-
-}
 </style>
