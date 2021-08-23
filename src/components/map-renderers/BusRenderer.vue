@@ -77,18 +77,26 @@ export default {
   },
   created() {
     this.refreshView();
-    this.timerID = window.setInterval(
-      () => this.refreshView(false),
-      15 * 1000 // seconds
-    );
   },
   beforeDestroy() {
-    this.clearView();
-    if (this.timerID) window.clearInterval(this.timerID);
+    this.clear();
   },
   methods: {
+    startTimer() {
+      if (this.timerID) return;
+      this.timerID = window.setInterval(
+        () => this.refreshView(false),
+        10 * 1000 // 10 seconds
+      );
+    },
+    stopTimer() {
+      if (!this.timerID) return;
+      window.clearInterval(this.timerID);
+      this.timerID = null;
+    },
     refreshView(transition = true) {
       if (this.loading) return;
+
       this.loading = true;
       if (transition) this.clearView();
 
@@ -97,6 +105,10 @@ export default {
         this.drawIcons();
         this.loading = false;
       });
+
+      // This has no effect if the timer is
+      // already running.
+      this.startTimer();
     },
     async fetchData() {
       if (!this.route || !this.agency) {
@@ -115,6 +127,10 @@ export default {
       for (const item of stopData) this.stopLookup.set(item.ID, item);
 
       this.tripData = await trips;
+    },
+    clear() {
+      this.stopTimer();
+      this.clearView();
     },
     clearView() {
       for (let marker of this.markers) marker.setMap(null);
@@ -172,11 +188,6 @@ export default {
         }
       }
     },
-
-    clear: function (){
-      this.clearView();
-      if (this.timerID) window.clearInterval(this.timerID);
-    }
   },
 };
 </script>
