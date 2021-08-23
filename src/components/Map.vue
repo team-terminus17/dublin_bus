@@ -19,6 +19,7 @@ export default {
       const map = new window.google.maps.Map(document.getElementById("map"), {
         center: { lat: 53.3673893, lng: -6.2600157 },
         zoom: 12,
+        gestureHandling: "greedy",
       });
 
       this.$store.commit("initMap", map);

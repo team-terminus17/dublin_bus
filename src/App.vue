@@ -161,7 +161,7 @@
       Leave space for the tab buttons down below. 
       This is sensitive to the spacing defined on the tab buttons!
     */
-    height: calc(100vh - 4.5em)
+    height: calc(100vh - 10em)
   }
 
   #input-content {
