@@ -39,9 +39,9 @@ export default {
       instruction_info: '<h5>Instructions on Tracking</h5>' +
           '<h6>Track departure stop</h6>'+
           '<p>Push notification when the bus is coming in 3 minutes</p>'+
-          '<h6>Track departure stop</h6>' +
+          '<h6>Track arrival stop</h6>' +
           '<p>Click it when you get on the bus <br>' +
-          'Push a notification when you are in 500 meters radius of destinnation</p>'
+          'Push a notification when you are in 500 meters radius of destination</p>'
     };
   },
 
