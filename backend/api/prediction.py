@@ -110,7 +110,7 @@ def get_stop_sequence(route, direction, dep_stop, arr_stop, dt):
 
     routestops_entries = RouteStops.objects.filter(
         name__name=route, direction=direction,
-        sequence__gte=dep_stop_seq, sequence__lte=arr_stop_seq
+        sequence__gt=dep_stop_seq, sequence__lte=arr_stop_seq
     ).select_related("stop")
 
     stops = dict()
