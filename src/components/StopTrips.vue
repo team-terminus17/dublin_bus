@@ -129,7 +129,6 @@ export default {
   watch: {
     stop() {
       this.initial = false;
-      console.log(this.stop)
       this.refresh();
     },
   },
@@ -197,8 +196,8 @@ export default {
     },
 
     async trackTrip() {
-      let time = this.fetchWaitingTime();
-      if (time < 3) {
+      let time = await this.fetchWaitingTime();
+      if (time <= 3) {
         const title = "Reminder";
         const options = {
           body: "The selected bus is coming. Please get ready.",
